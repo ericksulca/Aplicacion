@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block imports %}
+Información de Cliente
+{% endblock %}
+
+{% block title %}
+Información de Cliente
+{% endblock %}
+
+{% block content %}
+	<div class="row">
+        <div class="col-sm-12">
+            <div class="white-box">
+                <h3 class="box-title">Datos de cliente</h3>
+			<div>
+				
+				<table id="tProductos"  class="table">			
+					<thead>
+	                    <tr>
+	                        <th>#</th>
+	                        <th>Producto</th>
+	                        <th>Presentación</th>
+	                        <th>Cantidad</th> 
+	                	</tr>
+	                </thead>
+	                {% for oProducto in oProductos %}
+				    <tr>
+				    	<td>{{ forloop.counter }}</td>
+				    	<td>{{oProducto.nombreProducto}}</td>
+				    	<td>{{oProducto.nombrePresentacion}}</td>
+				    	<td>{{oProducto.cantidad}}</td>
+				    </tr>
+
+				    {% endfor %}
+				</table>	
+
+			</div>
+			</div>
+
+	    </div>
+    </div>  
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block imports %}
+Detalle de presentaciones
+{% endblock %}
+
+{% block title %}
+Detalle de presentaciones de producto
+{% endblock %}
+
+{% block content %}
+	<div class="row">
+        <div class="col-sm-12">
+            <div class="white-box">
+                <h3 class="box-title">Detalle de presentaciones de producto</h3>
+			<div>
+				<h2>Nombre de Producto : {{producto.nombre}}</h2><br>
+				<h2>Código de  Producto : {{presentacion.codigo}}</h2>
+			</div>
+			<!--row -->
+                <div class="table-responsive">
+                    <table class="table ">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Opciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                {% for presentacion in producto.presentacions.all %}
+                                <tr>
+								    <td>
+								        {{ presentacion.nombre }}
+								    </td>
+								    <td>
+								        {{ presentacion.estado }}
+								    </td>
+								</tr>
+								{% endfor %}
+                             
+                        </tbody>
+                    </table></div>
+		            </div>
+		<button class="btn btn-info" data-toggle="modal" data-target="#agrearPresentacion">Agregar Presentación</button>
+
+	<div class="modal fade" id="agrearPresentacion" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4>Agregar Presentacion de : {{producto.nombre}}</h4>
+            
+          </div>
+          <div class="modal-body">
+            <form action="/Presentacion/registrar/" method="post" enctype="multipart/form-data">
+				{% csrf_token %}
+		    <input type="number" name="idProducto" id="idProducto" required class="form-control" value="{{producto.id}}" style="display: none;">
+            Presentación</br>
+		    <select class="form-control" id="cmbPresentacion" name="cmbPresentacion" required>
+		    	<option value=""> </option>
+                {% for presentacion in presentaciones %}
+                    <option value="{{presentacion.id}}">
+                    {{presentacion.nombre}}
+                    </option>
+                {% endfor %}
+                </select>
+            Cantidad de Presentación</br>
+		    <input type="number" name="cantPresentacion" id="cantPresentacion" required class="form-control">
+		    {% for precio in precios%}
+			Precio - {{ precio.nombre }}</br>
+		    <input type="number" name="{{precio.id}}" id="{{precio.id}}" required class="form-control">
+		    {% endfor %}</br>
+		    <button class="btn btn-success" data-toggle="modal" data-target="#agrearPresentacion">Agregar Presentación</button>
+          </div>
+		</div>
+	    </div>
+    </div>  
+{% endblock %}

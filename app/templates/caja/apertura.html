@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block imports %}
+Registrar Nuevo Producto
+{% endblock %}
+
+{% block title %}
+Registrar Nuevo Producto
+{% endblock %}
+
+{% block content %}
+	<div class="row">
+        <div class="col-sm-12">
+            <div class="white-box">
+                <h3 class="box-title">Formulario de apertura de caja</h3>
+                <form action="/Caja/apertura/" method="post" enctype="multipart/form-data"> 
+				<ul>
+				{% load widget_tweaks %}
+				{% csrf_token %}
+					<div class="form-group">
+					<label for="">Seleccione una Caja</label></br>
+				    <select class="form-control" id="cmbCaja" name="cmbCaja" required="">
+				    	<option value=""> </option>
+                        {% for caja in cajas %}
+                            <option value="{{caja.id}}">
+                            {{caja.nombre}}
+                            </option>
+                        {% endfor %}
+                        </select><br>	
+				    {% for field in form %}
+							{{ field.errors }}
+							{{ field.label_tag }}</br>
+							{{ field|add_class:"form-control" }}
+				    {% endfor %}
+
+					<button class="btn btn-success" data-toggle="modal" data-target="#agrearPresentacion">Aperturar Caja</button>
+
+
+				</ul>
+				</form>
+ 
+			</div>
+	    </div>
+    </div>  
+{% endblock %}

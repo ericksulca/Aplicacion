@@ -1,0 +1,170 @@
+<html>
+	<head>
+    <!-- Bootstrap Core CSS -->
+    <!-- Bootstrap Core CSS -->
+    <link href="/static/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Menu CSS -->
+    <link href="/static/plugins/bower_components/sidebar-nav/dist/sidebar-nav.min.css" rel="stylesheet">
+    <!-- toast CSS -->
+    <link href="/static/plugins/bower_components/toast-master/css/jquery.toast.css" rel="stylesheet">
+    <!-- morris CSS -->
+    <link href="/static/plugins/bower_components/morrisjs/morris.css" rel="stylesheet">
+    <!-- animation CSS -->
+    <link href="/static/css/animate.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="/static/css/style.css" rel="stylesheet">
+    <!-- color CSS -->
+    <link href="/static/css/colors/blue-dark.css" id="theme" rel="stylesheet">
+     
+    <script type="text/javascript" src="/static/js/movil.js"></script>
+    <link rel="stylesheet" href="/static/js/Scripts/css/jquery-ui-1.7.2.custom.css">        
+    <script src="/static/js/Scripts/jquery-1.9.1.js" type="text/javascript"></script>
+    <script src="/static/js/Scripts/jquery-ui-1.10.1.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+            
+        $(document).ready(function(){
+
+                                  
+        });             
+                       
+
+        $(function(){
+            
+         
+
+        $('#btnGenerarPedido').click(function (e) {
+           
+           if($("#cmbTipoPedido").val() == 0){
+
+            alert("Debe Selecionar un Tipo de Pedido");
+
+           }else{
+
+                if($("#txtTotal").val()<=0){
+
+                    alert("Debe Calcular el Monto Total");
+
+                }else{
+
+                    $("#dlgConfirmacion").dialog("open");
+
+                }
+           }
+
+        });
+
+        $('#bedata').click(function (e) {
+        $("#dlgCambiarPrecio").dialog("open");
+        });
+            
+        $( "#txtProducto" ).autocomplete({        
+            source: function (request, response) {
+
+                var datos = {nombreProducto: $("#txtProducto").val()};
+                var sendData = JSON.stringify(datos); 
+                
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: "/producto/buscar/",                  
+                    data: sendData,                    
+                    contentType: "application/json; charset=utf-8",
+                    async: false,
+                    cache: false,                    
+                    CrossDomain: true,
+
+                    success: function (result) {      
+                    var ListasProductos = result.productos;
+
+                    response($.map(ListasProductos, function (item) {
+                            //alert(item);             
+                        return {
+                            label: item.nombre,
+                            idproducto: item.nombre,
+                            Id: item.id
+                            };
+                        }));
+                    }
+                });
+            },
+            minLength: 2,
+            select: function (event, ui) {
+                $.data(document.body, 'idproducto', ui.item.Id);//guardar el id en memoria el $.data guarda en memoria
+                //var iDPro = ui.item.Id;
+
+                //document.getElementById("btnListarPrecio").disabled = false;
+                //MostrarProducto(iDPro);               
+            }
+        });
+
+
+        $("#dlgConfirmacion").dialog({
+            modal: true,
+            resizable: false,
+            autoOpen: false,
+            show: { effect: "explode", duration: 500 },
+            hide: { effect: "explode", duration: 500 },
+            height: '250',
+            width: '350',
+            buttons: {
+                "Cancelar": function () { $(this).dialog("close");},
+                "Aceptar": function () {
+
+                   GenerarPedido();                      
+                   refrescar();
+                
+                }
+            }
+        });
+
+
+  });
+
+    </script>
+
+	</head>
+	<body>
+		 <div class="row">
+                            <div class="form-group">
+                                <label for="txtProducto" class="col-sm-2 col-md-2 col-lg-2 control-label">Nombre Producto</label>
+                                <div class="col-sm-8 col-md-8 col-lg-6">
+                                    <input type="text" class="form-control" id="txtProducto" placeholder="Producto" required>
+                                </div>
+                                <div class="col-sm-2 col-md-2 col-lg-4">
+                                   
+                                </div>
+                            </div>
+                        </div>
+
+	</body>
+	<script src="/static/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- Menu Plugin JavaScript -->
+    <script src="/static/plugins/bower_components/sidebar-nav/dist/sidebar-nav.min.js"></script>
+    <!--slimscroll JavaScript -->
+    <script src="/static/js/jquery.slimscroll.js"></script>
+    <!--Wave Effects -->
+    <script src="/static/js/waves.js"></script>
+    <!--Counter js -->
+    <script src="/static/plugins/bower_components/waypoints/lib/jquery.waypoints.js"></script>
+    <script src="/static/plugins/bower_components/counterup/jquery.counterup.min.js"></script>
+    <!--Morris JavaScript -->
+    <script src="/static/plugins/bower_components/raphael/raphael-min.js"></script>
+    <script src="/static/plugins/bower_components/morrisjs/morris.js"></script>
+    <!-- Custom Theme JavaScript -->
+    <script src="/static/js/custom.min.js"></script>
+    <script src="/static/js/dashboard1.js"></script>
+    <script src="/static/plugins/bower_components/toast-master/js/jquery.toast.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function() {
+        $.toast({
+            heading: 'Welcome to Pixel admin',
+            text: 'Use the predefined ones, or specify a custom position object.',
+            position: 'top-right',
+            loaderBg: '#ff6849',
+            icon: 'info',
+            hideAfter: 3500,
+            stack: 6
+        })
+    });
+</html>

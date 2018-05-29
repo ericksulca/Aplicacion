@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block imports %}
+<script type='text/javascript'>
+    $(document).ready(function(){
+        $("#cmbTipoOperacion").change(function(){
+            var valor=$("#cmbTipoOperacion").val();
+            var datos = {tipooperacion_idtipooperacion: valor};
+            var sendData = JSON.stringify(datos);
+            $.ajax({
+                type: "GET",
+                dataType: "json",
+                url: strRootUrl + "/api/detalletipooperacion/?format=json&tipooperacion_idtipooperacion="+valor,
+                data: sendData,                    
+                contentType: "application/json; charset=utf-8",
+                async: false,
+                cache: false,                    
+                CrossDomain: true,
+                success: function (result) {
+                    $('#cmbDetalleTipoOperacion').children().remove();
+                    //alert(result);
+                    $.each(result, function (i, result) {
+                    $('#cmbDetalleTipoOperacion').append($('<option>', { 
+                        value: result.iddetalletipooperacion,
+                        text : result.nombredetalletipooperacion 
+                        }));
+                    });
+                }
+            });
+            var texto=$("#selector option:selected").text();
+            $("#valorSeleccionado").html(valor+" - "+texto);
+        });
+    });
+</script>
+{% endblock %}
+
+{% block title %}
+Registrar Nuevo Producto
+{% endblock %}
+
+{% block content %}
+	<div class="row">
+        <div class="col-sm-12">
+            <div class="white-box">
+                <h3 class="box-title">Formulario de registro de Operaciones</h3>
+
+                 <form class="form form-horizontal" action="." method="post" enctype="multipart/form-data"> {% csrf_token %}
+                        <div class="row">
+                            <div class="form-group">
+                                <label for="cmbTipoOperacion" class="col-sm-2 col-md-2 col-lg-2 control-label">Tipo Operación</label>
+                                <div class="col-sm-8 col-md-8 col-lg-6">
+                                    <select class="form-control" id="cmbTipoOperacion" name="cmbTipoOperacion" required>
+                                        <option value="2" selected="true">Salida</option>
+                                        <option value="1">Ingreso</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-2 col-md-2 col-lg-4">
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group">
+                                <label for="cmbConceptoCaja" class="col-sm-2 col-md-2 col-lg-2 control-label">Concepto Operación</label>
+                                <div class="col-sm-8 col-md-8 col-lg-6">
+                                    <select class="form-control" id="cmbDetalleTipoOperacion" name="cmbDetalleTipoOperacion" required >
+                                       {% for oDetalletipooperacion in oDetalletipooperacions %}
+                                        <option value="{{oDetalletipooperacion.id}}">
+                                        {{oDetalletipooperacion.nombre}}
+                                        </option>
+                                    {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-sm-2 col-md-2 col-lg-4">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                       
+                        <div class="row">
+                            <div class="form-group">
+                            <label for="desccierrecaja" class="col-sm-2 col-md-2 col-lg-2 control-label">Descripción</label>
+                            <div class="col-sm-8 col-md-8 col-lg-6">
+                                <textarea name="txtDesoperacion" id="txtDesoperacion" class="form-control" rows="5" required>
+                                    
+                                </textarea>
+                            </div>
+                            <div class="col-sm-2 col-md-2 col-lg-4">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <label for="txtMontoCierre" class="col-sm-2 col-md-2 col-lg-2 control-label">Monto Operación</label>
+                                <div class="col-sm-8 col-md-8 col-lg-6">
+                                    <input type="number" class="form-control" id="txtMontoOperacion" name="txtMontoOperacion" placeholder="0000.00" required title="formato 00.00">
+                                </div>
+                               
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-10">
+                                    <button class="btn btn-success" data-toggle="modal" data-target="#agrearPresentacion">Registrar Operación</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>            
+ 
+			</div>
+	    </div>
+    </div>  
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block imports %}
+Clientes
+{% endblock %}
+
+{% block title %}
+Clientes
+{% endblock %}
+
+{% block content %}
+	<div class="row">
+        <div class="col-sm-12">
+            <div class="white-box">
+                <h3 class="box-title">Lista de clientes</h3>
+				{% load widget_tweaks %}
+				{% csrf_token %}
+					<div class="form-group">
+					<table id="tCamiones"  class="table">	
+						<thead>
+	                        <tr>
+	                            <th>#</th>
+	                            <th>Nombre</th>
+	                            <th>Dirección</th>
+	                            <th>N° Documento</th>
+	                            <th>Opciones</th>
+	                        </tr>
+	                    </thead>
+				    {% for oCliente in oClientes %}
+				    <tr>
+				    	<td>{{ forloop.counter }}</td>
+				    	<td>{{oCliente.nombre}}</td>
+				    	<td>{{oCliente.direccion}}</td>
+				    	<td>{{oCliente.numerodocumento}}</td>
+				    	<td>
+				    		<a href="/Cliente/detalle/{{oCliente.id}}/"><button type="button" class="btn btn-info">Ver</button> </a>
+				    		<a href="/Cliente/editar/{{oCliente.id}}/"><button type="button" class="btn btn-primary">Editar</button></a>
+				    		<a href="/Cliente/eliminar/{{oCliente.id}}/"><button type="button" class="btn btn-danger">Eliminar</button></a>
+				    	</td>
+				    </tr>
+
+				    {% endfor %}
+
+					</table>
+				    <br>	
+	    			<a href="/Cliente/nuevo/"><button type="button" class="btn btn-success">Nuevo Cliente</button> </a>
+ 
+			</div>
+	    </div>
+    </div>  
+{% endblock %}

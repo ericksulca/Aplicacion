@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block imports %}
+Información de Cliente
+{% endblock %}
+
+{% block title %}
+Información de Cliente
+{% endblock %}
+
+{% block content %}
+	<div class="row">
+        <div class="col-sm-12">
+            <div class="white-box">
+                <h3 class="box-title">Datos de cliente</h3>
+			<div>
+				<table id="tCamiones"  class="table">	
+					<tr>
+						<td>Nombre: </td>
+						<td>{{ oCliente.nombre }}</td>
+					</tr>
+					<tr>
+						<td>Dirección: </td>
+						<td>{{ oCliente.direccion }}</td>
+					</tr>
+					<tr>
+						<td>N° Documento: </td>
+						<td>{{ oCliente.numerodocumento }}</td>
+					</tr>
+					<tr>
+						<td>Ubicación: </td>
+						<td>{{ oCliente.longitud }} - {{ oCliente.longitud }}</td>
+					</tr>
+			</div>
+			</div>
+
+	    </div>
+    </div>  
+{% endblock %}
