@@ -11,14 +11,20 @@ from app.models import *
 from django.views.decorators.csrf import csrf_exempt
 import json
 
+
+###########################################################
+#   Usuario: Erick Sulca
+#   Fecha: 31/08/18
+#   Última modificación: 31/08/18
+#   Descripción: autentica al usuario
+###########################################################
 def Login(request):
-    next = request.GET.get('next', '/home/')
+    next = request.GET.get('next', '/Home/')
     if request.method == "POST":
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(username=username, password=password)
         print user
-        
         if user is not None:
             if user.is_active:
                 login(request, user)
