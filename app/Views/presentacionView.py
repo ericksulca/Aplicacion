@@ -29,7 +29,7 @@ def registrarPresentacionProducto(request):
             oProductoPresentacionsprecios.precio = oPrecio
             oProductoPresentacionsprecios.producto_presentacions = oProductopresentacions
             idPrecio = str(oPrecio.id)
-            print idPrecio
+            #print idPrecio
             oProductoPresentacionsprecios.valor = Datos[idPrecio]
             oProductoPresentacionsprecios.save()
         return HttpResponseRedirect('/Presentacion/Listar/'+Datos['idProducto']+'/')

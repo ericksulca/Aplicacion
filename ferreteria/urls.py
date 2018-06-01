@@ -29,6 +29,7 @@ from app.Views.usuarioView import *
 from app.Views.clienteView import *
 from app.Views.rutaView import *
 from app.Views.visitaView import *
+from app.Views.errorView import *
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -94,6 +95,8 @@ urlpatterns = [
     url(r'^producto/buscar/$', BuscarProducto),
     url(r'^producto/presentacion/listar/$', ListarPresentacionesProducto),
     url(r'^producto/presentacion/cantidad/$', CantidadPresentacionesProducto),
+
+    url(r'^error/registrar/$', registrarError),
     
     #####################################################
 ]

@@ -84,7 +84,7 @@ DATABASES = {
         'NAME': 'AES_Ferreteria',
     'USER': 'root',
     'PASSWORD': 'levanarestaurant2015',
-    'HOST': '',
+    'HOST': '192.168.1.200',
     'PORT': '',
 
     }
