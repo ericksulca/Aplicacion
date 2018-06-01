@@ -13,7 +13,7 @@ import json
 
 
 ###########################################################
-#   Usuario: Erick Sulca
+#   Usuario: Erick Sulca, ulises bejar
 #   Fecha: 31/08/18
 #   Última modificación: 31/08/18
 #   Descripción: autentica al usuario
