@@ -38,15 +38,19 @@ urlpatterns = [
     url(r'^home/$', Home),
     url(r'^Home/$', Home),
     url(r'^prueba/$', Prueba),
+
+    ################## Caja #######################
     url(r'^Caja/apertura/$', registrarAperturacaja),
     url(r'^Caja/cierre/$', registrarCierrecaja),
     url(r'^Caja/movimiento/$', registrarOperacion),
 
     url(r'^Venta/nuevo/$', registrarPedido),
 
+    ################## Producto #######################
     url(r'^Producto/listar/$', ListarProductos),
     url(r'^Producto/nuevo/$', registrarProducto),
 
+    ################## Catalogo #######################
     url(r'^Presentacion/Listar/(?P<producto_id>\d+)/$', presentacion_detalle),
     url(r'^Presentacion/registrar/$', registrarPresentacionProducto),
     url(r'^Presentacion/eliminar/(?P<presentacion_id>\d+)/(?P<producto_id>\d+)/$', eliminarPresentacionProducto),

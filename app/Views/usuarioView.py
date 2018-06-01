@@ -11,9 +11,12 @@ from app.models import *
 from django.views.decorators.csrf import csrf_exempt
 import json
 from app.fomularios.aperturacajaForm import *
+from app.fomularios.erroForm import errorForm
 
 @csrf_exempt
 def validarUsuario(request):
+   
+
     if request.method == 'POST':
         Datos = json.loads(request.body)
         print (Datos)
@@ -30,3 +33,15 @@ def validarUsuario(request):
         #except Exception as e:
         #    return HttpResponse(json.dumps({'exito':0}), content_type="application/json")
             
+
+def errorView(request):
+
+        if request.method == 'POST':
+            form = errorForm(request.Post)
+            if form.is_valid():
+                form.save()
+            return redirect('error : index')
+
+        else:
+            form = errorForm()
+        return  render(request, 'login.html', {'form':form})

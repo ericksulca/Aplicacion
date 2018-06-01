@@ -1,4 +1,4 @@
-
+#holaS
 """
 Django settings for ferreteria project.
 
@@ -80,12 +80,12 @@ WSGI_APPLICATION = 'ferreteria.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'AES_Ferreteria',
-    'USER': 'root',
-    'PASSWORD': 'levanarestaurant2015',
-    'HOST': '',
-    'PORT': '',
+        'ENGINE': 'mysql_cymysql',
+        'NAME': 'aes_ferreteria',
+        'USER': 'root',
+        'PASSWORD': '1234',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
 
     }
 }

@@ -17,7 +17,7 @@ def Login(request):
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(username=username, password=password)
-        print user
+        print (user)
         
         if user is not None:
             if user.is_active:
@@ -40,6 +40,6 @@ def Home(request):
 
 def Prueba(request):
     oCaja = Caja.objects.filter(estado=1)
-    print oCaja
+    print (oCaja)
     return HttpResponse(json.dumps({'exito':1}), content_type="application/json")
 

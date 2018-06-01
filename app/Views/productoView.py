@@ -55,7 +55,7 @@ def registrarProducto(request):
 def BuscarProducto (request):
     if request.method == 'POST':
         Datos = json.loads(request.body)
-        print Datos
+        #print Datos
         nombreProducto = Datos["nombreProducto"]
         oProuctos = Producto.objects.filter(nombre__icontains=nombreProducto,estado = True)
         jsonProductos = {}
@@ -94,10 +94,10 @@ def BuscarProducto (request):
 def ListarPresentacionesProducto (request):
     if request.method == 'POST':
         Datos = json.loads(request.body)
-        print Datos
+        #print Datos
         idProducto = Datos["idProducto"]
         oProuctoPresentaciones = Productopresentacions.objects.filter(producto= idProducto)
-        print oProuctoPresentaciones
+        #print oProuctoPresentaciones
         jsonPresentaciones = {}
         jsonPresentaciones["presentaciones"] = []
         for oProuctoPresentacion in oProuctoPresentaciones:
