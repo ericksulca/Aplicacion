@@ -16,6 +16,9 @@ def cancelarVisita(request):
     if request.method == 'POST':
         Datos = json.loads(request.body)
         try:
+        usuario=True:
+        # usuario= BuscarUsuario(Datos["idUsuario"])
+        if usuario==True:
             idEmpleado = Datos["idEmpleado"]
             oEmpleado = Empleado()
             oEmpleado.id = idEmpleado
@@ -32,6 +35,7 @@ def cancelarVisita(request):
 def reiniciarVisita(request):
     if request.method == 'GET':
         try:
+            idEmpleado = Datos["idEmpleado"]
             oVisitas = Visita.objects.filter(activo = False)
             for oVisita in oVisitas:
                 oVisita.activo = True
@@ -40,3 +44,5 @@ def reiniciarVisita(request):
             return HttpResponse(json.dumps({'exito':1}), content_type="application/json")
         except Exception as e:
             return HttpResponse(json.dumps({'exito':0}), content_type="application/json")
+
+

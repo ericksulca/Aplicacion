@@ -16,19 +16,23 @@ def rutaUsuario(request):
     if request.method == 'POST':
         Datos = json.loads(request.body)
         print (Datos)
-        idEmpleado = Datos["idEmpleado"]
+        usuario=True:
+       # usuario= BuscarUsuario(Datos["idUsuario"])
+        
+        if usuario==True:
         #try:
-        oEmpleado = Empleado.objects.get(id=idEmpleado)
-        oVisitas = Visita.objects.filter(estado = True, empleado = oEmpleado, nivel=oEmpleado.perfil)
-        jsonfinal = {}
-        jsonfinal["rutas"] = []
-        for oVisita in oVisitas:
-            rutasJson = {}
-            rutasJson["x"]= oVisita.rutacliente.cliente.longitud
-            rutasJson["y"]= oVisita.rutacliente.cliente.latitud
-            rutasJson["activo"]= oVisita.activo
-            rutasJson["idCliente"]= oVisita.rutacliente.cliente.id
-            rutasJson["idVisita"]= oVisita.id
-            rutasJson["idPedido"]= 4
-            jsonfinal["rutas"].append(rutasJson)
-        return HttpResponse(json.dumps(jsonfinal), content_type="application/json")
+            idEmpleado = Datos["idEmpleado"]
+            oEmpleado = Empleado.objects.get(id=idEmpleado)
+            oVisitas = Visita.objects.filter(estado = True, empleado = oEmpleado, nivel=oEmpleado.perfil)
+            jsonfinal = {}
+            jsonfinal["rutas"] = []
+            for oVisita in oVisitas:
+                rutasJson = {}
+                rutasJson["x"]= oVisita.rutacliente.cliente.longitud
+                rutasJson["y"]= oVisita.rutacliente.cliente.latitud
+                rutasJson["activo"]= oVisita.activo
+                rutasJson["idCliente"]= oVisita.rutacliente.cliente.id
+                rutasJson["idVisita"]= oVisita.id
+                rutasJson["idPedido"]= 4
+                jsonfinal["rutas"].append(rutasJson)
+            return HttpResponse(json.dumps(jsonfinal), content_type="application/json")
