@@ -29,6 +29,14 @@ from app.Views.usuarioView import *
 from app.Views.clienteView import *
 from app.Views.rutaView import *
 from app.Views.visitaView import *
+from app.Views.errorView import *
+
+###########################################################
+#   Usuario: Erick Sulca, Ulises Bejar
+#   Fecha: 05/06/18
+#   Última modificación:
+#   Descripción: url registrarError
+###########################################################
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -99,5 +107,9 @@ urlpatterns = [
     url(r'^producto/presentacion/listar/$', ListarPresentacionesProducto),
     url(r'^producto/presentacion/cantidad/$', CantidadPresentacionesProducto),
     
+    url(r'^error/registrar/$', registrarError),
+
     #####################################################
+
+
 ]

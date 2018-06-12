@@ -13,6 +13,7 @@ import json
 from app.fomularios.productoForm import *
 import xlrd
 
+
 def getPrecios(request):
     if request.method == 'GET':
         try:            

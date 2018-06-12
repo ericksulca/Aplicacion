@@ -9,6 +9,12 @@ from __future__ import unicode_literals
  
 from django.db import models
 
+###########################################################
+#   Usuario: Erick Sulca, Ulises Bejar
+#   Fecha: 04/06/18
+#   Última modificación:
+#   Descripción: crear modelo Error
+###########################################################
 
 class Almacen(models.Model):
     nombre = models.CharField(max_length=45)

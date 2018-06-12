@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+#from __future__ import unicode_literals
 
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
@@ -8,8 +8,16 @@ from ferreteria import settings
 from django.contrib.auth.decorators import login_required
 # Create your views here.
 from app.models import *
+from app.views import *
 from django.views.decorators.csrf import csrf_exempt
 import json
+
+###########################################################
+#   Usuario: Erick Sulca, Ulises Bejar
+#   Fecha: 05/06/18
+#   Última modificación:
+#   Descripción: funcion buscarUsuario para el servcio app
+###########################################################
 
 def Login(request):
     next = request.GET.get('next', '/home/')
@@ -43,3 +51,19 @@ def Prueba(request):
     print (oCaja)
     return HttpResponse(json.dumps({'exito':1}), content_type="application/json")
 
+
+def BucarUsuario(idUsuario):
+    oUsuario = Empleado.objects.filter(id = idUsuario)
+    if oUsuario.count():
+        resultado = True
+    else:
+        resultado = False
+    return resultado
+
+def BucarUsuario(id):
+    oUsuario = Empleado.objects.filter(id = id)
+    if oUsuario.count():
+        resultado = True
+    else:
+        resultado = False
+    return resultado

@@ -1,48 +1,143 @@
+
+
+<!-- Usuario: Erick sulca
+	 fecha: 01/06/18
+	 última modificación: 12/06/18
+	 Descripción: se agrego la función getMapa, y toggleBounce para hacer más dinámico el marcador del mapa -->
+
 {% extends "base.html" %}
+
 {% block imports %}
-Registrar Nuevo Cliente
+
+<!--
+<script>
+
+  		$( document ).ready(function() {
+    		console.log( "ready!" );
+		});
+		function obtenerCoordenadas(){
+        url = $('#id_url').val();
+        var arrSlash = url.split("/");
+        console.log(arrSlash);
+        coordX=arrSlash[4].split(",")[0];
+        coordX=coordX.substring(1, coordX.length);
+        coordY=arrSlash[4].split(",")[1];
+        $('#id_longitud').val(coordX);
+		$('#id_latitud').val(coordY);
+		initMap(parseFloat(coordX),parseFloat(coordY));
+
+	}
+	function initMap(coordX,coordY) {
+	  	//const var1= -13.1680054;
+	  	//const var2= -74.221639;
+	    var uluru = {lat: parseFloat(coordX), lng: parseFloat(coordY)};
+
+	    var map = new google.maps.Map(document.getElementById('map'), {
+	      zoom: 20,
+	      center: uluru
+	    });
+	    var marker = new google.maps.Marker({
+	      position: uluru,
+	      map: map
+	    });
+	  }
+
+	</script>
+-->
+	<script >
+
+	var marker;
+	var coords={};
+
+	initMap= function() {
+
+		//usamos la API para geolocalización
+		navigator.geolocation.getCurrentPosition(
+				function (position){
+
+					coords={
+						lng: position.coords.longitude,
+						lat: position.coords.latitude
+					};
+
+					setMapa(coords); //pasamos las coordenadas al método para crear el mapa.
+
+				}, function(error){console.log(error);});
+		}
+
+		function setMapa(coords){
+
+		var map=new google.maps.Map(document.getElementById('map'),
+		{
+			zoom: 13,
+			center: new google.maps.LatLng(coords.lat, coords.lng),
+
+		});
+
+		marker = new google.maps.Marker({
+
+			map: map,
+			draggable: true,
+			animation: google.maps.Animation.DROP,
+			position: new google.maps.LatLng(coords.lat, coords.lng),
+
+
+		});
+
+		marker.addListener('click', toggleBounce);
+		marker.addListener('dragend', function(event){
+
+		   document.getElementById("id_latitud").value=this.getPosition().lat();
+		   document.getElementById("id_longitud").value=this.getPosition().lng();
+		});
+
+	}
+
+
+	function toggleBounce(){
+
+		if(marker.getAnimation() !== null){
+			marker.setAnimation(null);
+		}else{
+			marker.setAnimation(google.maps.Animation.BOUNCE);
+		}
+	}
+
+	</script>
 {% endblock %}
 
 {% block title %}
 Registrar Nuevo Cliente
 {% endblock %}
 
-
-<!-- Usuario: Erick sulca
-	 fecha: 01/08/18
-	 última modificación: 1/08/18
-	 Descripción: agrega un nuevo cliente, con sus coordenadas-->
-	 
 {% block content %}
 	<div class="row">
         <div class="col-sm-12">
             <div class="white-box">
                 <h3 class="box-title">Formulario de nuevo cliente</h3>
-                <form action="." method="post" enctype="multipart/form-data"> 
-					<body>
-		
-                		
-                		<label for="id_cordenandas">CordenadasGmap</label><br>
-                        <input type="text" name="cordenadas" id="id_cordenadas" class="form-control" >
-                		
-							
-						<script type="text/javascript">
-        				$(document).ready(function(){
+                <form action="." method="post" enctype="multipart/form-data">
+					<ul>
+							<label for="id_nombre">Nombre:</label><br>
+							<input type="text" name="nombre" id="id_nombre" required="" class="form-control" maxlength="45">
 
-       				 	};
-       					 function CordenadasGmap(){
+							<label for="id_direccion">Direccion:</label><br>
+							<input type="text" name="direccion" id="id_direccion" required="" class="form-control" maxlength="45">
+							<!--
+							<label for="id_url" >URL Google Maps:</label><br>
+                            <input type="text" name="longitud" id="id_url" class="form-control" onkeyup="obtenerCoordenadas()"><br>
+							-->
+							<label for="id_longitud">Longitud:</label><br>
+							<input type="text" name="longitud" id="id_longitud" class="form-control" maxlength="50" readonly="readonly">
 
-           			 	url=$('#id_cordenadas').val();
-            			arrSlash = url.split("/");
-            			console.log(arrSlash) 
-						}
+							<label for="id_latitud">Latitud:</label><br>
+							<input type="text" name="latitud" id="id_latitud" class="form-control" maxlength="50" readonly="readonly">
 
-  					  	</script>
+							<label for="id_numerodocumento">Numerodocumento:</label><br>
+							<input type="text" name="numerodocumento" id="id_numerodocumento" class="form-control" maxlength="11" >
 
-
-					</body>
+					</ul>
 				<ul>
-
+   <!--
 				{% load widget_tweaks %}
 				{% csrf_token %}
 					<div class="form-group">
@@ -51,14 +146,19 @@ Registrar Nuevo Cliente
 							{{ field.label_tag }}</br>
 							{{ field|add_class:"form-control" }}
 				    {% endfor %}
-
+-->
+					<label for="id_latitud">My Google Maps Demo</label><br>
+			    			<div id="map" style="position: relative;overflow: hidden;height: 300px;">
+							    <script async defer
+							    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA94LBsliF6TX_7XT76lfJAopVP_h2RkkU&callback=initMap">
+				    			</script>
+				    			
+			   			 	</div>
+			   		<br>
 					<button class="btn btn-success" data-toggle="modal" data-target="">Agregar Cliente</button>
-		
-
 				</ul>
 				</form>
- 
-			</div>
+	    	</div>
 	    </div>
-    </div>  
+    </div>
 {% endblock %}
