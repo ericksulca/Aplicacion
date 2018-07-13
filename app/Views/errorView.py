@@ -24,11 +24,15 @@ def registrarError(request):
         if request.method == 'POST':
         	try:
 	        	Datos = json.loads(request.body)
-	        	oError = Error()
-	        	oError.descripcion = Datos["descripcion"]
-	        	oError.actividad = Datos["actividad"]
-	        	oError.save()
-	        	return HttpResponse(json.dumps({'exito':1}), content_type="application/json")
+	        	usuario=True:
+       			# usuario= BuscarUsuario(Datos["idUsuario"])
+        
+        		if usuario==True:
+		        	oError = Error()
+		        	oError.descripcion = Datos["descripcion"]
+		        	oError.actividad = Datos["actividad"]
+		        	oError.save()
+		        	return HttpResponse(json.dumps({'exito':1}), content_type="application/json")
         	except Exception as e:
         		print e
 	        	return HttpResponse(json.dumps({'exito':0}), content_type="application/json")

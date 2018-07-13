@@ -17,16 +17,23 @@ def validarUsuario(request):
     if request.method == 'POST':
         Datos = json.loads(request.body)
         print (Datos)
-        imei = Datos["imei"]
-        Longitud = Datos["coord"]["x"]
-        Latitud = Datos["coord"]["y"]
-        try:
-            oEmpleado = Empleado.objects.get(imei=imei)
-            return HttpResponse(json.dumps({'exito':1,"nombre":oEmpleado.nombre,"idEmpleado":oEmpleado.id,"perfil":oEmpleado.perfil}), content_type="application/json")
-        except Exception as e:
-            return HttpResponse(json.dumps({'exito':0}), content_type="application/json")
+        
+        usuario=True:
+        # usuario= BuscarUsuario(Datos["idUsuario"])
+        
+        if usuario==True:
+            idEmpleado = Datos["idEmpleado"]
+            imei = Datos["imei"]
+            Longitud = Datos["coord"]["x"]
+            Latitud = Datos["coord"]["y"]
+            try:
+                oEmpleado = Empleado.objects.get(imei=imei)
+                return HttpResponse(json.dumps({'exito':1,"nombre":oEmpleado.nombre,"idEmpleado":oEmpleado.id,"perfil":oEmpleado.perfil}), content_type="application/json")
+            except Exception as e:
+                return HttpResponse(json.dumps({'exito':0}), content_type="application/json")
             
 
         #except Exception as e:
         #    return HttpResponse(json.dumps({'exito':0}), content_type="application/json")
-            
+
+

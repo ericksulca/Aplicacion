@@ -8,6 +8,7 @@ from ferreteria import settings
 from django.contrib.auth.decorators import login_required
 # Create your views here.
 from app.models import *
+from app.views import *
 from django.views.decorators.csrf import csrf_exempt
 import json
 
@@ -24,6 +25,10 @@ def Login(request):
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(username=username, password=password)
+<<<<<<< HEAD
+=======
+        print (user)
+>>>>>>> 3b62b76c741e4e54513c1ff5261d721910778a2f
         if user is not None:
             if user.is_active:
                 login(request, user)
@@ -45,6 +50,24 @@ def Home(request):
 
 def Prueba(request):
     oCaja = Caja.objects.filter(estado=1)
-    print oCaja
+    print (oCaja)
     return HttpResponse(json.dumps({'exito':1}), content_type="application/json")
+
+
+def BucarUsuario(idUsuario):
+    oUsuario = Empleado.objects.filter(id = idUsuario)
+    if oUsuario.count():
+        resultado = True
+    else:
+        resultado = False
+    return resultado
+
+def BucarUsuario(id):
+    oUsuario = Empleado.objects.filter(id = id)
+    if oUsuario.count():
+        resultado = True
+    else:
+        resultado = False
+    return resultado
+
 
