@@ -97,6 +97,5 @@ urlpatterns = [
     url(r'^producto/presentacion/cantidad/$', CantidadPresentacionesProducto),
 
     url(r'^error/registrar/$', registrarError),
-    
     #####################################################
 ]
