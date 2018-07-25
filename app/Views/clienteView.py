@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, HttpResponseRedirect
 from ferreteria import settings
 from django.contrib.auth.decorators import login_required
-# Create your views here.
+# Create vistas aqui.
 from app.models import *
 from django.views.decorators.csrf import csrf_exempt
 import json
