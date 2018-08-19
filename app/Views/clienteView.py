@@ -13,6 +13,11 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from app.fomularios.clienteForm import *
 
+
+##paginacion
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.shortcuts import render
+
 ###########################################################
 #   Usuario: Erick Sulca, Ulises Bejar
 #   Fecha: 05/06/18
@@ -116,8 +121,18 @@ def nuevoCliente(request):
 def listarCliente(request):
     if request.method == 'GET':
         oClientes = Cliente.objects.filter(estado=True)
+        paginator = Paginator(oClientes,2)
+
+        page = request.GET.get('page')
         try:
-            return render(request, 'cliente/listar.html',{'oClientes':oClientes})
+            client = paginator.page(page)
+        except PageNotAnInteger:
+            client = paginator.page(1)
+        except EmptyPage    :
+            client = paginator.page(paginator.num_pages)
+
+        try:
+            return render(request, 'cliente/listar.html',{'oClientes':client})
         except Exception as e:
                 return render(request, 'cliente/error.html')
     else:
