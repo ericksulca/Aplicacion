@@ -1,0 +1,42 @@
+<!--
+
+{% extends "base.html" %}
+
+{% block imports %}
+
+
+{% endblock %}
+
+{% block title %}
+Registrar Nuevo Producto
+{% endblock %}
+
+{% block content %}
+	<div class="row">
+        <div class="col-sm-12">
+            <div class="white-box">
+                <h3 class="box-title">Formulario de nuevo Producto</h3>
+                <form action="." method="post" enctype="multipart/form-data">
+						{% csrf_token %}
+				
+				<ul>
+   
+				{% load widget_tweaks %}
+				{% csrf_token %}
+					<div class="form-group">
+				    {% for field in form %}
+							{{ field.errors }}
+							{{ field.label_tag }}</br>
+							{{ field|add_class:"form-control" }}
+				    {% endfor %}
+
+			   		<br>
+					<button class="btn btn-success" data-toggle="modal" data-target="">Actualizar</button>
+				</ul>
+				</form>
+	    	</div>
+	    </div>
+    </div>
+{% endblock %}
+
+	-->

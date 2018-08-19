@@ -8,20 +8,29 @@ from ferreteria import settings
 from django.contrib.auth.decorators import login_required
 # Create your views here.
 from app.models import *
+from app.views import *
 from django.views.decorators.csrf import csrf_exempt
 import json
+
+###########################################################
+#   Usuario: Erick Sulca, Ulises Bejar
+#   Fecha: 05/06/18
+#   Última modificación:
+#   Descripción: 
+#   servicio de busqueda de usuario para la app movil
+###########################################################
 
 @csrf_exempt
 def rutaUsuario(request):
     if request.method == 'POST':
         Datos = json.loads(request.body)
         print (Datos)
-        usuario=True:
+        usuario=True
        # usuario= BuscarUsuario(Datos["idUsuario"])
         
         if usuario==True:
-        #try:
             idEmpleado = Datos["idEmpleado"]
+            #try:
             oEmpleado = Empleado.objects.get(id=idEmpleado)
             oVisitas = Visita.objects.filter(estado = True, empleado = oEmpleado, nivel=oEmpleado.perfil)
             jsonfinal = {}

@@ -1,6 +1,37 @@
 {% extends "base.html" %}
 {% block imports %}
 Información de Cliente
+
+	<script >
+
+			var marker;  //variable de marcador
+
+
+			var a= parseFloat('{{oCliente.latitud}}');
+			var b= parseFloat('{{oCliente.longitud}}');
+
+
+			$( document ).ready(function() {
+				console.log( "ready!" );
+		});
+
+	function initMap() {
+			//const var1= -13.1680054;
+			//const var2= -74.221639;
+			var uluru = {lat: a, lng: b};
+
+			var map = new google.maps.Map(document.getElementById('map'), {
+				zoom: 10,
+				center: uluru
+			});
+			var marker = new google.maps.Marker({
+				position: uluru,
+				map: map
+			});
+		}
+
+
+	</script>
 {% endblock %}
 
 {% block title %}
@@ -13,7 +44,7 @@ Información de Cliente
             <div class="white-box">
                 <h3 class="box-title">Datos de cliente</h3>
 			<div>
-				<table id="tCamiones"  class="table">	
+				<table id="tCamiones"  class="table">
 					<tr>
 						<td>Nombre: </td>
 						<td>{{ oCliente.nombre }}</td>
@@ -34,5 +65,10 @@ Información de Cliente
 			</div>
 
 	    </div>
-    </div>  
+				<label for="id_latitud">My Google Maps Demo</label><br>
+								<div id="map" style="position: relative;overflow: hidden;height: 300px;">
+									<script async defer
+									src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA94LBsliF6TX_7XT76lfJAopVP_h2RkkU&callback=initMap">
+									</script>
+    </div>
 {% endblock %}

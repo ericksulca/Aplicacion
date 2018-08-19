@@ -1,4 +1,7 @@
 <!DOCTYPE html>
+
+<!-- Se ha modificado las direcciones de url, de producto y venta -->
+
 <html lang="es">
 
 <head>
@@ -27,11 +30,23 @@
     <link href="/static/css/style.css" rel="stylesheet">
     <!-- color CSS -->
     <link href="/static/css/colors/blue-dark.css" id="theme" rel="stylesheet">
-     
+
     <script type="text/javascript" src="/static/js/movil.js"></script>
-    <link rel="stylesheet" href="/static/js/Scripts/css/jquery-ui-1.7.2.custom.css">        
+    <link rel="stylesheet" href="/static/js/Scripts/css/jquery-ui-1.7.2.custom.css">
         <script src="/static/js/Scripts/jquery-1.9.1.js" type="text/javascript"></script>
         <script src="/static/js/Scripts/jquery-ui-1.10.1.js" type="text/javascript"></script>
+        <script>
+          $(function () {
+              $('#fechaHoy').datepicker({
+                  dateFormat: 'dd-mm-yy'
+              });
+              $("#fechaHoy").datepicker().datepicker("setDate", new Date());
+              $('#fechaHoy2').datepicker({
+                  dateFormat: 'dd-mm-yy'
+              });
+              $("#fechaHoy2").datepicker().datepicker("setDate", new Date());
+          });
+      </script>
     {% block imports %}
     {% endblock %}
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -54,9 +69,15 @@
                 <div class="top-left-part"><a class="logo" href="index.html"><b><img src="/static/plugins/images/pixeladmin-logo.png" alt="home" /></b><span class="hidden-xs"><img src="/static/plugins/images/pixeladmin-text.png" alt="home" /></span></a></div>
                 <ul class="nav navbar-top-links navbar-left m-l-20 hidden-xs">
                     <li>
-                        <form role="search" class="app-search hidden-xs">
-                            <input type="text" placeholder="Search..." class="form-control"> <a href=""><i class="fa fa-search"></i></a>
-                        </form>
+                      <form action="{% url 'filtra_ventas' %}" method="post" class="app-search hidden-xs">
+                        {% csrf_token %}
+                          <label for="">Filtrar por Cliente y Fecha:</label>
+                          <input type="text" placeholder="Producto..." name="producto_b">
+                          <input type="text" placeholder="DNI Cliente..." name="buscando">
+                          <input type="text" class="datepicker" id="fechaHoy" name="desde">
+                          <input type="text" class="datepicker" id="fechaHoy2" name="hasta">
+                          <input class="btn btn-primary" type="submit" value="Buscar">
+                      </form>
                     </li>
                 </ul>
                 <ul class="nav navbar-top-links navbar-right pull-right">
@@ -95,9 +116,9 @@
                     <li>
                         <a href="blank.html" class="waves-effect"><i class="fa fa-columns fa-fw" aria-hidden="true"></i><span class="hide-menu">Ventas</span></a>
                         <ul>
-                            <li><a href="#">Nueva Venta</a></li>
-                            <li><a href="#">Listar Ventas</a></li>
-                            <li><a href="#">Anulación de Venta</a></li>
+                          <li><a href="/venta/nuevo/">Nueva Venta</a></li>
+                          <li><a href="/venta/listar/">Listar Ventas</a></li>
+                          <li><a href="/venta/anulacion/">Anulación de Venta</a></li>
                         </ul>
                     </li>
                      <li>
@@ -112,16 +133,16 @@
                     <li>
                         <a href="map-google.html" class="waves-effect"><i class="fa fa-globe fa-fw" aria-hidden="true"></i><span class="hide-menu">Rutas</span></a>
                          <ul>
-                            <li><a href="#">Nuevo</a></li>
-                            <li><a href="#">Listar</a></li>
-                        </ul>
+                           <li><a href="/Ruta/nuevo/">Nuevo</a></li>
+                           <li><a href="/Ruta/listar/">Listar</a></li>
+                         </ul>
                     </li>
                     <li>
                         <a href="#" class="waves-effect"><i class="fa fa-info-circle fa-fw" aria-hidden="true"></i><span class="hide-menu">Información y Reportes</span></a>
                         <ul>
-                            <li><a href="#">Reporte de Almacén</a></li>
-                            <li><a href="#">Reporte de Caja</a></li>
-                            <li><a href="#">Reporte de Ventas</a></li>
+                          <li><a href="/Reporte/almacen/">Reporte de Almacén</a></li>
+                          <li><a href="/Reporte/caja/">Reporte de Caja</a></li>
+                          <li><a href="/Reporte/ventas/">Reporte de Ventas</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -148,16 +169,16 @@
                     </div>
                     <!-- /.col-lg-12 -->
                 </div>
-                 
-                    
-                     
+
+
+
                 </div>
                 <!-- /.row -->
-       
+
                 <!--row -->
                 {% block content %}
                 {% endblock %}
-                
+
                 <!-- /.row -->
             </div>
             <!-- /.container-fluid -->
@@ -166,7 +187,7 @@
         <!-- /#page-wrapper -->
     </div>
     <!-- /#wrapper -->
-    <!-- jQuery 
+    <!-- jQuery
     <script src="/static/plugins/bower_components/jquery/dist/jquery.min.js"></script>
     <!-- Bootstrap Core JavaScript -->
     <script src="/static/bootstrap/dist/js/bootstrap.min.js"></script>

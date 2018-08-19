@@ -8,20 +8,28 @@ from ferreteria import settings
 from django.contrib.auth.decorators import login_required
 # Create your views here.
 from app.models import *
+from app.views import *
 from django.views.decorators.csrf import csrf_exempt
 import json
 from app.fomularios.cierrecajaForm import *
+from app.fomularios.pedidoForm import *
+###########################################################
+#   Usuario: Erick Sulca, Ulises Bejar
+#   Fecha: 05/06/18
+#   Última modificación:
+#   Descripción:
+#   servicio de busqueda de usuario para la app movil
+###########################################################
 
 def registrarPedido(request):
     if request.method == 'POST':
         return render(request, 'caja/cierre.html')
     else:
-        return render(request, 'venta/nuevo.html', {})
+        return render(request, 'pedido/nuevo.html', {})
         #return render(request, 'venta/prueba.html', {})
         #
 def ListarPedidos(request):
     if request.method == 'POST':
-
         return render(request, 'pedido/listar.html')
     else:
         oPedidos = Pedido.objects.filter(estado = True)
@@ -42,14 +50,14 @@ def ResumenPedidos(request):
                 oProducto["nombrePresentacion"] = oPedidoproductospresentacion.productopresentacions.presentacion.nombre
                 oProducto["cantidad"] = oPedidoproductospresentacion.cantidad
                 oProductos.append(oProducto)
-        
+
         return render(request, 'pedido/resumen.html', {"oProductos": oProductos})
 
 @csrf_exempt
 def DetallePedidoMovil(request):
     if request.method == 'POST':
         Datos = json.loads(request.body)
-        usuario=True:
+        usuario=True
         # usuario= BuscarUsuario(Datos["idUsuario"])
         if usuario==True:
             idPedido = Datos["idPedido"]
@@ -57,38 +65,38 @@ def DetallePedidoMovil(request):
             jsonPedidos = {}
             jsonPedidos["productos"] = []
             oPedidoproductospresentacions = Pedidoproductospresentacions.objects.filter(pedido = oPedido)
-           for oPedidoproductospresentacion in oPedidoproductospresentacions:
-             oProducto = {}
-             oProducto["nombreProducto"] = oPedidoproductospresentacion.productopresentacions.producto.nombre
-             oProducto["nombrePresentacion"] = oPedidoproductospresentacion.productopresentacions.presentacion.nombre
-             oProducto["cantidad"] = oPedidoproductospresentacion.cantidad
-             jsonPedidos["productos"].append(oProducto)
+            for oPedidoproductospresentacion in oPedidoproductospresentacions:
+                oProducto = {}
+                oProducto["nombreProducto"] = oPedidoproductospresentacion.productopresentacions.producto.nombre
+                oProducto["nombrePresentacion"] = oPedidoproductospresentacion.productopresentacions.presentacion.nombre
+                oProducto["cantidad"] = oPedidoproductospresentacion.cantidad
+                jsonPedidos["productos"].append(oProducto)
             return HttpResponse(json.dumps(jsonPedidos), content_type="application/json")
 
 def DetallePedido(request,pedido_id):
     if request.method == 'GET':
-            idPedido = int(pedido_id)
-            oPedido = Pedido.objects.get(id = idPedido)
-            oPedidoproductospresentacions = Pedidoproductospresentacions.objects.filter(pedido = oPedido)
-             oProductos = []
-            for oPedidoproductospresentacion in oPedidoproductospresentacions:
-              oProducto = {}
-              oProducto["nombreProducto"] = oPedidoproductospresentacion.productopresentacions.producto.nombre
-              oProducto["nombrePresentacion"] = oPedidoproductospresentacion.productopresentacions.presentacion.nombre
-              oProducto["cantidad"] = oPedidoproductospresentacion.cantidad
-              oProductos.append(oProducto)
-        
-            return render(request, 'pedido/detalle.html', {"oCliente": oPedido.cliente, "oProductos": oProductos})
-        else:
-            oPedidos = Pedido.objects.filter(estado = True)
-            return render(request, 'pedido/listar.html',{"oPedidos": oPedidos})
+        idPedido = int(pedido_id)
+        oPedido = Pedido.objects.get(id = idPedido)
+        oPedidoproductospresentacions = Pedidoproductospresentacions.objects.filter(pedido = oPedido)
+        oProductos = []
+        for oPedidoproductospresentacion in oPedidoproductospresentacions:
+            oProducto = {}
+            oProducto["nombreProducto"] = oPedidoproductospresentacion.productopresentacions.producto.nombre
+            oProducto["nombrePresentacion"] = oPedidoproductospresentacion.productopresentacions.presentacion.nombre
+            oProducto["cantidad"] = oPedidoproductospresentacion.cantidad
+            oProductos.append(oProducto)
+
+        return render(request, 'pedido/detalle.html', {"oCliente": oPedido.cliente, "oProductos": oProductos})
+    else:
+        oPedidos = Pedido.objects.filter(estado = True)
+        return render(request, 'pedido/listar.html',{"oPedidos": oPedidos})
 
 @csrf_exempt
 def InstarPedido(request):
     if request.method=='POST':
         Datos = json.loads(request.body)
+        usuario=True
         # usuario= BuscarUsuario(Datos["idUsuario"])
-        usuario=True:
         if usuario==True:
             idEmpleado = Datos["idEmpleado"]
             oEmpleado = Empleado.objects.get(id= idEmpleado)
@@ -96,7 +104,7 @@ def InstarPedido(request):
             oCliente = Cliente.objects.get(id= idCliente)
 
             oPedido = Pedido()
-             oPedido.empleado = oEmpleado
+            oPedido.empleado = oEmpleado
             oPedido.cliente = oCliente
             oPedido.save()
             oPedidoProductos = Datos["oPedidoProductos"]
@@ -115,7 +123,7 @@ def InstarPedido(request):
 def ListarPedido(request):
     if request.method == 'POST':
         Datos = json.loads(request.body)
-        usuario=True:
+        usuario=True
         # usuario= BuscarUsuario(Datos["idUsuario"])
         if usuario==True:
             fecha = Datos["fecha"]
@@ -124,7 +132,7 @@ def ListarPedido(request):
             jsonPedidos["pedidos"] = []
             TotalPedidos = 0
 
-        #oPedidos = Pedido.objects.filter(estado = True,fecha = fecha, empleado = idEmpleado)
+            #oPedidos = Pedido.objects.filter(estado = True,fecha = fecha, empleado = idEmpleado)
             oPedidos = Pedido.objects.filter(estado = True, empleado = idEmpleado)
             for oPedido in oPedidos:
                 jsonPedido = {}
@@ -150,3 +158,28 @@ def ListarPedido(request):
                 jsonPedidos["pedidos"].append(jsonPedido)
             jsonPedidos["TotalPedidos"] = TotalPedidos
             return HttpResponse(json.dumps(jsonPedidos), content_type="application/json")
+
+
+def editarPedido(request,pedido_id):
+    oPedido = Pedido.objects.get(id = pedido_id)
+    if request.method == 'POST':
+        Datos = request.POST
+        form = PedidoForm(request.POST, instance=oPedido)
+        if form.is_valid():
+            form = form.save()
+            return redirect('/Pedido/listar/')
+
+        else:
+            return render(request, '/Pedido/error.html')
+    else:
+        form = PedidoForm(request.POST or None, instance=oPedido)
+        print(form)
+        return render(request, 'Pedido/editar.html', {'form': form})
+
+
+def eliminarPedido(request, pedido_id):
+     oPedido = Pedido.objects.get(id = pedido_id)
+     if  request.method == 'POST':
+        oPedido.delete()
+        return redirect('/Pedido/listar/')
+     return render(request, 'Pedido/eliminar.html', {'oPedido': oPedido})

@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+{% block imports %}
+<script type="text/javascript" src="/static/js/crearPedido.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $( "#inpt-producto" ).focus();
+        $('cantidad').prop('disabled', true);
+        $( "#inpt-producto" ).autocomplete({
+            source: function (request, response) {
+
+                var datos = {nombreProducto: $("#inpt-producto").val()};
+                var sendData = JSON.stringify(datos); 
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: "/producto/buscar/",
+                    data: sendData,
+                    contentType: "application/json; charset=utf-8",
+                    async: false,
+                    cache: false,
+                    CrossDomain: true,
+
+                    success: function (result) {
+                    var ListasProductos = result['productos'];
+                    response($.map(ListasProductos, function (item) {
+                        return {
+                            label: item.nombre,
+                            idproducto: item.nombre,
+                            precio: item.precio,
+                            codigo: item.codigo,
+                            Id: item.id
+                            };
+                        }));
+                    }
+                });
+            },
+            minLength: 2,
+            select: function (event, ui) {
+                $.data(document.body, 'idproducto', ui.item.Id);//guardar el id en memoria el $.data guarda en memoria
+                $( "#precio" ).val( ui.item.precio);
+                $( "#codigo" ).val( ui.item.codigo);
+
+                $( "#cantidad" ).focus();
+                $( "#cantidad" ).focus();
+                var iDPro = ui.item.Id;
+                //agregar();
+            }
+
+
+        });
+  });
+
+</script>
+
+ <style>
+    ul.ui-autocomplete {
+        z-index: 1100;
+    }
+    #content{
+        position: absolute;
+        min-height: 50%;
+        width: 80%;
+        top: 20%;
+        left: 5%;
+    }
+
+    .selected{
+        cursor: pointer;
+    }
+    .selected:hover{
+        background-color: #0585C0;
+        color: white;
+    }
+    .seleccionada{
+        background-color: #0585C0;
+        color: white;
+    }
+</style>
+{% endblock %}
+
+
+{% block title %}
+Nueva Venta
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="white-box">
+                <h3 class="box-title">Nuevo Pedido</h3>
+
+                <label for="id_cliente">Cliente:</label>
+                <br>
+                <input type="text" name="cliente" id="cliente" required="" class="form-control" maxlength="45">
+                <br>
+                <label for="id_nombre">Producto:</label>
+                <br>
+                <input type="text" name="inpt-producto" id="inpt-producto" required="" class="form-control" maxlength="45">
+                <br>
+                <label for="id_nombre">Código:</label>
+                <br>
+                <input type="text" name="codigo" id="codigo" required="" class="form-control" disabled="disabled">
+                <br>
+                <!-- <label for="id_nombre">Precio:</label> 
+                <br>
+                <input type="number" name="precio" id="precio" required="" class="form-control">
+                <br>-->
+                <label for="id_nombre">Cantidad:</label>
+                <br>
+                <input type="number" name="cantidad" id="cantidad" required="" class="form-control" >
+                <br>
+                <button id="bt_add" class="btn btn-success">Agregar</button>
+                <button id="bt_del" class="btn btn-warning">Eliminar</button>
+                <button id="bt_delall" class="btn btn-danger">Eliminar todo</button>
+            
+                    <div class="row">
+                        <div class="form-group">
+                            <label ><center>Concepto Operación</center></label>
+                            <table id="tabla" class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <td>Nº</td>
+                                    <td>Cantidad</td>
+                                    <td>Cod. Producto</td>
+                                    <td>Nombre</td>
+                                    <td>Precio Unit.</td>
+                                    <td>Total</td>
+                                </tr>
+                            </thead>
+                            </table>
+
+                            <br>
+                        </div>
+                            TOTAL: S/. <label for="id_Total" id="id_Total" name="id_Total"></label>
+                            <br>
+                            <br>
+
+                        <button id="bt_GenerarVenta" class="btn btn-success">Generar Venta</button>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-sm-8 col-md-8 col-lg-6">
+                                <div id="tabs" style="display:none;">
+                                    <table id="listaProducto"></table>
+                                    <div id="pagerlistaProducto"  style="text-align: center;"></div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-2 col-md-2 col-lg-4">
+
+                            </div>
+                        </div>
+                    </div>
+                       
+                    
+    </div>  
+{% endblock %}

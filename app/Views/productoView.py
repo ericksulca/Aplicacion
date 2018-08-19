@@ -8,9 +8,20 @@ from ferreteria import settings
 from django.contrib.auth.decorators import login_required
 # Create your views here.
 from app.models import *
+from app.views import *
+from ferreteria.urls import *
 from django.views.decorators.csrf import csrf_exempt
 import json
 from app.fomularios.productoForm import *
+
+###########################################################
+#   Usuario: Erick Sulca, Ulises Bejar
+#   Fecha: 05/06/18
+#   Última modificación:
+#   Descripción:
+#   servicio de busqueda de usuario para la app movil,
+#   y en buscaar producto retorno de imagen.
+###########################################################
 
 def ListarProductos(request):
     if request.method == 'POST':
@@ -56,23 +67,26 @@ def BuscarProducto (request):
     if request.method == 'POST':
         Datos = json.loads(request.body)
         #print Datos
-        usuario=True:
-        # usuario= BuscarUsuario(Datos["idUsuario"])
-        
+        usuario=True
+        #usuario= BuscarUsuario(Datos["idUsuario"])
+
         if usuario==True:
-             nombreProducto = Datos["nombreProducto"]
-             oProuctos = Producto.objects.filter(nombre__icontains=nombreProducto,estado = True)
-             jsonProductos = {}
-             jsonProductos["productos"] = []
-            for oProucto in oProuctos:
+            nombreProducto = Datos["nombreProducto"]
+            oProductos = Producto.objects.filter(nombre__icontains=nombreProducto,estado = True)
+            jsonProductos = {}
+            jsonProductos["productos"] = []
+            for oProducto in oProductos:
                 jsonProducto = {}
-                jsonProducto["id"] = oProucto.id
-                jsonProducto["nombre"] = oProucto.nombre
-                jsonProducto["codigo"] = oProucto.codigo
-                if oProucto.imagen.url == "":
+                jsonProducto["id"] = oProducto.id
+                jsonProducto["nombre"] = oProducto.nombre
+                jsonProducto["codigo"] = oProducto.codigo
+                print ("------------------")
+                print (oProducto.imagen)
+                print ("------------------")
+                if oProducto.imagen=="":
                     jsonProducto["imagen"] = "/imagen/default.jpg"
                 else:
-                    jsonProducto["imagen"] = oProucto.imagen.url
+                    jsonProducto["imagen"] = oProducto.imagen.url
                 jsonProductos["productos"].append(jsonProducto)
 
             return HttpResponse(json.dumps(jsonProductos), content_type="application/json")
@@ -103,7 +117,7 @@ def ListarPresentacionesProducto (request):
     if request.method == 'POST':
         Datos = json.loads(request.body)
         #print Datos
-        Usuario=True:
+        usuario=True
         # usuario= BuscarUsuario(Datos["idUsuario"])
         if usuario==True:
             idProducto = Datos["idProducto"]
@@ -147,3 +161,26 @@ def CantidadPresentacionesProducto (request):
             oProductopresentacions = Productopresentacions.objects.get(producto = oProucto , presentacion = idPresentacion)
             jsonProducto["cantidad"] = (oProucto.cantidad)*(oProductopresentacions.valor)
             return HttpResponse(json.dumps(jsonProducto), content_type="application/json")
+
+
+def detalleProducto(request,producto_id):
+    oProducto = Producto.objects.get(id=producto_id,estado=True)
+    oPresentaciones = Presentacion.objects.filter(estado=True)
+    return render(request, 'producto/detalle.html', {'oProducto':oProducto})
+
+
+def editarProducto(request,producto_id):
+    oProducto = Producto.objects.get(id = producto_id)
+    if request.method == 'POST':
+        Datos = request.POST
+        form = ProductoForm(request.POST or None, instance=oProducto)
+        if form.is_valid():
+            form = form.save()
+            return redirect('/Producto/listar/')
+
+       # else:
+        #    return render(request, '/Cliente/error.html')
+    else:
+        form = ProductoForm(request.POST or None, instance=oProducto)
+        print(form)
+        return render(request, 'producto/editar.html', {'form': form})

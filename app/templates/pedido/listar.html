@@ -15,7 +15,7 @@ Clientes
 				{% load widget_tweaks %}
 				{% csrf_token %}
 					<div class="form-group">
-					<table id="tCamiones"  class="table">	
+					<table id="tCamiones"  class="table">
 						<thead>
 	                        <tr>
 	                            <th>#</th>
@@ -31,7 +31,9 @@ Clientes
 				    	<td>{{oPedido.fecha}}</td>
 				    	<td>{{oPedido.cliente.nombre}}</td>
 				    	<td>{{oPedido.cliente.direccion}}</td>
-				    	<td>
+							<td>{{oPedido.empleado.nombre}}</td>
+				    	<td>{{oPedido.producto.nombre}}</td>
+							<td>
 
 				    	 /*  se cambio el nombre **\
 				    		<a href="/Pedido/detalle/{{oPedido.id}}/"><button type="button" class="btn btn-info">Ver</button> </a>
@@ -43,13 +45,13 @@ Clientes
 				    {% endfor %}
 
 					</table>
-				    <br>	
+				    <br>
 	    			<a href="/Pedido/nuevo/"><button type="button" class="btn btn-success">Nuevo Pedido</button> </a>
-				    <br>	
-				    <br>	
+				    <br>
+				    <br>
 	    			<a href="/Pedido/resumen/"><button type="button" class="btn btn-primary btn-lg">Resumen de Pedidos</button> </a>
- 
+
 			</div>
 	    </div>
-    </div>  
+    </div>
 {% endblock %}

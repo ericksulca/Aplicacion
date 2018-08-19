@@ -8,6 +8,7 @@ from ferreteria import settings
 from django.contrib.auth.decorators import login_required
 # Create your views here.
 from app.models import *
+from app.views import *
 from django.views.decorators.csrf import csrf_exempt
 import json
 from app.fomularios.aperturacajaForm import *
@@ -24,17 +25,17 @@ def registrarError(request):
         if request.method == 'POST':
         	try:
 	        	Datos = json.loads(request.body)
-	        	usuario=True:
+	        	usuario=True
        			# usuario= BuscarUsuario(Datos["idUsuario"])
         
         		if usuario==True:
-		        	oError = Error()
-		        	oError.descripcion = Datos["descripcion"]
-		        	oError.actividad = Datos["actividad"]
-		        	oError.save()
-		        	return HttpResponse(json.dumps({'exito':1}), content_type="application/json")
+			        oError = Error()
+			        oError.descripcion = Datos["descripcion"]
+			        oError.actividad = Datos["actividad"]
+			        oError.save()
+			        return HttpResponse(json.dumps({'exito':1}), content_type="application/json")
         	except Exception as e:
-        		print e
+        		print (e)
 	        	return HttpResponse(json.dumps({'exito':0}), content_type="application/json")
         else:
 	        return HttpResponse(json.dumps({'exito':0}), content_type="application/json")

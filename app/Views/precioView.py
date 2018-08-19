@@ -13,6 +13,7 @@ import json
 from app.fomularios.productoForm import *
 import xlrd
 
+
 def getPrecios(request):
     if request.method == 'GET':
         try:            
@@ -29,17 +30,15 @@ def getPrecios(request):
             return HttpResponse(json.dumps({'exito':0}), content_type="application/json")
 
 def IngresarPrecios(request):
-
-           idPedido = int(pedido_id)
-    	   book = xlrd.open_workbook("/home/mouse/ferreteria/ferreteria/media/Libro.xls")
-    	   sheet = book.sheet_by_name("Hoja1")
-    	   for r in range(1, sheet.nrows):
-    		a = sheet.cell(r,1).value
-    		b = sheet.cell(r,2).value
-    		c = sheet.cell(r,3).value
-    		print(a)
-    		oPrecio = Precio()
-    		oPrecio.nombre = a
-    		#oPrecio.save()
-    		print(b)
+	book = xlrd.open_workbook("/home/mouse/ferreteria/ferreteria/media/Libro.xls")
+	sheet = book.sheet_by_name("Hoja1")
+	for r in range(1, sheet.nrows):
+		a = sheet.cell(r,1).value
+		b = sheet.cell(r,2).value
+		c = sheet.cell(r,3).value
+		print(a)
+		oPrecio = Precio()
+		oPrecio.nombre = a
+		#oPrecio.save()
+		print(b)
 	return HttpResponse(json.dumps({'exito':0}), content_type="application/json")

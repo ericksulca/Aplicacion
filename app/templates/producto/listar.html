@@ -1,6 +1,20 @@
 {% extends "base.html" %}
 {% block imports %}
 Clientes
+
+<script type="text/javascript">
+
+//evento click para boton editar
+
+$(document).on('Click', '.btn-editar', function(e){
+
+ e.preventDefault();
+	var row=$(this).paren().parent()[0];
+	console.log(row);
+});
+
+
+</script>
 {% endblock %}
 
 {% block title %}
@@ -15,7 +29,7 @@ Clientes
 				{% load widget_tweaks %}
 				{% csrf_token %}
 					<div class="form-group">
-					<table id="tCamiones"  class="table">	
+					<table id="tCamiones"  class="table">
 						<thead>
 	                        <tr>
 	                            <th>#</th>
@@ -43,10 +57,10 @@ Clientes
 				    {% endfor %}
 
 					</table>
-				    <br>	
+				    <br>
 	    			<a href="/Producto/nuevo/"><button type="button" class="btn btn-success">Nuevo Producto</button> </a>
- 
+
 			</div>
 	    </div>
-    </div>  
+    </div>
 {% endblock %}

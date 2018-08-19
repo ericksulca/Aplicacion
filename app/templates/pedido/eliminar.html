@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block imports %}
+{% endblock %}
+
+
+{% block content %}
+	<div class="row">
+        <div class="col-sm-12">
+            <div class="white-box">
+                <h3 class="box-title">Desea eliminar el pedido de {{oPedido.cliente.nombre}}</h3>
+                <form action="." method="post" enctype="multipart/form-data">
+						{% csrf_token %}
+				
+				<ul>
+					<button class="btn btn-danger" type="sumit">Si, eliminar</button>
+					<a href="{% url 'Pedido/listar' %}">Cancelar</a>
+				</ul>
+				</form>
+	    	</div>
+	    </div>
+    </div>
+{% endblock %}

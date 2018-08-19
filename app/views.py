@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+#from __future__ import unicode_literals
 
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
@@ -12,23 +12,21 @@ from app.views import *
 from django.views.decorators.csrf import csrf_exempt
 import json
 
+###########################################################
+#   Usuario: Erick Sulca, Ulises Bejar
+#   Fecha: 05/06/18
+#   Última modificación:
+#   Descripción: funcion buscarUsuario para el servcio app
+###########################################################
 
-###########################################################
-#   Usuario: Erick Sulca, ulises bejar
-#   Fecha: 31/08/18
-#   Última modificación: 31/08/18
-#   Descripción: autentica al usuario
-###########################################################
 def Login(request):
-    next = request.GET.get('next', '/Home/')
+    next = request.GET.get('next', '/home/')
     if request.method == "POST":
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(username=username, password=password)
-<<<<<<< HEAD
-=======
         print (user)
->>>>>>> 3b62b76c741e4e54513c1ff5261d721910778a2f
+
         if user is not None:
             if user.is_active:
                 login(request, user)
@@ -69,5 +67,3 @@ def BucarUsuario(id):
     else:
         resultado = False
     return resultado
-
-
