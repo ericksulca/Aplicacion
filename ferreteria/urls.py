@@ -83,7 +83,7 @@ urlpatterns = [
 
     ################## Pedidos #######################
 
-    url(r'^Pedido/nuevo/$', IngresarPrecios),
+    url(r'^Pedido/nuevo/$', registrarPedido),
     url(r'^Pedido/listar/$', ListarPedidos),
     url(r'^Pedido/resumen/$', ResumenPedidos),
     url(r'^Pedido/detalle/(?P<pedido_id>\d+)/$', DetallePedido),
