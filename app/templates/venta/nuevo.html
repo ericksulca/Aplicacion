@@ -2,71 +2,79 @@
 {% block imports %}
 <script type="text/javascript" src="/static/js/crearPedido.js"></script>
 <script type="text/javascript">
-    $(document).ready(function(){
-  
-        $( "#nombreProducto" ).autocomplete({        
-            source: function (request, response) {
+$(document).ready(function(){
+    $( "#inpt-producto" ).focus();
+    $('cantidad').prop('disabled', true);
+    $( "#inpt-producto" ).autocomplete({
+        source: function (request, response) {
 
-                var datos = {nombreProducto: $("#nombreProducto").val()};
-                var sendData = JSON.stringify(datos); 
-                $.ajax({
-                    type: "POST",
-                    dataType: "json",
-                    url: "/producto/buscar/",                  
-                    data: sendData,                    
-                    contentType: "application/json; charset=utf-8",
-                    async: false,
-                    cache: false,                    
-                    CrossDomain: true,
+            var datos = {nombreProducto: $("#inpt-producto").val()};
+            var sendData = JSON.stringify(datos);
+            $.ajax({
+                type: "POST",
+                dataType: "json",
+                url: "/producto/buscar/",
+                data: sendData,
+                contentType: "application/json; charset=utf-8",
+                async: false,
+                cache: false,
+                CrossDomain: true,
 
-                    success: function (result) {      
-                    var ListasProductos = result['productos'];
-                    response($.map(ListasProductos, function (item) {
-                        return {
-                            label: item.nombre,
-                            idproducto: item.nombre,
-                            Id: item.id
-                            };
-                        }));
-                    }
-                });
-            },
-            minLength: 2,
-            select: function (event, ui) {
-                $.data(document.body, 'idproducto', ui.item.Id);//guardar el id en memoria el $.data guarda en memoria
-                var iDPro = ui.item.Id;
-                BuscarPresentacion(ui.item.Id);
-                //alert(idproducto);
-                //alert("hola"+ui.item.Id);
-                
-            }
-        });
-  });
+                success: function (result) {
+                var ListasProductos = result['productos'];
+                response($.map(ListasProductos, function (item) {
+                    return {
+                        label: item.nombre,
+                        idproducto: item.nombre,
+                        precio: item.precio,
+                        codigo: item.codigo,
+                        Id: item.id
+                        };
+                    }));
+                }
+            });
+        },
+        minLength: 2,
+        select: function (event, ui) {
+            $.data(document.body, 'idproducto', ui.item.Id);//guardar el id en memoria el $.data guarda en memoria
+            $( "#precio" ).val( ui.item.precio);
+            $( "#codigo" ).val( ui.item.codigo);
+
+            $( "#cantidad" ).focus();
+            $( "#cantidad" ).focus();
+            var iDPro = ui.item.Id;
+            //agregar();
+        }
+
+
+    });
+});
+
 </script>
 
- <style>
-    ul.ui-autocomplete {
-        z-index: 1100;
-    }
-    #content{
-        position: absolute;
-        min-height: 50%;
-        width: 80%;
-        top: 20%;
-        left: 5%;
-    }
+<style>
+ul.ui-autocomplete {
+    z-index: 1100;
+}
+#content{
+    position: absolute;
+    min-height: 50%;
+    width: 80%;
+    top: 20%;
+    left: 5%;
+}
 
-    .selected{
-        cursor: pointer;
-    }
-    .selected:hover{
-        background-color: #0585C0;
-        color: white;
-    }
-    .seleccionada{
-        background-color: #0585C0;
-        color: white;
-    }
+.selected{
+    cursor: pointer;
+}
+.selected:hover{
+    background-color: #0585C0;
+    color: white;
+}
+.seleccionada{
+    background-color: #0585C0;
+    color: white;
+}
 </style>
 {% endblock %}
 
@@ -80,26 +88,50 @@ Nueva Venta
         <div class="col-sm-12">
             <div class="white-box">
                 <h3 class="box-title">Nueva Venta</h3>
-                <button class="btn btn-success" data-toggle="modal" data-target="#agregarProducto">Agregar Producto</button>
-                
+                <label for="id_nombre">Producto:</label>
+                <br>
+                <input type="text" name="inpt-producto" id="inpt-producto" required="" class="form-control" maxlength="45">
+                <br>
+                <label for="id_nombre">Código:</label>
+                <br>
+                <input type="text" name="codigo" id="codigo" required="" class="form-control" disabled="disabled">
+                <br>
+                <!--<label for="id_nombre">Precio:</label>
+                <br>
+                <input type="number" name="precio" id="precio" required="" class="form-control">
+                <br>-->
+                <label for="id_nombre">Cantidad:</label>
+                <br>
+                <input type="number" name="cantidad" id="cantidad" required="" class="form-control" >
+                <br>
                 <button id="bt_add" class="btn btn-default">Agregar</button>
                 <button id="bt_del" class="btn btn-default">Eliminar</button>
                 <button id="bt_delall" class="btn btn-default">Eliminar todo</button>
-                <form class="form form-horizontal"  method="post" enctype="multipart/form-data"> {% csrf_token %}
-                    <div class="row">
+
+                  <div class="row">
                         <div class="form-group">
                             <label ><center>Concepto Operación</center></label>
                             <table id="tabla" class="table table-bordered">
                             <thead>
-                                <tr>
-                                    <td>Nº</td>
-                                    <td>Cod. Producto</td>
-                                    <td>Nombre</td>
-                                    <td>Cantidad</td>
-                                    <td>Precio</td>
-                                </tr>
+                              <tr>
+                                  <td>Nº</td>
+                                  <td>Cantidad</td>
+                                  <td>Cod. Producto</td>
+                                  <td>Nombre</td>
+                                  <td>Precio Unit.</td>
+                                  <td>Total</td>
+                              </tr>
                             </thead>
+                            </table>
+
+                            <br>
                         </div>
+                    </div>
+                      TOTAL: S/. <label for="id_Total" id="id_Total" name="id_Total"></label>
+                      <br>
+                      <br>
+
+                    <button id="bt_GenerarVenta" class="btn btn-success">Generar Pedido</button>
                     </div>
 
                     <div class="row">
@@ -112,63 +144,11 @@ Nueva Venta
                             </div>
 
                             <div class="col-sm-2 col-md-2 col-lg-4">
-                                
+
                             </div>
                         </div>
                     </div>
-                       
-                </form>            
-                    <div class="row">
-                        <div class="form-group">
-                            <div class="col-sm-offset-2 col-sm-10">
-                            <div class="modal fade" id="agregarProducto" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                                Tabla de contenidos
-                              <div class="modal-dialog">
-                                <div class="modal-content">
-                                  <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                    <h4>Agregar Presentacion</h4>
-                                  </div>
-                                  <div class="modal-body">
-                                    Producto:</br>
-                                    <div style="position: relative;" left: 10px; top: 25px; z-index: 1;">
-                                       <input type="text" class="form-control" id="nombreProducto" placeholder="Producto" required>
 
-                                    </div>
 
-                                    Presentación</br>
-                                    {% csrf_token %}
-                                    <select class="form-control" id="cmbPresentacion" required>
-                                        <option value=""> </option>
-                                        {% for presentacion in presentaciones %}
-                                            <option value="{{presentacion.id}}">
-                                            {{presentacion.nombre}}
-                                            </option>
-                                        {% endfor %}
-                                        </select>
-                                    Cantidad diponible <p id="cantDisponibles" class="text-success">asdasd</p>
-                                    </br>
-                                    Canitdad:</br>
-                                    <input type="number" name="cantPresentacion" id="cantPresentacion" required class="form-control">
-                                    {% for precio in precios%}
-                                    Precio - {{ precio.nombre }}</br>
-                                    <input type="number" name="{{precio.id}}Precio" id="{{precio.id}}Precio" required class="form-control">
-                                    {% endfor %}</br>
-                                    <div>
-                                        <div>
-                                            Precio Unitacio : <p for="" id="precioUnitacio" class="text-left text-info">123</p>
-                                        </div>
-                                    </div>
-                                  </div>
-                                  <div class="modal-footer">
-                                    
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-                                    <button type="button" class="btn btn-primary">Guardar</button>
-                                 </div>
-                            </div>
-                            </div>
-                    </div>
-			</div>
-	    </div>
-    </div>  
+    </div>
 {% endblock %}

@@ -1,5 +1,3 @@
-
-
 <!-- Usuario: Erick sulca
 	 fecha: 01/06/18
 	 última modificación: 12/06/18
@@ -112,33 +110,14 @@ Registrar Nuevo Cliente
 
 {% block content %}
 	<div class="row">
-  	<div class="col-sm-12">
-    	<div class="white-box">
-      	<h3 class="box-title">Formulario de nuevo cliente</h3>
-        	<form action="." method="post" enctype="multipart/form-data">
+        <div class="col-sm-12">
+            <div class="white-box">
+                <h3 class="box-title">Formulario de nuevo cliente</h3>
+                <form action="." method="post" enctype="multipart/form-data">
 						{% csrf_token %}
-						<ul>
-								<label for="id_nombre">Nombre:</label><br>
-								<input type="text" name="nombre" id="id_nombre" required="" class="form-control" maxlength="45">
 
-								<label for="id_direccion">Direccion:</label><br>
-								<input type="text" name="direccion" id="id_direccion" required="" class="form-control" maxlength="45">
-								<!--
-								<label for="id_url" >URL Google Maps:</label><br>
-	                            <input type="text" name="longitud" id="id_url" class="form-control" onkeyup="obtenerCoordenadas()"><br>
-								-->
-								<label for="id_longitud">Longitud:</label><br>
-								<input type="text" name="longitud" id="id_longitud" class="form-control" maxlength="50" readonly="readonly">
+				<ul>
 
-								<label for="id_latitud">Latitud:</label><br>
-								<input type="text" name="latitud" id="id_latitud" class="form-control" maxlength="50" readonly="readonly">
-
-								<label for="id_numerodocumento">Numerodocumento:</label><br>
-								<input type="text" name="numerodocumento" id="id_numerodocumento" class="form-control" maxlength="11" >
-
-						</ul>
-						<ul>
-   <!--
 				{% load widget_tweaks %}
 				{% csrf_token %}
 					<div class="form-group">
@@ -147,17 +126,19 @@ Registrar Nuevo Cliente
 							{{ field.label_tag }}</br>
 							{{ field|add_class:"form-control" }}
 				    {% endfor %}
--->
-							<label for="id_latitud">My Google Maps Demo</label><br>
-					    			<div id="map" style="position: relative;overflow: hidden;height: 300px;">
-									    <script async defer
-									    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA94LBsliF6TX_7XT76lfJAopVP_h2RkkU&callback=initMap">
-						    			</script>
 
-					   			 	</div>
-					   		<br>
-							<button type="submit" class="btn btn-success">Agregar Cliente</button>
-						</ul>
+
+
+					<label for="id_latitud">My Google Maps Demo</label><br>
+			    			<div id="map" style="position: relative;overflow: hidden;height: 300px;">
+							    <script async defer
+							    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA94LBsliF6TX_7XT76lfJAopVP_h2RkkU&callback=initMap">
+				    			</script>
+
+			   			 	</div>
+			   		<br>
+					<button type="submit" class="btn btn-success">Actualizar</button>
+				</ul>
 				</form>
 	    	</div>
 	    </div>

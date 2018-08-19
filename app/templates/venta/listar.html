@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block imports %}
+Clientes
+
+ <script type="text/javascript">
+
+//evento click para boton editar
+
+$(document).on('Click', '.btn-editar', function(e){
+
+	e.preventDefault();
+	 var row=$(this).paren().parent()[0];
+	 console.log(row);
+});
+
+
+</script>
+{% endblock %}
+
+{% block title %}
+Clientes
+{% endblock %}
+
+{% block content %}
+	<div class="row">
+        <div class="col-sm-12">
+            <div class="white-box">
+                <h3 class="box-title">Lista de Ventas</h3>
+				{% load widget_tweaks %}
+				{% csrf_token %}
+					<div class="form-group">
+					<table id="tCamiones"  class="table">
+						<thead>
+	                        <tr>
+	                            <th>#id</th>
+	                            <th>Fecha</th>
+	                            <th>Monto</th>
+	                            <th>nPedido</th>
+	                            <th>Cliente</th>
+                              <th>Pedidoid</th>
+                              <th>Producto</th>
+	                        </tr>
+	                    </thead>
+				    {% for oVent in oVenta %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{oVent.fecha}}</td>
+                <td>{{oVent.monto}}</td>
+                <td>{{oVent.nrecibo}}</td>
+                <td>{{oVent.cliente.nombre }}</td>
+                <td>{{oVent.pedido.id }}</td>
+                <td>
+                  {% for oNue in ot %}
+                    {% if oVent.id == oNue.id %}
+                        <table class="table">
+                          <tr>
+                            {{ oNue.producto }}
+                          </tr>
+                        </table>
+
+                    {% endif %}
+                  {% endfor %}
+                </td>
+                <td>
+                  <a href="/Venta/detalle/{{oVent.id}}/"><button type="button" class="btn btn-info">Ver</button> </a>
+                  <a href="/Venta/editar/{{oVent.id}}/"><button type="button" class="btn btn-primary btn-edit">Editar</button></a>
+                  <a href="/Venta/eliminar/{{oVent.id}}/"><button type="button" class="btn btn-danger btn-delete">Eliminar</button></a>
+                </td>
+              </tr>
+				    {% endfor %}
+
+					</table>
+				    <br>
+	    			<a href="/venta/nuevo/"><button type="button" class="btn btn-success">Nueva Venta</button> </a>
+
+			</div>
+	    </div>
+    </div>
+{% endblock %}

@@ -18,8 +18,8 @@ from app.fomularios.productoForm import *
 #   Usuario: Erick Sulca, Ulises Bejar
 #   Fecha: 05/06/18
 #   Última modificación:
-#   Descripción: 
-#   servicio de busqueda de usuario para la app movil, 
+#   Descripción:
+#   servicio de busqueda de usuario para la app movil,
 #   y en buscaar producto retorno de imagen.
 ###########################################################
 
@@ -69,7 +69,7 @@ def BuscarProducto (request):
         #print Datos
         usuario=True
         #usuario= BuscarUsuario(Datos["idUsuario"])
-        
+
         if usuario==True:
             nombreProducto = Datos["nombreProducto"]
             oProductos = Producto.objects.filter(nombre__icontains=nombreProducto,estado = True)
@@ -161,3 +161,26 @@ def CantidadPresentacionesProducto (request):
             oProductopresentacions = Productopresentacions.objects.get(producto = oProucto , presentacion = idPresentacion)
             jsonProducto["cantidad"] = (oProucto.cantidad)*(oProductopresentacions.valor)
             return HttpResponse(json.dumps(jsonProducto), content_type="application/json")
+
+
+def detalleProducto(request,producto_id):
+    oProducto = Producto.objects.get(id=producto_id,estado=True)
+    oPresentaciones = Presentacion.objects.filter(estado=True)
+    return render(request, 'producto/detalle.html', {'oProducto':oProducto})
+
+
+def editarProducto(request,producto_id):
+    oProducto = Producto.objects.get(id = producto_id)
+    if request.method == 'POST':
+        Datos = request.POST
+        form = ProductoForm(request.POST or None, instance=oProducto)
+        if form.is_valid():
+            form = form.save()
+            return redirect('/Producto/listar/')
+
+       # else:
+        #    return render(request, '/Cliente/error.html')
+    else:
+        form = ProductoForm(request.POST or None, instance=oProducto)
+        print(form)
+        return render(request, 'producto/editar.html', {'form': form})

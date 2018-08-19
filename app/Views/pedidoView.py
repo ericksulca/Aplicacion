@@ -12,12 +12,13 @@ from app.views import *
 from django.views.decorators.csrf import csrf_exempt
 import json
 from app.fomularios.cierrecajaForm import *
+from app.fomularios.pedidoForm import *
 
 ###########################################################
 #   Usuario: Erick Sulca, Ulises Bejar
 #   Fecha: 05/06/18
 #   Última modificación:
-#   Descripción: 
+#   Descripción:
 #   servicio de busqueda de usuario para la app movil
 ###########################################################
 
@@ -50,7 +51,7 @@ def ResumenPedidos(request):
                 oProducto["nombrePresentacion"] = oPedidoproductospresentacion.productopresentacions.presentacion.nombre
                 oProducto["cantidad"] = oPedidoproductospresentacion.cantidad
                 oProductos.append(oProducto)
-        
+
         return render(request, 'pedido/resumen.html', {"oProductos": oProductos})
 
 @csrf_exempt
@@ -85,7 +86,7 @@ def DetallePedido(request,pedido_id):
             oProducto["nombrePresentacion"] = oPedidoproductospresentacion.productopresentacions.presentacion.nombre
             oProducto["cantidad"] = oPedidoproductospresentacion.cantidad
             oProductos.append(oProducto)
-        
+
         return render(request, 'pedido/detalle.html', {"oCliente": oPedido.cliente, "oProductos": oProductos})
     else:
         oPedidos = Pedido.objects.filter(estado = True)
@@ -158,3 +159,28 @@ def ListarPedido(request):
                 jsonPedidos["pedidos"].append(jsonPedido)
             jsonPedidos["TotalPedidos"] = TotalPedidos
             return HttpResponse(json.dumps(jsonPedidos), content_type="application/json")
+
+
+def editarPedido(request,pedido_id):
+    oPedido = Pedido.objects.get(id = pedido_id)
+    if request.method == 'POST':
+        Datos = request.POST
+        form = PedidoForm(request.POST, instance=oPedido)
+        if form.is_valid():
+            form = form.save()
+            return redirect('/Pedido/listar/')
+
+        else:
+            return render(request, '/Pedido/error.html')
+    else:
+        form = PedidoForm(request.POST or None, instance=oPedido)
+        print(form)
+        return render(request, 'Pedido/editar.html', {'form': form})
+
+
+def eliminarPedido(request, pedido_id):
+     oPedido = Pedido.objects.get(id = pedido_id)
+     if  request.method == 'POST':
+        oPedido.delete()
+        return redirect('/Pedido/listar/')
+     return render(request, 'Pedido/eliminar.html', {'oPedido': oPedido})

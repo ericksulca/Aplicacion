@@ -31,6 +31,9 @@ from app.Views.rutaView import *
 from app.Views.visitaView import *
 from app.Views.errorView import *
 
+from app.Views.ventaView import *
+
+from app.Views.loteView import *
 ###########################################################
 #   Usuario: Erick Sulca, Ulises Bejar
 #   Fecha: 05/06/18
@@ -52,20 +55,24 @@ urlpatterns = [
     url(r'^Caja/cierre/$', registrarCierrecaja),
     url(r'^Caja/movimiento/$', registrarOperacion),
 
+    ################## Venta #######################
     url(r'^Venta/nuevo/$', registrarPedido),
 
     ################## Producto #######################
     url(r'^Producto/listar/$', ListarProductos),
     url(r'^Producto/nuevo/$', registrarProducto),
+    url(r'^Producto/detalle/(?P<producto_id>\d+)/$', detalleProducto),
+    url(r'^Producto/editar/(?P<producto_id>\d+)/$', editarProducto),
 
     ################## Catalogo #######################
     url(r'^Presentacion/Listar/(?P<producto_id>\d+)/$', presentacion_detalle),
     url(r'^Presentacion/registrar/$', registrarPresentacionProducto),
     url(r'^Presentacion/eliminar/(?P<presentacion_id>\d+)/(?P<producto_id>\d+)/$', eliminarPresentacionProducto),
     url(r'^Presentacion/getPresentaciones/$', getPresentaciones),
-    
+
     url(r'^Precios/getPrecios/$', getPrecios),
     #url(r'^pruebaExcel/$', IngresarPrecios),
+
     ################## Cliente #######################
     url(r'^Cliente/nuevo/$', nuevoCliente),
     url(r'^Cliente/detalle/(?P<cliente_id>\d+)/$', detalleCliente),
@@ -73,20 +80,23 @@ urlpatterns = [
     url(r'^Cliente/listar/$', listarCliente),
     url(r'^Cliente/buscar/$', IngresarPrecios),
     url(r'^Cliente/actualizar/$', IngresarPrecios),
-    
+
     ################## Pedidos #######################
 
     url(r'^Pedido/nuevo/$', IngresarPrecios),
     url(r'^Pedido/listar/$', ListarPedidos),
     url(r'^Pedido/resumen/$', ResumenPedidos),
     url(r'^Pedido/detalle/(?P<pedido_id>\d+)/$', DetallePedido),
+    url(r'^Pedido/editar/(?P<pedido_id>\d+)/$', editarPedido),
+    url(r'^Pedido/eliminar/(?P<pedido_id>\d+)/$', eliminarPedido),
     url(r'^Pedido/actualizar/$', IngresarPrecios),
     url(r'^Pedido/reporte/$', IngresarPrecios),
     url(r'^Pedido/buscar/$', IngresarPrecios),
     url(r'^Pedido/imprimir/$', IngresarPrecios),
-    
+
+
     ################## APP Movil #######################
-    
+
     url(r'^usuario/validar/$', validarUsuario),
     url(r'^usuario/ruta/$', rutaUsuario),
 
@@ -103,13 +113,34 @@ urlpatterns = [
 
     url(r'^pago/nuevo/$', IngresarPrecios),
 
+
     url(r'^producto/buscar/$', BuscarProducto),
     url(r'^producto/presentacion/listar/$', ListarPresentacionesProducto),
     url(r'^producto/presentacion/cantidad/$', CantidadPresentacionesProducto),
-    
+
     url(r'^error/registrar/$', registrarError),
 
+
+#######################Ventas##############################
+
+    url(r'^venta/nuevo/$', nuevoVenta),
+    url(r'^venta/listar/$', ListarVentas),
+    url(r'^venta/filtrar/$', FiltrarVentas.as_view(), name = "filtra_ventas"),
+    #url(r'^Producto/detalle/(?P<producto_id>\d+)/$', detalleProducto),
+    #url(r'^Producto/editar/(?P<producto_id>\d+)/$', editarProducto),
+
+    url(r'^Lote/nuevo/$', nuevoLote),
     #####################################################
 
+#######################Rutas##############################
+
+    #url(r'^Ruta/nuevo/$', nuevoVenta),
+    #url(r'^Ruta/listar/$', ListarVenta),
+
+#######################Información y Reportes##############################
+
+    #url(r'^Reporte/almacen/$', reporteAlmacen),
+    #url(r'^Reporte/caja/$', reporteCaja),
+    #url(r'^Reporte/ventas/$', reporteVentas),
 
 ]

@@ -17,7 +17,7 @@ from app.fomularios.clienteForm import *
 #   Usuario: Erick Sulca, Ulises Bejar
 #   Fecha: 05/06/18
 #   Última modificación:
-#   Descripción: 
+#   Descripción:
 #   servicio de busqueda de usuario para la app movil
 ###########################################################
 
@@ -48,7 +48,7 @@ def buscarCliente(request):
 def detalleCliente(request,cliente_id):
     oCliente = Cliente.objects.get(id=cliente_id,estado=True)
     oPresentaciones = Presentacion.objects.filter(estado=True)
-    return render(request, 'cliente/detalle.html', {'oCliente':oCliente})            
+    return render(request, 'cliente/detalle.html', {'oCliente':oCliente})
 
 @csrf_exempt
 def detalleClienteWS(request):
@@ -81,7 +81,7 @@ def detalleClienteWS(request):
             return HttpResponse(json.dumps(jsonCliente), content_type="application/json")
             #except Exception as e:
         #    return HttpResponse(json.dumps({'exito':0}), content_type="application/json")
-            
+
 
 def editarCliente(request,cliente_id):
     oCliente = Cliente.objects.get(id = cliente_id)
@@ -91,11 +91,12 @@ def editarCliente(request,cliente_id):
         if form.is_valid():
             form = form.save()
             return redirect('/Cliente/listar/')
-            
+
         else:
             return render(request, '/Cliente/error.html')
     else:
         form = ClienteForm(request.POST or None, instance=oCliente)
+        print(form)
         return render(request, 'cliente/nuevo.html', {'form': form})
 
 def nuevoCliente(request):
@@ -105,7 +106,7 @@ def nuevoCliente(request):
         if form.is_valid():
             form = form.save()
             return redirect('/Cliente/listar/')
-            
+
         else:
             return render(request, 'cliente/error.html')
     else:
