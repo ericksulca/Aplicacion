@@ -1,7 +1,47 @@
 {% extends "base.html" %}
 {% block imports %}
-Clientes
+Ventas
 
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/resources/demos/style.css">
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script>
+    $.datepicker.regional['es'] = {
+      closeText: 'Cerrar',
+      prevText: '< Ant',
+      nextText: 'Sig >',
+      currentText: 'Hoy',
+      monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+      monthNamesShort: ['Ene','Feb','Mar','Abr', 'May','Jun','Jul','Ago','Sep', 'Oct','Nov','Dic'],
+      dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+      dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],
+      dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],
+      weekHeader: 'Sm',
+      dateFormat: 'dd/mm/yy',
+      firstDay: 1,
+      isRTL: false,
+      showMonthAfterYear: false,
+      yearSuffix: ''
+    };
+
+    $( function() {
+      $.datepicker.setDefaults($.datepicker.regional['es']);
+      $( "#desde" ).datepicker();
+      $( "#hasta" ).datepicker();
+    } );
+</script>
+
+  <script>
+  $( function() {
+    $( "#desde" ).datepicker();
+  } );
+  </script>
+  <script>
+  $( function() {
+    $( "#hasta" ).datepicker();
+  } );
+  </script>
  <script type="text/javascript">
 
 //evento click para boton editar
@@ -15,13 +55,162 @@ $(document).on('Click', '.btn-editar', function(e){
 
 
 </script>
+
+<script>
+  var input = document.getElementById("myInput");
+
+  // Execute a function when the user releases a key on the keyboard
+  input.addEventListener("keyup", function(event) {
+  // Cancel the default action, if needed
+  event.preventDefault();
+  // Number 13 is the "Enter" key on the keyboard
+  if (event.keyCode === 13) {
+    // Trigger the button element with a click
+    document.getElementById("myBtn").click();
+  }
+  });
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+  $( "#inpt-cliente" ).focus();
+  $( "#inpt-cliente" ).autocomplete({
+      source: function (request, response) {
+
+          var datos = {nombreCliente: $("#inpt-cliente").val()};
+          var sendData = JSON.stringify(datos);
+          $.ajax({
+              type: "POST",
+              dataType: "json",
+              url: "/cliente/buscar/",
+              data: sendData,
+              contentType: "application/json; charset=utf-8",
+              async: false,
+              cache: false,
+              CrossDomain: true,
+
+              success: function (result) {
+              var ListasClientes = result['clientes'];
+              response($.map(ListasClientes, function (item) {
+                  return {
+                      label: item.numerodocumento,
+                      idcliente: item.nombre,
+                      numerodocumento: item.numerodocumento,
+                      Id: item.id
+                      };
+                  }));
+              }
+          });
+      },
+      minLength: 1,
+  });
+});
+
+</script>
+</script>
+<script type="text/javascript">
+$(document).ready(function(){
+  $( "#inpt-producto" ).focus();
+  $( "#inpt-producto" ).autocomplete({
+      source: function (request, response) {
+
+          var datos = {nombreProducto: $("#inpt-producto").val()};
+          var sendData = JSON.stringify(datos);
+          $.ajax({
+              type: "POST",
+              dataType: "json",
+              url: "/producto/buscar/",
+              data: sendData,
+              contentType: "application/json; charset=utf-8",
+              async: false,
+              cache: false,
+              CrossDomain: true,
+
+              success: function (result) {
+              var ListasProductos = result['productos'];
+              response($.map(ListasProductos, function (item) {
+                  return {
+                      label: item.nombre,
+                      idproducto: item.nombre,
+                      precio: item.precio,
+                      codigo: item.codigo,
+                      Id: item.id
+                      };
+                  }));
+              }
+          });
+      },
+      minLength: 1,
+      // select: function (event, ui) {
+      //     $.data(document.body, 'idproducto', ui.item.Id);//guardar el id en memoria el $.data guarda en memoria
+      //     $( "#precio" ).val( ui.item.precio);
+      //     $( "#codigo" ).val( ui.item.codigo);
+      //
+      //     $( "#cantidad" ).focus();
+      //     $( "#cantidad" ).focus();
+      //     var iDPro = ui.item.Id;
+      //     //agregar();
+      // }
+
+
+  });
+});
+
+</script>
+
+<script>
+
+</script>
+
+<style>
+ul.ui-autocomplete {
+  z-index: 1100;
+}
+#content{
+  position: absolute;
+  min-height: 50%;
+  width: 80%;
+  top: 20%;
+  left: 5%;
+}
+
+.selected{
+  cursor: pointer;
+}
+.selected:hover{
+  background-color: #0585C0;
+  color: white;
+}
+.seleccionada{
+  background-color: #0585C0;
+  color: white;
+}
+</style>
+
+
 {% endblock %}
 
 {% block title %}
-Clientes
+Ventas
 {% endblock %}
 
 {% block content %}
+
+
+
+<li>
+  <form action="{% url 'filtra_ventas' %}" method="post" class="app-search hidden-xs">
+    {% csrf_token %}
+      <input type="text" id="inpt-producto" placeholder="Producto..." name="inpt-producto" class="form-control" maxlength="45">
+      <input type="text" id="inpt-cliente" placeholder="DNI Cliente..." name="buscando" class="form-control" maxlength="45">
+      <input type="text" class="form-control" id="desde" placeholder="Fecha inicio..." name="desde" autocomplete="off" maxlength="20">
+      <input type="text" class="form-control" id="hasta" placeholder="Fecha final..." name="hasta" autocomplete="off" maxlength="20">
+      <input id="myInput" class="btn btn-primary" type="submit" value="Buscar">
+  </form>
+</li>
+
+
 	<div class="row">
         <div class="col-sm-12">
             <div class="white-box">
@@ -31,16 +220,17 @@ Clientes
 					<div class="form-group">
 					<table id="tCamiones"  class="table">
 						<thead>
-	                        <tr>
-	                            <th>#id</th>
-	                            <th>Fecha</th>
-	                            <th>Monto</th>
-	                            <th>nPedido</th>
-	                            <th>Cliente</th>
-                              <th>Pedidoid</th>
-                              <th>Producto</th>
-	                        </tr>
-	                    </thead>
+              <tr>
+                  <th>#id</th>
+                  <th>Fecha</th>
+                  <th>Monto</th>
+                  <th>nPedido</th>
+                  <th>Cliente</th>
+                  <th>Pedidoid</th>
+                  <th>Producto</th>
+              </tr>
+          </thead>
+          <tbody>
 				    {% for oVent in oVenta %}
               <tr>
                 <td>{{ forloop.counter }}</td>
@@ -68,10 +258,10 @@ Clientes
                 </td>
               </tr>
 				    {% endfor %}
-
-					</table>
-				    <br>
-	    			<a href="/venta/nuevo/"><button type="button" class="btn btn-success">Nueva Venta</button> </a>
+          </tbody>
+				</table>
+		    <br>
+  			<a href="/venta/nuevo/"><button type="button" class="btn btn-success">Nueva Venta</button> </a>
 
 			</div>
 	    </div>

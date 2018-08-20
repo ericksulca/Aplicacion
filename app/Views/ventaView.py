@@ -12,7 +12,8 @@ from app.views import *
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView
 import json
-from datetime import datetime
+from datetime import datetime,date
+
 
 def nuevoVenta(request):
     if request.method == 'GET':
@@ -47,7 +48,7 @@ class FiltrarVentas(ListView):
 
     def post(self, request, *args, **kwargs):
         #producto = request.POST['producto']
-        producto_b = request.POST['producto_b']
+        producto_b = request.POST['inpt-producto']
         dni = request.POST['buscando']
         fecha_inicio = request.POST['desde']
         fecha_fin = request.POST['hasta']
@@ -70,22 +71,168 @@ class FiltrarVentas(ListView):
 
         for bus in os:
             if bus['producto'] == producto_b:
-                ot.append(bus)
+                oNuevo={}
+                oNuevo['id']=bus['id']
+                oNuevo['producto']=bus['producto']
+                ot.append(oNuevo)
 
-        fecha1=datetime.strftime(datetime.strptime(fecha_inicio,'%d-%m-%Y'),'%Y-%m-%d')
-        fecha2=datetime.strftime(datetime.strptime(fecha_fin,'%d-%m-%Y'),'%Y-%m-%d')
+        fecha1=''
+        fecha2=''
+
+        if fecha_inicio!='' and fecha_fin!='':
+            try:
+                fecha1=datetime.strftime(datetime.strptime(fecha_inicio,'%d/%m/%Y'),'%Y-%m-%d')
+                fecha2=datetime.strftime(datetime.strptime(fecha_fin,'%d/%m/%Y'),'%Y-%m-%d')
+            except:
+                fecha1=''
+                fecha2=''
+        elif fecha_inicio=='' and fecha_fin!='':
+            try:
+                fecha2=datetime.strftime(datetime.strptime(fecha_fin,'%d/%m/%Y'),'%Y-%m-%d')
+            except:
+                fecha1=''
+                fecha2=''
+        elif fecha_inicio!='' and fecha_fin=='':
+            try:
+                fecha1=datetime.strftime(datetime.strptime(fecha_inicio,'%d/%m/%Y'),'%Y-%m-%d')
+            except:
+                fecha1=''
+                fecha2=''
+        fechaIni = Venta.objects.get(id=1)
+        primerFecha = datetime.strftime(fechaIni.fecha,'%Y-%m-%d')
+
         oVenta = []
-        if dni != '':
+        if producto_b != '' and dni!='' and fecha1!='' and fecha2!='':
+            iden=Cliente.objects.get(numerodocumento=dni)
+            oVenta = iden.venta_set.filter(fecha__range=[fecha1,fecha2])
+            return render(request,'venta/listar.html',{'oVenta':oVenta,'ot':ot}, )
+        elif producto_b == '' and dni!='' and fecha1!='' and fecha2!='':
             try:
                 iden=Cliente.objects.get(numerodocumento=dni)
                 oVenta = iden.venta_set.filter(fecha__range=[fecha1,fecha2])
-                return render(request,'venta/listar.html',{'oVenta':oVenta,'ot':ot}, )
+                return render(request,'venta/listar.html',{'oVenta':oVenta,'ot':os}, )
             except Cliente.DoesNotExist:
                  return render(request,'venta/listar.html',{'oVenta':oVenta}, )
-        else:
-            oVenta = Venta.objects.filter(fecha__range=[fecha1,fecha2])
-            return render(request,'venta/listar.html',{'oVenta':oVenta}, )
+        elif producto_b != '' and dni=='' and fecha1!='' and fecha2!='':
+            try:
+                dem = Venta.objects.filter(fecha__range=[fecha1,fecha2])
+                for d in dem:
+                    for i in ot:
+                        if(d.id == i['id']):
+                            idb = i['id']
+                            busca = Venta.objects.get(id=idb,estado = True)
+                            oVenta.append(busca)
 
+                #oVenta = Venta.objects.filter(estado = True).order_by('-id')
+                return render(request,'venta/listar.html',{'oVenta':oVenta,'ot':ot}, )
+            except Producto.DoesNotExist:
+                 return render(request,'venta/listar.html',{'oVenta':oVenta}, )
+        elif producto_b == '' and dni=='' and fecha1!='' and fecha2!='':
+            oVenta = Venta.objects.filter(fecha__range=[fecha1,fecha2]).order_by('-id')
+            return render(request,'venta/listar.html',{'oVenta':oVenta,'ot':os},  )
+        ##########################################################################
+        elif producto_b != '' and dni!='' and fecha1!='' and fecha2=='':
+            iden=Cliente.objects.get(numerodocumento=dni)
+            fecha2=date.today()
+            oVenta = iden.venta_set.filter(fecha__range=[fecha1,fecha2])
+            return render(request,'venta/listar.html',{'oVenta':oVenta,'ot':ot}, )
+        elif producto_b == '' and dni!='' and fecha1!='' and fecha2=='':
+            try:
+                fecha2=date.today()
+                iden=Cliente.objects.get(numerodocumento=dni)
+                oVenta = iden.venta_set.filter(fecha__range=[fecha1,fecha2])
+                return render(request,'venta/listar.html',{'oVenta':oVenta,'ot':os}, )
+            except Cliente.DoesNotExist:
+                 return render(request,'venta/listar.html',{'oVenta':oVenta}, )
+        elif producto_b != '' and dni=='' and fecha1!='' and fecha2=='':
+            try:
+                fecha2= date.today()
+                dem = Venta.objects.filter(fecha__range=[fecha1,fecha2])
+                for d in dem:
+                    for i in ot:
+                        if(d.id == i['id']):
+                            idb = i['id']
+                            busca = Venta.objects.get(id=idb,estado = True)
+                            oVenta.append(busca)
+
+                #oVenta = Venta.objects.filter(estado = True).order_by('-id')
+                return render(request,'venta/listar.html',{'oVenta':oVenta,'ot':ot}, )
+            except Producto.DoesNotExist:
+                 return render(request,'venta/listar.html',{'oVenta':oVenta}, )
+        elif producto_b == '' and dni=='' and fecha1!='' and fecha2=='':
+            fecha2=date.today()
+            oVenta = Venta.objects.filter(fecha__range=[fecha1,fecha2]).order_by('-id')
+            return render(request,'venta/listar.html',{'oVenta':oVenta,'ot':os},  )
+        ##########################################################################
+        elif producto_b != '' and dni!='' and fecha1=='' and fecha2!='':
+            iden=Cliente.objects.get(numerodocumento=dni)
+            fecha1=primerFecha
+            oVenta = iden.venta_set.filter(fecha__range=[fecha1,fecha2])
+            return render(request,'venta/listar.html',{'oVenta':oVenta,'ot':ot}, )
+        elif producto_b == '' and dni!='' and fecha1=='' and fecha2!='':
+            try:
+                fecha1=primerFecha
+                iden=Cliente.objects.get(numerodocumento=dni)
+                oVenta = iden.venta_set.filter(fecha__range=[fecha1,fecha2])
+                return render(request,'venta/listar.html',{'oVenta':oVenta,'ot':os}, )
+            except Cliente.DoesNotExist:
+                 return render(request,'venta/listar.html',{'oVenta':oVenta}, )
+        elif producto_b != '' and dni=='' and fecha1=='' and fecha2!='':
+            try:
+                fecha1=primerFecha
+                dem = Venta.objects.filter(fecha__range=[fecha1,fecha2])
+                for d in dem:
+                    for i in ot:
+                        if(d.id == i['id']):
+                            idb = i['id']
+                            busca = Venta.objects.get(id=idb,estado = True)
+                            oVenta.append(busca)
+
+                #oVenta = Venta.objects.filter(estado = True).order_by('-id')
+                return render(request,'venta/listar.html',{'oVenta':oVenta,'ot':ot}, )
+            except Producto.DoesNotExist:
+                 return render(request,'venta/listar.html',{'oVenta':oVenta}, )
+        elif producto_b == '' and dni=='' and fecha1=='' and fecha2!='':
+            fecha1=primerFecha
+            oVenta = Venta.objects.filter(fecha__range=[fecha1,fecha2]).order_by('-id')
+            return render(request,'venta/listar.html',{'oVenta':oVenta,'ot':os},  )
+        ##########################################################################
+        elif producto_b != '' and dni!='' and fecha1=='' and fecha2=='':
+            iden=Cliente.objects.get(numerodocumento=dni)
+            fecha1=date.today()
+            fecha2=date.today()
+            oVenta = iden.venta_set.filter(fecha__range=[fecha1,fecha2])
+            return render(request,'venta/listar.html',{'oVenta':oVenta,'ot':ot}, )
+        elif producto_b == '' and dni!='' and fecha1=='' and fecha2=='':
+            try:
+                fecha1=date.today()
+                fecha2=date.today()
+                iden=Cliente.objects.get(numerodocumento=dni)
+                oVenta = iden.venta_set.filter(fecha__range=[fecha1,fecha2])
+                return render(request,'venta/listar.html',{'oVenta':oVenta,'ot':os}, )
+            except Cliente.DoesNotExist:
+                 return render(request,'venta/listar.html',{'oVenta':oVenta}, )
+        elif producto_b != '' and dni=='' and fecha1=='' and fecha2=='':
+            try:
+                fecha1=date.today()
+                fecha2=date.today()
+                dem = Venta.objects.filter(fecha__range=[fecha1,fecha2])
+                for d in dem:
+                    for i in ot:
+                        if(d.id == i['id']):
+                            idb = i['id']
+                            busca = Venta.objects.get(id=idb,estado = True)
+                            oVenta.append(busca)
+
+                #oVenta = Venta.objects.filter(estado = True).order_by('-id')
+                return render(request,'venta/listar.html',{'oVenta':oVenta,'ot':ot}, )
+            except Producto.DoesNotExist:
+                 return render(request,'venta/listar.html',{'oVenta':oVenta}, )
+        elif producto_b == '' and dni=='' and fecha1=='' and fecha2=='':
+            fecha1=date.today()
+            fecha2=date.today()
+            oVenta = Venta.objects.filter(fecha__range=[fecha1,fecha2]).order_by('-id')
+            return render(request,'venta/listar.html',{'oVenta':oVenta,'ot':os},  )
 """
 @csrf_exempt
 def ListarVenta(request):

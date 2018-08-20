@@ -34,7 +34,7 @@ $(document).ready(function(){
                 }
             });
         },
-        minLength: 2,
+        minLength: 1,
         select: function (event, ui) {
             $.data(document.body, 'idproducto', ui.item.Id);//guardar el id en memoria el $.data guarda en memoria
             $( "#precio" ).val( ui.item.precio);

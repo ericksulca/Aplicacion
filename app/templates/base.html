@@ -35,18 +35,6 @@
     <link rel="stylesheet" href="/static/js/Scripts/css/jquery-ui-1.7.2.custom.css">
         <script src="/static/js/Scripts/jquery-1.9.1.js" type="text/javascript"></script>
         <script src="/static/js/Scripts/jquery-ui-1.10.1.js" type="text/javascript"></script>
-        <script>
-          $(function () {
-              $('#fechaHoy').datepicker({
-                  dateFormat: 'dd-mm-yy'
-              });
-              $("#fechaHoy").datepicker().datepicker("setDate", new Date());
-              $('#fechaHoy2').datepicker({
-                  dateFormat: 'dd-mm-yy'
-              });
-              $("#fechaHoy2").datepicker().datepicker("setDate", new Date());
-          });
-      </script>
     {% block imports %}
     {% endblock %}
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -68,17 +56,17 @@
             <div class="navbar-header"> <a class="navbar-toggle hidden-sm hidden-md hidden-lg " href="javascript:void(0)" data-toggle="collapse" data-target=".navbar-collapse"><i class="fa fa-bars"></i></a>
                 <div class="top-left-part"><a class="logo" href="index.html"><b><img src="/static/plugins/images/pixeladmin-logo.png" alt="home" /></b><span class="hidden-xs"><img src="/static/plugins/images/pixeladmin-text.png" alt="home" /></span></a></div>
                 <ul class="nav navbar-top-links navbar-left m-l-20 hidden-xs">
-                    <li>
+                    <!-- <li>
                       <form action="{% url 'filtra_ventas' %}" method="post" class="app-search hidden-xs">
                         {% csrf_token %}
                           <label for="">Filtrar por Cliente y Fecha:</label>
-                          <input type="text" placeholder="Producto..." name="producto_b">
+                          <input type="text" id="inpt-producto" placeholder="Producto..." name="inpt-producto" class="form-control">
                           <input type="text" placeholder="DNI Cliente..." name="buscando">
                           <input type="text" class="datepicker" id="fechaHoy" name="desde">
                           <input type="text" class="datepicker" id="fechaHoy2" name="hasta">
                           <input class="btn btn-primary" type="submit" value="Buscar">
                       </form>
-                    </li>
+                    </li> -->
                 </ul>
                 <ul class="nav navbar-top-links navbar-right pull-right">
                     <li>
