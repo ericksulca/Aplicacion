@@ -94,7 +94,7 @@ $(document).ready(function(){
               var ListasClientes = result['clientes'];
               response($.map(ListasClientes, function (item) {
                   return {
-                      label: item.numerodocumento,
+                      label: item.id,
                       idcliente: item.nombre,
                       numerodocumento: item.numerodocumento,
                       Id: item.id
@@ -131,11 +131,8 @@ $(document).ready(function(){
               var ListasProductos = result['productos'];
               response($.map(ListasProductos, function (item) {
                   return {
-                      label: item.nombre,
+                      label: item.id,
                       idproducto: item.nombre,
-                      precio: item.precio,
-                      codigo: item.codigo,
-                      Id: item.id
                       };
                   }));
               }
@@ -240,7 +237,7 @@ Ventas
                 <td>{{oVent.cliente.nombre }}</td>
                 <td>{{oVent.pedido.id }}</td>
                 <td>
-                  {% for oNue in ot %}
+                  {% for oNue in oProductos %}
                     {% if oVent.id == oNue.id %}
                         <table class="table">
                           <tr>
@@ -266,4 +263,23 @@ Ventas
 			</div>
 	    </div>
     </div>
+
+    <div class="pagination">
+    	<span class="step-links">
+        {% if oVenta.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ oVenta.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ oVenta.number }} of {{ oVenta.paginator.num_pages }}.
+        </span>
+
+        {% if oVenta.has_next %}
+            <a href="?page={{ oVenta.next_page_number }}">next</a>
+            <a href="?page={{ oVenta.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+	    </span>
+		</div>
+
 {% endblock %}

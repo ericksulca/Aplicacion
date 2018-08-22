@@ -125,7 +125,8 @@ urlpatterns = [
 
     url(r'^venta/nuevo/$', nuevoVenta),
     url(r'^venta/listar/$', ListarVentas),
-    url(r'^venta/filtrar/$', FiltrarVentas.as_view(), name = "filtra_ventas"),
+    url(r'^venta/filtrar/$', FiltrarVentas, name = "filtra_ventas"),
+    #url(r'^venta/listar/(?P<producto>\d+)$', FiltrarVentas.as_view, name="filtra_ventas"),
     #url(r'^Producto/detalle/(?P<producto_id>\d+)/$', detalleProducto),
     #url(r'^Producto/editar/(?P<producto_id>\d+)/$', editarProducto),
 

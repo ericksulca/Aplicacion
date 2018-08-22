@@ -16,7 +16,6 @@ from app.fomularios.clienteForm import *
 
 ##paginacion
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.shortcuts import render
 
 ###########################################################
 #   Usuario: Erick Sulca, Ulises Bejar
