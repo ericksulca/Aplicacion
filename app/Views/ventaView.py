@@ -39,51 +39,15 @@ def ListarVentas(request):
             ventaPagina = paginator.page(paginator.num_pages)
 
         for o in oVenta:
-            pedido = Pedido.objects.filter(id=o.pedido_id)
+            pedido = Pedido.objects.filter(id=o.pedido_id,estado=True)
             pedidoproductospresentacions = Pedidoproductospresentacions.objects.filter(pedido_id__in=[p.id for p in pedido])
-            productoPresentacion = Productopresentacions.objects.filter(id__in=[p.productopresentacions_id for p in pedidoproductospresentacions])
-            for a in productoPresentacion:
-                producto=Producto.objects.get(id=a.producto_id)
-                nombre=producto.nombre
+            for ope in pedidoproductospresentacions:
                 oNuevo={}
                 oNuevo['id']=o.id
-                oNuevo['producto']=nombre
+                oNuevo['producto']=ope.productopresentacions.producto.nombre
                 oProductos.append(oNuevo)
+
         return render(request, 'venta/listar.html', {"oVenta": ventaPagina,"oProductos":oProductos})
-
-
-# class FiltrarVentas(ListView):
-#     template_name = 'venta/listar.html'
-#
-#     def filtrarProducto(producto_b):
-#         oProductos=[]
-#         if producto_b != '':
-#             presentacion = Productopresentacions.objects.filter(producto=producto_b)
-#             pedidoproductopresentacion = Pedidoproductospresentacions.objects.filter(productopresentacions_id__in=[p.id for p in presentacion])
-#             pedido = Pedido.objects.filter(id__in=[s.pedido_id for s in pedidoproductopresentacion])
-#             venta = Venta.objects.filter(pedido_id__in=[p.id for p in pedido])
-#             productonombre = Producto.objects.get(id=producto_b).nombre
-#             for v in venta:
-#                 oNuevo={}
-#                 oNuevo['id']=v.id
-#                 oNuevo['producto']=productonombre
-#                 oProductos.append(oNuevo)
-#         return venta, oProductos
-#
-#     def filtrarDni(dni):
-#         oProductos=[]
-#         if dni != '':
-#             cliente = Venta.objects.filter(cliente_id=3)
-#             for c in cliente:
-#                 pedido = Pedido.objects.filter(id=c.pedido_id)
-#                 pedidopre = Pedidoproductospresentacions.objects.filter(pedido_id__in=[p.id for p in pedido])
-#                 presentacion = Productopresentacions.objects.filter(id__in=[p.productopresentacions_id for p in pedidopre])
-#                 producto = Producto.objects.filter(id__in=[n.producto_id for n in presentacion])
-#                 for p in producto:
-#                     oNuevo={}
-#                     oNuevo['id']=c.id
-#                     oNuevo['producto']=p.nombre
-#                     oProductos.append(oNuevo)
 
 def FiltrarVentas(request, *args, **kwargs):
     producto_b = request.POST['inpt-producto']
@@ -91,11 +55,11 @@ def FiltrarVentas(request, *args, **kwargs):
     fecha_inicio = request.POST['desde']
     fecha_fin = request.POST['hasta']
     oProductos=[]
-    oVenta=[]
+    oVentas=[]
     if producto_b != '':
         presentacion = Productopresentacions.objects.filter(producto=producto_b)
         pedidoproductopresentacion = Pedidoproductospresentacions.objects.filter(productopresentacions_id__in=[p.id for p in presentacion])
-        pedido = Pedido.objects.filter(id__in=[s.pedido_id for s in pedidoproductopresentacion])
+        pedido = Pedido.objects.filter(estado=True,id__in=[s.pedido_id for s in pedidoproductopresentacion])
         venta = Venta.objects.filter(pedido_id__in=[p.id for p in pedido])
         productonombre = Producto.objects.get(id=producto_b).nombre
         for v in venta:
@@ -103,70 +67,59 @@ def FiltrarVentas(request, *args, **kwargs):
             oNuevo['id']=v.id
             oNuevo['producto']=productonombre
             oProductos.append(oNuevo)
-        oVenta = venta.order_by('-id')
+        oVentas = venta.order_by('-id')
     if dni != '':
-        cliente = Venta.objects.filter(cliente_id=3).order_by('-id')
-        for c in cliente:
-            pedido = Pedido.objects.filter(id=c.pedido_id)
-            pedidopre = Pedidoproductospresentacions.objects.filter(pedido_id__in=[p.id for p in pedido])
-            presentacion = Productopresentacions.objects.filter(id__in=[p.productopresentacions_id for p in pedidopre])
-            producto = Producto.objects.filter(id__in=[n.producto_id for n in presentacion])
-            for p in producto:
+        venta = Venta.objects.filter(estado=True,cliente_id=3).order_by('-id')
+        for oVenta in venta:
+            pedido = Pedido.objects.filter(estado=True,id=oVenta.pedido_id)
+            pedidoproductospresentacions = Pedidoproductospresentacions.objects.filter(pedido_id__in=[p.id for p in pedido])
+            for oPedidopedidoproductopresentacion in pedidoproductospresentacions:
                 oNuevo={}
-                oNuevo['id']=c.id
-                oNuevo['producto']=p.nombre
+                oNuevo['id']=oVenta.id
+                oNuevo['producto']=oPedidopedidoproductopresentacion.productopresentacions.producto.nombre
                 oProductos.append(oNuevo)
-        oVenta = cliente
-    if fecha_inicio!='':
+        oVentas = venta
+    if fecha_inicio!='' and fecha_fin!='':
+        fecha1=datetime.strftime(datetime.strptime(fecha_inicio,'%d/%m/%Y'),'%Y-%m-%d')
+        fecha2=datetime.strftime(datetime.strptime(fecha_fin,'%d/%m/%Y'),'%Y-%m-%d')
+        #fecha2=date.today()
+        oVentas = Venta.objects.filter(estado=True,fecha__range=[fecha1,fecha2]).order_by('-id')[:50]
+        for oVenta in oVentas:
+            pedido = Pedido.objects.filter(estado=True,id=oVenta.pedido_id)
+            pedidoproductospresentacions = Pedidoproductospresentacions.objects.filter(pedido_id__in=[p.id for p in pedido])
+            for oPedidopedidoproductopresentacion in pedidoproductospresentacions:
+                oNuevo={}
+                oNuevo['id']=oVenta.id
+                oNuevo['producto']=oPedidopedidoproductopresentacion.productopresentacions.producto.nombre
+                oProductos.append(oNuevo)
+    elif fecha_inicio!='' and fecha_fin=='':
         fecha1=datetime.strftime(datetime.strptime(fecha_inicio,'%d/%m/%Y'),'%Y-%m-%d')
         fecha2=date.today()
-        oVenta = Venta.objects.filter(fecha__range=[fecha1,fecha2]).order_by('-id')[:50]
-        for o in oVenta:
-            pedido = Pedido.objects.filter(id=o.pedido_id)
+        oVentas = Venta.objects.filter(estado=True,fecha__range=[fecha1,fecha2]).order_by('-id')[:50]
+        for oVenta in oVentas:
+            pedido = Pedido.objects.filter(estado=True,id=oVenta.pedido_id)
             pedidoproductospresentacions = Pedidoproductospresentacions.objects.filter(pedido_id__in=[p.id for p in pedido])
-            productoPresentacion = Productopresentacions.objects.filter(id__in=[p.productopresentacions_id for p in pedidoproductospresentacions])
-            for a in productoPresentacion:
-                producto=Producto.objects.get(id=a.producto_id)
-                nombre=producto.nombre
+            for oPedidopedidoproductopresentacion in pedidoproductospresentacions:
                 oNuevo={}
-                oNuevo['id']=o.id
-                oNuevo['producto']=nombre
+                oNuevo['id']=oVenta.id
+                oNuevo['producto']=oPedidopedidoproductopresentacion.productopresentacions.producto.nombre
                 oProductos.append(oNuevo)
-    elif fecha_fin!='':
+    elif fecha_inicio=='' and fecha_fin!='':
         fecha2=datetime.strftime(datetime.strptime(fecha_fin,'%d/%m/%Y'),'%Y-%m-%d')
         #fecha2=date.today()
-        oVenta = Venta.objects.filter(fecha__lte=fecha2).order_by('-id')[:50]
-        for o in oVenta:
-            pedido = Pedido.objects.filter(id=o.pedido_id)
+        oVentas = Venta.objects.filter(estado=True,fecha__lte=fecha2).order_by('-id')[:50]
+        for oVenta in oVentas:
+            pedido = Pedido.objects.filter(estado=True,id=oVenta.pedido_id)
             pedidoproductospresentacions = Pedidoproductospresentacions.objects.filter(pedido_id__in=[p.id for p in pedido])
-            productoPresentacion = Productopresentacions.objects.filter(id__in=[p.productopresentacions_id for p in pedidoproductospresentacions])
-            for a in productoPresentacion:
-                producto=Producto.objects.get(id=a.producto_id)
-                nombre=producto.nombre
+            for oPedidopedidoproductopresentacion in pedidoproductospresentacions:
                 oNuevo={}
-                oNuevo['id']=o.id
-                oNuevo['producto']=nombre
+                oNuevo['id']=oVenta.id
+                oNuevo['producto']=oPedidopedidoproductopresentacion.productopresentacions.producto.nombre
                 oProductos.append(oNuevo)
-    elif fecha_inicio!='' and fecha_fin!='':
-        fecha1=datetime.strftime(datetime.strptime(fecha_inicio,'%d/%m/%Y'),'%Y-%m-%d')
-        fecha2=datetime.strftime(datetime.strptime(fecha_fin,'%d/%m/%Y'),'%Y-%m-%d')
-        #fecha2=date.today()
-        oVenta = Venta.objects.filter(fecha__range=[fecha1,fecha2]).order_by('-id')[:50]
-        for o in oVenta:
-            pedido = Pedido.objects.filter(id=o.pedido_id)
-            pedidoproductospresentacions = Pedidoproductospresentacions.objects.filter(pedido_id__in=[p.id for p in pedido])
-            productoPresentacion = Productopresentacions.objects.filter(id__in=[p.productopresentacions_id for p in pedidoproductospresentacions])
-            for a in productoPresentacion:
-                producto=Producto.objects.get(id=a.producto_id)
-                nombre=producto.nombre
-                oNuevo={}
-                oNuevo['id']=o.id
-                oNuevo['producto']=nombre
-                oProductos.append(oNuevo)
-        else:
-            oVenta=[]
+    else:
+            oVentas=[]
             oProductos=[]
-    return render(request, 'venta/listar.html', {"oVenta": oVenta,"oProductos":oProductos})
+    return render(request, 'venta/listar.html', {"oVenta": oVentas,"oProductos":oProductos})
 
 
 """
