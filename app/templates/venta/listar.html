@@ -96,6 +96,8 @@ $(document).ready(function(){
                   return {
                       label: item.id,
                       idcliente: item.nombre,
+                      label: item.numerodocumento,
+                      idcliente: item.nombre,
                       numerodocumento: item.numerodocumento,
                       Id: item.id
                       };
@@ -156,9 +158,6 @@ $(document).ready(function(){
 
 </script>
 
-<script>
-
-</script>
 
 <style>
 ul.ui-autocomplete {
@@ -197,13 +196,13 @@ Ventas
 
 
 <li>
-  <form action="{% url 'filtra_ventas' %}" method="post" class="app-search hidden-xs">
+  <form action="{% url 'filtra_ventas' %}" method="post" class="form-inline mr-auto">
     {% csrf_token %}
-      <input type="text" id="inpt-producto" placeholder="Producto..." name="inpt-producto" class="form-control" maxlength="45">
-      <input type="text" id="inpt-cliente" placeholder="DNI Cliente..." name="buscando" class="form-control" maxlength="45">
-      <input type="text" class="form-control" id="desde" placeholder="Fecha inicio..." name="desde" autocomplete="off" maxlength="20">
-      <input type="text" class="form-control" id="hasta" placeholder="Fecha final..." name="hasta" autocomplete="off" maxlength="20">
-      <input id="myInput" class="btn btn-primary" type="submit" value="Buscar">
+      <input type="text" id="inpt-producto" placeholder="Producto..." name="inpt-producto" class="form-inline mr-auto" maxlength="6" size="6">
+      <input type="text" id="inpt-cliente" placeholder="DNI Cliente..." name="buscando" class="form-inline mr-auto" maxlength="45">
+      <input type="text" class="form-inline mr-auto" id="desde" placeholder="Fecha inicio..." name="desde" autocomplete="off" maxlength="20">
+      <input type="text" class="form-inline mr-auto" id="hasta" placeholder="Fecha final..." name="hasta" autocomplete="off" maxlength="20">
+      <button class="btn blue-gradient btn-rounded btn-sm my-0" type="submit">Buscar</button>
   </form>
 </li>
 
