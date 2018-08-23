@@ -81,10 +81,10 @@ WSGI_APPLICATION = 'ferreteria.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'mysql_cymysql',
-        'NAME': 'aes_ferreteria',
-        'USER': 'root',
-        'PASSWORD': '1234',
-        'HOST': '127.0.0.1',
+        'NAME': 'admin_pedidos',
+        'USER': 'admin_pedidos',
+        'PASSWORD': 'vn1RhBPs1A',
+        'HOST': '138.197.36.187',
         'PORT': '3306',
 
     }
