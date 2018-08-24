@@ -67,7 +67,7 @@ def FiltrarVentas(request, *args, **kwargs):
             oNuevo['id']=v.id
             oNuevo['producto']=productonombre
             oProductos.append(oNuevo)
-        oVentas = venta.order_by('-id')
+        oVentas.append(venta.order_by('-id'))
     if dni != '':
         venta = Venta.objects.filter(estado=True,cliente_id=3).order_by('-id')
         for oVenta in venta:

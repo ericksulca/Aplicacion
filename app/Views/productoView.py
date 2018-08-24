@@ -165,7 +165,6 @@ def CantidadPresentacionesProducto (request):
 
 def detalleProducto(request,producto_id):
     oProducto = Producto.objects.get(id=producto_id,estado=True)
-    oPresentaciones = Presentacion.objects.filter(estado=True)
     return render(request, 'producto/detalle.html', {'oProducto':oProducto})
 
 
