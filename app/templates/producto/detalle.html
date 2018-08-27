@@ -14,7 +14,7 @@ Información de Producto
             <div class="white-box">
                 <h3 class="box-title">Datos de cliente</h3>
 			<div>
-				<table id="tCamiones"  class="table">	
+				<table id="tCamiones"  class="table">
 					<tr>
 						<td>Imagen: </td>
 						<td>{{ oProducto.imagen }}</td>
@@ -31,10 +31,18 @@ Información de Producto
 						<td>Cantidad: </td>
 						<td>{{ oProducto.cantidad }}</td>
 					</tr>
+					<tr>
+						<td>Presentaciones:: </td>
+						<td>
+							{% for presentacion in oProducto.presentacions.all %}
+								- {{ presentacion.nombre }}<br>
+							{% endfor %}
+						</td>
+					</tr>
 			</div>
 			</div>
 
 	    </div>
-    </div>  
+    </div>
 
 {% endblock %}
