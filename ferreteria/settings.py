@@ -1,4 +1,4 @@
-
+#holaS
 """
 Django settings for ferreteria project.
 
@@ -59,7 +59,9 @@ ROOT_URLCONF = 'ferreteria.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'app/templates')
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -78,19 +80,18 @@ WSGI_APPLICATION = 'ferreteria.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'mysql_cymysql',
-        'NAME': 'aes_ferreteria',
-        'USER': 'root',
-        'PASSWORD': '1234',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
 
-    }
-}
-
-
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'mysql_cymysql',
+#         'NAME': 'bdpedidos',
+#         'USER': 'root',
+#         'PASSWORD': '',
+#         'HOST': 'localhost',
+#         'PORT': '3307',
+#
+#     }
+# }
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
 
@@ -134,5 +135,5 @@ STATICFILES_DIRS = [
 STATIC_URL = '/static/'
 
 
-MEDIA_ROOT = 'media'
+MEDIA_ROOT = './media'
 MEDIA_URL = '/media/'

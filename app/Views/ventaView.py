@@ -117,8 +117,9 @@ def FiltrarVentas(request, *args, **kwargs):
                 oNuevo['producto']=oPedidopedidoproductopresentacion.productopresentacions.producto.nombre
                 oProductos.append(oNuevo)
     else:
-            oVentas=[]
-            oProductos=[]
+        oVentas = []
+        oProductos = []
+
     return render(request, 'venta/listar.html', {"oVenta": oVentas,"oProductos":oProductos})
 
 
