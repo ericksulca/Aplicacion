@@ -80,8 +80,8 @@ WSGI_APPLICATION = 'ferreteria.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-<<<<<<< HEAD
-=======
+#<<<<<<< HEAD
+#=======
 DATABASES = {
     'default': {
         'ENGINE': 'mysql_cymysql',
@@ -94,7 +94,7 @@ DATABASES = {
     }
 }
 
->>>>>>> 0943ece4ceffe4c9d38d1363f473318ef87e887c
+#>>>>>>> 0943ece4ceffe4c9d38d1363f473318ef87e887c
 
 # DATABASES = {
 #     'default': {
