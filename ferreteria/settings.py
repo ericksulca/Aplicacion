@@ -80,8 +80,7 @@ WSGI_APPLICATION = 'ferreteria.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-<<<<<<< HEAD
-=======
+
 DATABASES = {
     'default': {
         'ENGINE': 'mysql_cymysql',
@@ -91,10 +90,24 @@ DATABASES = {
         'HOST': '138.197.36.187',
         'PORT': '3306',
 
-    }
+   }
 }
 
->>>>>>> 0943ece4ceffe4c9d38d1363f473318ef87e887c
+#<<<<<<< HEAD
+#=======
+#DATABASES = {
+#    'default': {
+ #       'ENGINE': 'mysql_cymysql',
+  #      'NAME': 'admin_pedidos',
+   #     'USER': 'admin_pedidos',
+    #    'PASSWORD': 'vn1RhBPs1A',
+     #   'HOST': '138.197.36.187',
+      #  'PORT': '3306',
+
+#    }
+#}
+
+#>>>>>>> 0943ece4ceffe4c9d38d1363f473318ef87e887c
 
 # DATABASES = {
 #     'default': {

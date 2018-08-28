@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.shortcuts import render
+from django.shortcuts import render, render_to_response, redirect
+from django.template import RequestContext
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, HttpResponseRedirect
 from ferreteria import settings
@@ -13,22 +14,23 @@ from ferreteria.urls import *
 from django.views.decorators.csrf import csrf_exempt
 import json
 from app.fomularios.productoForm import *
-
+from django.views.generic import DetailView
 ###########################################################
 #   Usuario: Erick Sulca, Ulises Bejar
 #   Fecha: 05/06/18
 #   Última modificación:
-#   Descripción:
-#   servicio de busqueda de usuario para la app movil,
+#   Descripción: 
+#   servicio de busqueda de usuario para la app movil, 
 #   y en buscaar producto retorno de imagen.
 ###########################################################
 
 def ListarProductos(request):
     if request.method == 'POST':
-        return render(request, 'pedido/listar.html')
+        return render(request, 'Producto/listar.html')
     else:
         oProductos = Producto.objects.filter(estado = True)
         return render(request, 'producto/listar.html', {"oProductos": oProductos})
+
 
 def registrarProducto(request):
     if request.method == 'POST':
@@ -69,7 +71,7 @@ def BuscarProducto (request):
         #print Datos
         usuario=True
         #usuario= BuscarUsuario(Datos["idUsuario"])
-
+        
         if usuario==True:
             nombreProducto = Datos["nombreProducto"]
             oProductos = Producto.objects.filter(nombre__icontains=nombreProducto,estado = True)
@@ -162,24 +164,53 @@ def CantidadPresentacionesProducto (request):
             jsonProducto["cantidad"] = (oProucto.cantidad)*(oProductopresentacions.valor)
             return HttpResponse(json.dumps(jsonProducto), content_type="application/json")
 
-
+"""
 def detalleProducto(request,producto_id):
-    oProducto = Producto.objects.get(id=producto_id,estado=True)
-    return render(request, 'producto/detalle.html', {'oProducto':oProducto})
+    if request.method == 'GET':
+        idProducto = int(producto_id)
+        oProducto = Producto.objects.get(id = idProducto)
+        form = ProductoForm(instance= oProducto)
+        oProductospresentacions = Productopresentacions.objects.filter(producto = oProducto)
+        oProductos = []
 
+        for oProductospresentacion in oProductospresentacions:
+            oProdu = {}
+            oProdu["nombrePresentacions"] = oProductospresentacion.presentacion.nombre
+            oProductos.append(oProdu)
+            print(oProductos)
+            return render(request, 'producto/detalle.html', {"form": form, "oPresentacion": oProducto.presentacions, "oProductos":oProductos})
+    else:
+        oPedi = Producto.objects.filter(estado = True)
+        return render(request, 'producto/listar.html',{"oProductos": oPedi})
+"""
+def detalleProducto(request,producto_id):
+    
+    oProducto = Producto.objects.get(pk=producto_id)
+    return render(request, 'producto/detalle.html', {'oProducto':oProducto})
 
 def editarProducto(request,producto_id):
     oProducto = Producto.objects.get(id = producto_id)
-    if request.method == 'POST':
-        Datos = request.POST
-        form = ProductoForm(request.POST or None, instance=oProducto)
+    if request.method=='POST':
+        form = ProductoForm(request.POST, request.FILES, instance=oProducto)
         if form.is_valid():
-            form = form.save()
+            edit_prod=form.save(commit=False)
+            form.save_m2m()
+            edit_prod.status=True
+            edit_prod.save()
+           
             return redirect('/Producto/listar/')
-
-       # else:
-        #    return render(request, '/Cliente/error.html')
     else:
-        form = ProductoForm(request.POST or None, instance=oProducto)
-        print(form)
-        return render(request, 'producto/editar.html', {'form': form})
+        form= ProductoForm(instance=oProducto)
+        ctx = {'form':form}
+    return render(request, 'Producto/editar.html',ctx)
+   
+"""
+def actualizarProducto(request, producto_id):
+    oProducto=Producto.objects.get(id=producto_id)
+    if request.method=='POST':
+        form= ProductoForm(request.POST, instance=oProducto)
+        form.save()
+
+    return 
+
+    """

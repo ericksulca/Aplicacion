@@ -89,13 +89,16 @@ urlpatterns = [
     url(r'^Pedido/resumen/$', ResumenPedidos),
     url(r'^Pedido/detalle/(?P<pedido_id>\d+)/$', DetallePedido),
     url(r'^Pedido/editar/(?P<pedido_id>\d+)/$', editarPedido),
-    url(r'^Pedido/eliminar/(?P<pedido_id>\d+)/$', eliminarPedido),
+    #url(r'^Pedido/eliminar/(?P<pedido_id>\d+)/$', eliminarPedido),
     url(r'^Pedido/actualizar/$', IngresarPrecios),
     url(r'^Pedido/reporte/$', IngresarPrecios),
     url(r'^Pedido/buscar/$', IngresarPrecios),
     url(r'^Pedido/imprimir/$', IngresarPrecios),
 
-
+    ################## RUTA #######################
+    url(r'^Ruta/nuevo/$', nuevaRuta),
+    url(r'^Ruta/listar/$',listarRuta),
+    
     ################## APP Movil #######################
 
     url(r'^usuario/validar/$', validarUsuario),

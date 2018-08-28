@@ -11,7 +11,7 @@ from app.models import *
 from app.views import *
 from django.views.decorators.csrf import csrf_exempt
 import json
-
+from app.fomularios.rutaForm import *
 ###########################################################
 #   Usuario: Erick Sulca, Ulises Bejar
 #   Fecha: 05/06/18
@@ -45,3 +45,26 @@ def rutaUsuario(request):
                 rutasJson["idPedido"]= 4
                 jsonfinal["rutas"].append(rutasJson)
             return HttpResponse(json.dumps(jsonfinal), content_type="application/json")
+
+
+def nuevaRuta(request):
+    if request.method == 'POST':
+        Datos = request.POST
+        form = RutaForm(request.POST)
+        if form.is_valid():
+            form = form.save()
+            return redirect('/ruta/listar/')
+            
+        
+    else:
+        form = RutaForm()
+        return render(request, 'ruta/nuevo.html', {'form': form})
+
+def listarRuta(request):
+    if request.method == 'GET':
+        oRuta = Rutaclientes.objects.filter(estado=True)
+
+        return render(request, 'ruta/listar.html',{'oRuta':oRuta})
+
+    else:
+        return render(request, 'ruta/nuevo.html', {})

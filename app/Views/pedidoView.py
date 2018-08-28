@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, HttpResponseRedirect
 from ferreteria import settings
@@ -13,11 +13,13 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from app.fomularios.cierrecajaForm import *
 from app.fomularios.pedidoForm import *
+from django.urls import reverse_lazy
+from django.views.generic import UpdateView
 ###########################################################
 #   Usuario: Erick Sulca, Ulises Bejar
 #   Fecha: 05/06/18
 #   Última modificación:
-#   Descripción:
+#   Descripción: 
 #   servicio de busqueda de usuario para la app movil
 ###########################################################
 
@@ -50,7 +52,7 @@ def ResumenPedidos(request):
                 oProducto["nombrePresentacion"] = oPedidoproductospresentacion.productopresentacions.presentacion.nombre
                 oProducto["cantidad"] = oPedidoproductospresentacion.cantidad
                 oProductos.append(oProducto)
-
+        
         return render(request, 'pedido/resumen.html', {"oProductos": oProductos})
 
 @csrf_exempt
@@ -85,7 +87,7 @@ def DetallePedido(request,pedido_id):
             oProducto["nombrePresentacion"] = oPedidoproductospresentacion.productopresentacions.presentacion.nombre
             oProducto["cantidad"] = oPedidoproductospresentacion.cantidad
             oProductos.append(oProducto)
-
+            print(oProductos)
         return render(request, 'pedido/detalle.html', {"oCliente": oPedido.cliente, "oProductos": oProductos})
     else:
         oPedidos = Pedido.objects.filter(estado = True)
@@ -159,27 +161,26 @@ def ListarPedido(request):
             jsonPedidos["TotalPedidos"] = TotalPedidos
             return HttpResponse(json.dumps(jsonPedidos), content_type="application/json")
 
-
 def editarPedido(request,pedido_id):
-    oPedido = Pedido.objects.get(id = pedido_id)
-    if request.method == 'POST':
-        Datos = request.POST
-        form = PedidoForm(request.POST, instance=oPedido)
-        if form.is_valid():
-            form = form.save()
-            return redirect('/Pedido/listar/')
+        oPedidoproductospresentacions= Pedidoproductospresentacions.objects.get(pedido=pedido_id)
+        oProductopresentacions= Productopresentacions.objects.get(producto=oPedidoproductospresentacions.productopresentacions.producto.id)
+        if request.method == 'POST':
+                form = PedidoproductospresentacionsForm(instance=oPedidoproductospresentacions)
+                form2=Productopresentacions()
+                if form.is_valid():
+                    edit_ped=form.save(commit=False)
+                    edit_pre=form2.save(commit=False)
+                    form.save_m2m()
+                    form2.save_m2m()
+                    edit_ped.status=True
+                    edit_pre.status=True
+                    edit_ped.save()
+                    edit_pre.save()
 
+                return redirect('/Pedido/listar/')
+
+                
         else:
-            return render(request, '/Pedido/error.html')
-    else:
-        form = PedidoForm(request.POST or None, instance=oPedido)
-        print(form)
-        return render(request, 'Pedido/editar.html', {'form': form})
-
-
-def eliminarPedido(request, pedido_id):
-     oPedido = Pedido.objects.get(id = pedido_id)
-     if  request.method == 'POST':
-        oPedido.delete()
-        return redirect('/Pedido/listar/')
-     return render(request, 'Pedido/eliminar.html', {'oPedido': oPedido})
+         form = PedidoproductospresentacionsForm(instance=oPedidoproductospresentacions)
+         form2= ProductopresentacionsForm(instance=oProductopresentacions)
+        return render(request, 'Pedido/editar.html', {'form': form, 'form2': form2})

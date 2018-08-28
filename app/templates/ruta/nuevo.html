@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang ="en-US">
+<head>
+	<meta charset="utf-8">
+	<title>Geolocalización</title>
+	<script async defer
+			    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA94LBsliF6TX_7XT76lfJAopVP_h2RkkU&callback=fn_coder">
+
+    		</script>
+</head>
+<body>
+	<h1>Mapa Interactivo</h1>
+	<div id= "mapa" style = "width: 700px; height:500px;">ACA VA NUESTRO MAPA</div>
+	<script type="text/javascript">
+
+	var divMapa = document.getElementById('mapa');
+	navigator.geolocation.getCurrentPosition(fn_ok, fn_mal);
+
+	function fn_mal(){}
+	function fn_ok(rta){
+
+		var lat = rta.coords.latitude;
+		var lon = rta.coords.longitude;
+
+		var gLatLon= new google.maps.LatLng(lat, lon); //guardamos las coordenadas en un objeto de google, el LatLng es propio de google.
+		var objConfig={
+			zoom:17,
+			center: gLatLon //donde debe estar el mapa centrado cuando se rederice.
+		}
+
+		var gMapa= new google.maps.Map(divMapa, objConfig); //indica a donde se va renderizar nuestro mapa y el segundo dato es una configuración del mapa.
+		objConfigMarker={
+		position:gLatLon,
+		map:gMapa,
+		draggable: true,
+		title:"Aqui andamos"
+		}
+
+		var gMarker = new google.maps.Marker(objConfigMarker);
+			//gMarker.setIcon('icon_usuario.gif');
+
+		var gCoder = new google.maps.Geocoder();
+
+		var objInformacion={
+			address: 'San Juan Bautista 302, Huamanga, Ayacucho'
+		}
+
+		gCoder.geocode(objInformacion, fn_coder);
+
+		function fn_coder(datos){
+			var coordenadas = datos[0].geometry.location; //obj LatLong
+
+			var config = {
+				map: gMapa,
+				position: coordenadas,
+				title: 'San juan'
+			}
+			var gMarkerDV=new google.maps.Marker(config)
+				//gMarkerDV.setIcon('icon_edificio.png')
+
+			var objHTML={
+				content: '<div style= "height: 150px; width: 300px"><h2>Colegio San juan</h2><h3>Abiera la inscripción</h3><p>Informate<a href="https://es.wikipedia.org">aca</a></p></div>'
+			}
+			var gIW = new google.maps.InfoWindow(objHTML);
+
+			google.maps.event.addListener(gMarkerDV, 'click', function(){
+				gIW.open(gMapa, gMarkerDV);
+
+			});
+
+				var objConfigDR = { //objeto de configuración directions render.
+					map: gMapa,
+					suppressMarkers: true
+				}
+			
+				var objConfigDS= {
+					origin: gLatLon, //LatLong 
+					destination:objInformacion.address,
+					travelMode: google.maps.TravelMode.WALKING //se puede variar segun tipo de movil a usar
+				
+				}
+			
+				var ds= new google.maps.DirectionsService();
+				//obtener coordenadas
+				var dr = new google.maps.DirectionsRenderer(objConfigDR);
+				//traduce coordenadas a la ruta visible
+
+					ds.route(objConfigDS, fnRutear );
+
+				function fnRutear(resultados, status){
+					//mostrar la linea entre A y B
+					if(status=='OK'){
+						dr.setDirections(resultados);
+					}else{
+						alert('Error'+status);
+					}
+				}
+		}
+	}
+	</script>
+</body>
+</html>

@@ -42,6 +42,8 @@ class Cliente(models.Model):
     latitud = models.CharField(max_length=25, blank=True, null=True)
     numerodocumento = models.CharField(max_length=11, blank=True, null=True)
     estado = models.BooleanField(blank=True,default=True)
+    def __str__(self):
+        return '%s' % self.nombre
 
 class Cobro(models.Model):
     fecha = models.DateTimeField(auto_now_add=True, blank=True)
@@ -76,7 +78,8 @@ class Pedido(models.Model):
     estado = models.BooleanField(blank=True,default=True)
     empleado = models.ForeignKey('Empleado', on_delete=models.CASCADE)  # Field name made lowercase.
     cliente = models.ForeignKey(Cliente, blank=True, null=True, on_delete=models.CASCADE)  # Field name made lowercase.
-
+    def __str__(self):
+        return '%s' % self.cliente
 class Precio(models.Model):
     nombre = models.CharField(max_length=45)
     estado = models.BooleanField(blank=True,default=True)
@@ -85,7 +88,8 @@ class Presentacion(models.Model):
     nombre = models.CharField(max_length=45)
     codigo = models.CharField(max_length=45, blank=True, null=True)
     estado = models.BooleanField(blank=True,default=True)
-
+    def __str__(self):
+        return '%s' % self.nombre
 class Empleado(models.Model):
     nombre = models.CharField(max_length=45)
     imei = models.CharField(max_length=45, blank=True, null=True)
@@ -102,7 +106,8 @@ class Producto(models.Model):
     valor = models.FloatField(default=1,blank=True)
     estado = models.BooleanField(blank=True,default=True)
     presentacions = models.ManyToManyField(Presentacion)
-
+    def __str__(self):
+        return '%s' % self.nombre
 class Productopresentacions(models.Model):
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE) 
     presentacion = models.ForeignKey(Presentacion, on_delete=models.CASCADE)  
@@ -112,7 +117,10 @@ class Productopresentacions(models.Model):
     class Meta:
         managed = False
         db_table = 'app_producto_presentacions'
-
+    def __str__(self):
+        return '%s' % self.producto
+    def __str__(self):
+        return '%s' % self.presentacion
 class Producto_almacens(models.Model):
     cantidad = models.FloatField()
     cantidadinicial = models.FloatField()
@@ -154,7 +162,8 @@ class Pedidoproductospresentacions(models.Model):
     class Meta:
         managed = False
         db_table = 'app_pedido_productos_presentacions'
-
+    def __str__(self):
+        return '%s' % self.pedido
 class Productopresentacionsprecios(models.Model):
     precio                = models.ForeignKey(Precio, on_delete=models.CASCADE)  # Field name made lowercase.
     productopresentacions = models.ForeignKey('Productopresentacions', on_delete=models.CASCADE)  # Field name made lowercase.
