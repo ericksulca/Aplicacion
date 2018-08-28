@@ -80,6 +80,7 @@ urlpatterns = [
     url(r'^Cliente/listar/$', listarCliente),
     #url(r'^Cliente/buscar/$', IngresarPrecios),
     url(r'^Cliente/actualizar/$', IngresarPrecios),
+    url(r'eliminar_identificador/$', eliminar_identificador, name='eliminar_identificador'),
 
     ################## Pedidos #######################
 
@@ -124,8 +125,15 @@ urlpatterns = [
 #######################Ventas##############################
 
     url(r'^venta/nuevo/$', nuevoVenta),
-    url(r'^venta/listar/$', ListarVentas),
-    url(r'^venta/filtrar/$', FiltrarVentas, name = "filtra_ventas"),
+    url(r'^venta/listar/$', ListarVentas, name="venta_listar"),
+    # url(r'^venta/listar/(?P<producto_buscado>\d+)/(?P<dni>\d+)/(?P<fecha_ini>[0-9]{2}-?[0-9]{2}-?[0-9]{4})/(?P<fecha_f>[0-9]{2}-?[0-9]{2}-?[0-9]{4})/$', Fentas),
+    # url(r'^venta/listar/(?P<producto_buscado>\d+)/(?P<dni>\d+)/$', Fentas),
+    #
+    # url(r'^venta/listar/(?P<producto_buscado>)/$', Fentas,name="listar_productoid"),
+    # url(r'^venta/listar/(?P<dni>\d+)/$', Fentas),
+    # url(r'^venta/listar/(?P<fecha_ini>[0-9]{2}-?[0-9]{2}-?[0-9]{4})/(?P<fecha_f>[0-9]{2}-?[0-9]{2}-?[0-9]{4})/$', Fentas),
+    # url(r'^venta/listar/(?P<fecha_f>[0-9]{2}-?[0-9]{2}-?[0-9]{4})/$', Fentas),
+    url(r'^venta/filtrar/$', Fentas, name = "filtra_ventas"),
     #url(r'^venta/listar/(?P<producto>\d+)$', FiltrarVentas.as_view, name="filtra_ventas"),
     #url(r'^Producto/detalle/(?P<producto_id>\d+)/$', detalleProducto),
     #url(r'^Producto/editar/(?P<producto_id>\d+)/$', editarProducto),

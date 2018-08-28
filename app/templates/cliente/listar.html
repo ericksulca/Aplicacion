@@ -54,29 +54,36 @@ Clientes
 				    {% endfor %}
 
 					</table>
+						<br>
+						<div class="pagination" style="text-align: center;">
+								<div class="pages">
+										<ul>
+											{% if oClientes.has_previous %}
+													<li><a href="?page={{oClientes.previous_page_number}}"><<</a></li>
+											{% endif %}
+										</ul>
+										<ul>
+										{% for pg in page_range %}
+												{% if oClientes.number == pg %}
+														<li><a href="?page={{pg}}" class="btn btn-default">{{pg}}</a></li>
+												{% else %}
+														<li><a href="?page={{pg}}" class="btn">{{pg}}</a></li>
+												{% endif %}
+										{% endfor %}
+										</ul>
+										<ul>
+											{% if oVenta.has_next %}
+													<li><a href="?page={{oVenta.next_page_number}}">>></a></li>
+											{% endif %}
+										</ul>
+								</div>
+						</div>
+
 				    <br>
 	    			<a href="/Cliente/nuevo/"><button type="button" class="btn btn-success">Nuevo Cliente</button> </a>
 
 			</div>
 	    </div>
     </div>
-
-		<div class="pagination">
-    	<span class="step-links">
-        {% if oClientes.has_previous %}
-            <a href="?page=1">&laquo; first</a>
-            <a href="?page={{ oClientes.previous_page_number }}">previous</a>
-        {% endif %}
-
-        <span class="current">
-            Page {{ oClientes.number }} of {{ oClientes.paginator.num_pages }}.
-        </span>
-
-        {% if oClientes.has_next %}
-            <a href="?page={{ oClientes.next_page_number }}">next</a>
-            <a href="?page={{ oClientes.paginator.num_pages }}">last &raquo;</a>
-        {% endif %}
-	    </span>
-		</div>
 
 {% endblock %}

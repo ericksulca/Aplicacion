@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from ferreteria import settings
 from django.contrib.auth.decorators import login_required
 # Create your views here.
@@ -101,7 +101,7 @@ def editarCliente(request,cliente_id):
     else:
         form = ClienteForm(request.POST or None, instance=oCliente)
         print(form)
-        return render(request, 'cliente/nuevo.html', {'form': form})
+        return render(request, 'cliente/editar.html', {'form': form})
 
 def nuevoCliente(request):
     if request.method == 'POST':
@@ -119,7 +119,7 @@ def nuevoCliente(request):
 
 def listarCliente(request):
     if request.method == 'GET':
-        oClientes = Cliente.objects.filter(estado=True)
+        oClientes = Cliente.objects.filter(estado=True).order_by('-id')
         paginator = Paginator(oClientes,2)
 
         page = request.GET.get('page')
@@ -130,9 +130,22 @@ def listarCliente(request):
         except EmptyPage    :
             client = paginator.page(paginator.num_pages)
 
+        index = client.number - 1
+        max_index = len(paginator.page_range)
+        start_index = index - 5 if index >= 5 else 0
+        end_index = index + 5 if index <= max_index - 5 else max_index
+        page_range = paginator.page_range[start_index:end_index]
+
         try:
-            return render(request, 'cliente/listar.html',{'oClientes':client})
+            return render(request, 'cliente/listar.html',{'oClientes':client,'page_range':page_range})
         except Exception as e:
                 return render(request, 'cliente/error.html')
     else:
         return render(request, 'cliente/nuevo.html', {})
+
+def eliminar_identificador(request):
+    pk = request.POST.get('identificador_id')
+    identificador = Cliente.objects.get(pk=pk)
+    identificador.delete()
+    response = {}
+    return JsonResponse(response)

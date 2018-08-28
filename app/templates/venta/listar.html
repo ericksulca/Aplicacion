@@ -18,7 +18,7 @@ Ventas
       dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],
       dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],
       weekHeader: 'Sm',
-      dateFormat: 'dd/mm/yy',
+      dateFormat: 'dd-mm-yy',
       firstDay: 1,
       isRTL: false,
       showMonthAfterYear: false,
@@ -196,10 +196,10 @@ Ventas
 
 
 <li>
-  <form action="{% url 'filtra_ventas' %}" method="post" class="form-inline mr-auto">
+  <form action="{% url 'filtra_ventas' %}" method="get" class="form-inline mr-auto">
     {% csrf_token %}
-      <input type="text" id="inpt-producto" placeholder="Producto..." name="inpt-producto" class="form-inline mr-auto">
-      <input type="text" id="inpt-cliente" placeholder="DNI Cliente..." name="buscando" class="form-inline mr-auto">
+      <input type="text" id="inpt-producto" placeholder="Producto..." name="producto_buscado" class="form-inline mr-auto">
+      <input type="text" id="inpt-cliente" placeholder="DNI Cliente..." name="cliente_buscado" class="form-inline mr-auto">
       <input type="text" class="form-inline mr-auto" id="desde" placeholder="Fecha inicio..." name="desde" autocomplete="off">
       <input type="text" class="form-inline mr-auto" id="hasta" placeholder="Fecha final..." name="hasta" autocomplete="off">
       <button class="btn blue-gradient btn-rounded btn-sm my-0" type="submit">Buscar</button>
@@ -256,6 +256,32 @@ Ventas
 				    {% endfor %}
           </tbody>
 				</table>
+        <br>
+        <div class="pagination" style="text-align: center;">
+            <div class="pages">
+                <ul>
+                  {% if oVenta.has_previous %}
+                      <li><a href="?page={{oVenta.previous_page_number}}"><<</a></li>
+                  {% endif %}
+                </ul>
+                <ul>
+                {% for pg in page_range %}
+                    {% if oVenta.number == pg %}
+                        <li><a href="?page={{pg}}" class="btn btn-default">{{pg}}</a></li>
+                    {% else %}
+                        <li><a href="?page={{pg}}" class="btn">{{pg}}</a></li>
+                    {% endif %}
+                {% endfor %}
+                </ul>
+                <ul>
+                  {% if oVenta.has_next %}
+                      <li><a href="?page={{oVenta.next_page_number}}">>></a></li>
+                  {% endif %}
+                </ul>
+            </div>
+        </div>
+
+
 		    <br>
   			<a href="/venta/nuevo/"><button type="button" class="btn btn-success">Nueva Venta</button> </a>
 
@@ -263,22 +289,6 @@ Ventas
 	    </div>
     </div>
 
-    <div class="pagination">
-    	<span class="step-links">
-        {% if oVenta.has_previous %}
-            <a href="?page=1">&laquo; first</a>
-            <a href="?page={{ oVenta.previous_page_number }}">previous</a>
-        {% endif %}
 
-        <span class="current">
-            Page {{ oVenta.number }} of {{ oVenta.paginator.num_pages }}.
-        </span>
-
-        {% if oVenta.has_next %}
-            <a href="?page={{ oVenta.next_page_number }}">next</a>
-            <a href="?page={{ oVenta.paginator.num_pages }}">last &raquo;</a>
-        {% endif %}
-	    </span>
-		</div>
 
 {% endblock %}
