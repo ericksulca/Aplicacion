@@ -84,8 +84,22 @@ Nueva Venta
 {% endblock %}
 
 {% block content %}
-    <div class="row">
-        <div class="col-sm-12">
+</div>
+<div class="card">
+    <div class="card-header">
+		<h3 class="box-title">Formulario de apertura de caja</h3>
+        <div class="card-header-right">
+            <ul class="list-unstyled card-option">
+                <li><i class="fa fa fa-wrench open-card-option"></i></li>
+                <li><i class="fa fa-window-maximize full-card"></i></li>
+                <li><i class="fa fa-minus minimize-card"></i></li>
+                <li><i class="fa fa-refresh reload-card"></i></li>
+                <li><i class="fa fa-trash close-card"></i></li>
+            </ul>
+        </div>
+    </div>
+    <div class="card-block table-border-style">
+        <div class="table-responsive">
             <div class="white-box">
                 <h3 class="box-title">Nuevo Pedido</h3>
 
@@ -113,47 +127,48 @@ Nueva Venta
                 <button id="bt_del" class="btn btn-warning">Eliminar</button>
                 <button id="bt_delall" class="btn btn-danger">Eliminar todo</button>
             
-                    <div class="row">
-                        <div class="form-group">
-                            <label ><center>Concepto Operación</center></label>
-                            <table id="tabla" class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <td>Nº</td>
-                                    <td>Cantidad</td>
-                                    <td>Cod. Producto</td>
-                                    <td>Nombre</td>
-                                    <td>Precio Unit.</td>
-                                    <td>Total</td>
-                                </tr>
-                            </thead>
-                            </table>
+                <div class="row">
+                    <div class="form-group">
+                        <label ><center>Concepto Operación</center></label>
+                        <table id="tabla" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <td>Nº</td>
+                                <td>Cantidad</td>
+                                <td>Cod. Producto</td>
+                                <td>Nombre</td>
+                                <td>Precio Unit.</td>
+                                <td>Total</td>
+                            </tr>
+                        </thead>
+                        </table>
 
-                            <br>
-                        </div>
-                            TOTAL: S/. <label for="id_Total" id="id_Total" name="id_Total"></label>
-                            <br>
-                            <br>
-
-                        <button id="bt_GenerarVenta" class="btn btn-success">Generar Venta</button>
-
+                        <br>
                     </div>
+                        TOTAL: S/. <label for="id_Total" id="id_Total" name="id_Total"></label>
+                        <br>
+                        <br>
 
-                    <div class="row">
-                        <div class="form-group">
-                            <div class="col-sm-8 col-md-8 col-lg-6">
-                                <div id="tabs" style="display:none;">
-                                    <table id="listaProducto"></table>
-                                    <div id="pagerlistaProducto"  style="text-align: center;"></div>
-                                </div>
-                            </div>
+                    <button id="bt_GenerarVenta" class="btn btn-success">Generar Venta</button>
 
-                            <div class="col-sm-2 col-md-2 col-lg-4">
+                </div>
 
+                <div class="row">
+                    <div class="form-group">
+                        <div class="col-sm-8 col-md-8 col-lg-6">
+                            <div id="tabs" style="display:none;">
+                                <table id="listaProducto"></table>
+                                <div id="pagerlistaProducto"  style="text-align: center;"></div>
                             </div>
                         </div>
+
+                        <div class="col-sm-2 col-md-2 col-lg-4">
+
+                        </div>
                     </div>
-                       
-                    
+                </div>
+            </div>  
+        </div>  
     </div>  
+</div>  
 {% endblock %}

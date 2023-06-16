@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.shortcuts import redirect
-from django.shortcuts import render, render_to_response
+from django.shortcuts import render
+
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, HttpResponseRedirect
 from ferreteria import settings
@@ -55,7 +56,7 @@ def ListarVentas(request):
 
         return render(request, 'venta/listar.html', {"oVenta": ventaPagina,"oProductos":oProductos,"page_range": page_range})
 
-def Fentas(request):
+def Ventas(request):
     #producto = get_object_or_404(Producto, producto_buscado=producto_buscado)
     oProductos=[]
     oVentas=[]

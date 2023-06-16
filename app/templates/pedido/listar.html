@@ -8,10 +8,23 @@ Clientes
 {% endblock %}
 
 {% block content %}
-	<div class="row">
-        <div class="col-sm-12">
+<div class="card">
+    <div class="card-header">
+		<h3 class="box-title">Formulario de apertura de caja</h3>
+        <div class="card-header-right">
+            <ul class="list-unstyled card-option">
+                <li><i class="fa fa fa-wrench open-card-option"></i></li>
+                <li><i class="fa fa-window-maximize full-card"></i></li>
+                <li><i class="fa fa-minus minimize-card"></i></li>
+                <li><i class="fa fa-refresh reload-card"></i></li>
+                <li><i class="fa fa-trash close-card"></i></li>
+            </ul>
+        </div>
+    </div>
+    <div class="card-block table-border-style">
+        <div class="table-responsive">
             <div class="white-box">
-                <h3 class="box-title">Lista de clientes</h3>
+                <h3 class="box-title">Lista de pedidos</h3>
 				{% load widget_tweaks %}
 				{% csrf_token %}
 					<div class="form-group">
@@ -52,4 +65,5 @@ Clientes
 			</div>
 	    </div>
     </div>
+</div>
 {% endblock %}

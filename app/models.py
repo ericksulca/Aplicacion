@@ -103,15 +103,6 @@ class Producto(models.Model):
     estado = models.BooleanField(blank=True,default=True)
     presentacions = models.ManyToManyField(Presentacion)
 
-class Productopresentacions(models.Model):
-    producto = models.ForeignKey(Producto, on_delete=models.CASCADE) 
-    presentacion = models.ForeignKey(Presentacion, on_delete=models.CASCADE)  
-    valor = models.FloatField()
-    unidadprincipal = models.BooleanField(default=False,blank=True)
-    precios = models.ManyToManyField(Precio)
-    class Meta:
-        managed = False
-        db_table = 'app_producto_presentacions'
 
 class Producto_almacens(models.Model):
     cantidad = models.FloatField()
@@ -198,3 +189,14 @@ class Error(models.Model):
     fecha        = models.DateTimeField(auto_now_add=True, blank=True)
     descripcion = models.TextField(blank=True, null=True)
     actividad  = models.CharField(max_length=20)
+
+
+class Productopresentacions(models.Model):
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE) 
+    presentacion = models.ForeignKey(Presentacion, on_delete=models.CASCADE)  
+    valor = models.FloatField()
+    unidadprincipal = models.BooleanField(default=False,blank=True)
+    precios = models.ManyToManyField(Precio)
+    class Meta:
+        managed = False
+        db_table = 'app_producto_presentacions'

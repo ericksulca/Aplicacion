@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% block imports %}
-Información de Cliente
 
 	<script >
 
@@ -39,8 +38,21 @@ Información de Cliente
 {% endblock %}
 
 {% block content %}
-	<div class="row">
-        <div class="col-sm-12">
+<div class="card">
+    <div class="card-header">
+		<h3 class="box-title">Detalle de Cliente</h3>
+        <div class="card-header-right">
+            <ul class="list-unstyled card-option">
+                <li><i class="fa fa fa-wrench open-card-option"></i></li>
+                <li><i class="fa fa-window-maximize full-card"></i></li>
+                <li><i class="fa fa-minus minimize-card"></i></li>
+                <li><i class="fa fa-refresh reload-card"></i></li>
+                <li><i class="fa fa-trash close-card"></i></li>
+            </ul>
+        </div>
+    </div>
+    <div class="card-block table-border-style">
+        <div class="table-responsive">
             <div class="white-box">
                 <h3 class="box-title">Datos de cliente</h3>
 			<div>
@@ -65,10 +77,10 @@ Información de Cliente
 			</div>
 
 	    </div>
-				<label for="id_latitud">My Google Maps Demo</label><br>
-								<div id="map" style="position: relative;overflow: hidden;height: 300px;">
-									<script async defer
-									src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA94LBsliF6TX_7XT76lfJAopVP_h2RkkU&callback=initMap">
+		<label for="id_latitud">My Google Maps Demo</label><br>
+		<div id="map" style="position: relative;overflow: hidden;height: 300px;">
+		<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA94LBsliF6TX_7XT76lfJAopVP_h2RkkU&callback=initMap">
 									</script>
     </div>
+</div>
 {% endblock %}
