@@ -86,7 +86,7 @@ WSGI_APPLICATION = 'ferreteria.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'mysql_cymysql',
-        'NAME': 'aes_restaurantes',
+        'NAME': 'aes_restaurantes2',
         'USER': 'develop',
         'PASSWORD': 'admindb_@@',
         'HOST': '127.0.0.1',

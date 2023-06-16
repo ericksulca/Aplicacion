@@ -190,95 +190,71 @@
                                 <hr>
                             </div>
 
-                            <ul class="nav" id="side-menu">
-                                <li style="padding: 10px 0 0;">
-                                    <a href="index.html" class="waves-effect"><i class="fa fa-clock-o fa-fw" aria-hidden="true"></i><span class="hide-menu">Dashboard</span></a>
-                                </li>
-                                <li>
-                                    <a href="/Producto/registrar/" class="waves-effect"><i class="fa fa-user fa-fw" aria-hidden="true"></i><span class="hide-menu">Clientes</span></a>
-                                    <ul>
-                                        <li><a href="/Cliente/nuevo/">Nuevo</a></li>
-                                        <li><a href="/Cliente/listar/">Listar</a></li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a href="basic-table.html" class="waves-effect"><i class="fa fa-table fa-fw" aria-hidden="true"></i><span class="hide-menu">Almacén</span></a>
-                                     <ul>
-                                        <li><a href="/Producto/nuevo/">Nuevo Producto</a></li>
-                                        <li><a href="/Producto/listar/">Listar Productos</a></li>
-                                        <li><a href="/Producto/ingresar/">Nuevo Lote</a></li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a href="blank.html" class="waves-effect"><i class="fa fa-columns fa-fw" aria-hidden="true"></i><span class="hide-menu">Ventas</span></a>
-                                    <ul>
-                                      <li><a href="/venta/nuevo/">Nueva Venta</a></li>
-                                      <li><a href="/venta/listar/">Listar Ventas</a></li>
-                                      <li><a href="/venta/anulacion/">Anulación de Venta</a></li>
-                                    </ul>
-                                </li>
-                                 <li>
-                                    <a href="blank.html" class="waves-effect"><i class="fa fa-columns fa-fw" aria-hidden="true"></i><span class="hide-menu">Pedidos</span></a>
-                                    <ul>
-                                        <li><a href="/Pedido/nuevo/">Nuevo</a></li>
-                                        <li><a href="/Pedido/listar/">Listar</a></li>
-                                        <li><a href="/Pedido/reporte/">Reporte</a></li>
-                                        <li><a href="/Pedido/buscar/">Buscar</a></li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a href="map-google.html" class="waves-effect"><i class="fa fa-globe fa-fw" aria-hidden="true"></i><span class="hide-menu">Rutas</span></a>
-                                     <ul>
-                                       <li><a href="/Ruta/nuevo/">Nuevo</a></li>
-                                       <li><a href="/Ruta/listar/">Listar</a></li>
-                                     </ul>
-                                </li>
-                                <li>
-                                    <a href="#" class="waves-effect"><i class="fa fa-info-circle fa-fw" aria-hidden="true"></i><span class="hide-menu">Información y Reportes</span></a>
-                                    <ul>
-                                      <li><a href="/Reporte/almacen/">Reporte de Almacén</a></li>
-                                      <li><a href="/Reporte/caja/">Reporte de Caja</a></li>
-                                      <li><a href="/Reporte/ventas/">Reporte de Ventas</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-
                             <ul class="pcoded-item pcoded-left-item">
-                                {% if request.resolver_match.url_name == 'home_administracion' %}
+                                {{ request.resolver_match.url_name }}
+                                {% if request.resolver_match.url_name == 'home' %}
                                     <li class="active">
                                 {% else %}
                                     <li class="">
                                 {% endif %}
-                                    <a href="" class="waves-effect waves-dark">
+                                    <a href="/" class="waves-effect waves-dark">
                                         <span class="pcoded-micon"><i class="ti-home"></i><b>D</b></span>
                                         <span class="pcoded-mtext">Inicio</span>
                                         <span class="pcoded-mcaret"></span>
                                     </a>
                                 </li>
-
-                                {% if request.resolver_match.url_name == 'listar_guia' %}
-                                    <li class="active">
-                                {% else %}
-                                    <li class="">
-                                {% endif %}
-                                    <a href="" class="waves-effect waves-dark">
-                                        <span class="pcoded-micon"><i class=""></i><b>D</b></span>
-                                        <span class="pcoded-mtext">Listar Guías</span>
-                                    </a>
-                                </li>
-                                
-                                {% if request.resolver_match.url_name == 'nuevo_guia' %}
-                                    <li class="active">
-                                {% else %}
-                                    <li class="">
-                                {% endif %}
-                                    <a href="" class="waves-effect waves-dark">
-                                        <span class="pcoded-micon"><i class=""></i><b>D</b></span>
-                                        <span class="pcoded-mtext">Nueva Guía</span>
-                                    </a>
-                                </li>
-                                
                             </ul>
+                            <ul  class="pcoded-item pcoded-left-item" id="side-menu">
+                               
+                                <li>
+                                    <a href="/Producto/registrar/" class="waves-effect"><i class="fa fa-user fa-fw" aria-hidden="true"></i><span class="hide-menu">Clientes</span></a>
+                                    <ul class="pcoded-item pcoded-left-item">
+                                        <li><a class="waves-effect waves-dark" href="/Cliente/nuevo/">Nuevo</a></li>
+                                        <li><a class="waves-effect waves-dark" href="/Cliente/listar/">Listar</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="basic-table.html" class="waves-effect"><i class="fa fa-table fa-fw" aria-hidden="true"></i><span class="hide-menu">Almacén</span></a>
+                                     <ul class="pcoded-item pcoded-left-item">
+                                        <li><a class="waves-effect waves-dark" href="/Producto/nuevo/">Nuevo Producto</a></li>
+                                        <li><a class="waves-effect waves-dark" href="/Producto/listar/">Listar Productos</a></li>
+                                        <li><a class="waves-effect waves-dark" href="/Producto/ingresar/">Nuevo Lote</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="blank.html" class="waves-effect"><i class="fa fa-columns fa-fw" aria-hidden="true"></i><span class="hide-menu">Ventas</span></a>
+                                    <ul class="pcoded-item pcoded-left-item">
+                                      <li><a class="waves-effect waves-dark" href="/venta/nuevo/">Nueva Venta</a></li>
+                                      <li><a class="waves-effect waves-dark" href="/venta/listar/">Listar Ventas</a></li>
+                                      <li><a class="waves-effect waves-dark" href="/venta/anulacion/">Anulación de Venta</a></li>
+                                    </ul>
+                                </li>
+                                 <li>
+                                    <a href="blank.html" class="waves-effect"><i class="fa fa-columns fa-fw" aria-hidden="true"></i><span class="hide-menu">Pedidos</span></a>
+                                    <ul class="pcoded-item pcoded-left-item">
+                                        <li><a class="waves-effect waves-dark" href="/Pedido/nuevo/">Nuevo</a></li>
+                                        <li><a class="waves-effect waves-dark" href="/Pedido/listar/">Listar</a></li>
+                                        <li><a class="waves-effect waves-dark" href="/Pedido/reporte/">Reporte</a></li>
+                                        <li><a class="waves-effect waves-dark" href="/Pedido/buscar/">Buscar</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="map-google.html" class="waves-effect"><i class="fa fa-globe fa-fw" aria-hidden="true"></i><span class="hide-menu">Rutas</span></a>
+                                     <ul class="pcoded-item pcoded-left-item">
+                                       <li><a class="waves-effect waves-dark" href="/Ruta/nuevo/">Nuevo</a></li>
+                                       <li><a class="waves-effect waves-dark" href="/Ruta/listar/">Listar</a></li>
+                                     </ul>
+                                </li>
+                                <li>
+                                    <a href="#" class="waves-effect"><i class="fa fa-info-circle fa-fw" aria-hidden="true"></i><span class="hide-menu">Información y Reportes</span></a>
+                                    <ul class="pcoded-item pcoded-left-item">
+                                      <li><a class="waves-effect waves-dark" href="/Reporte/almacen/">Reporte de Almacén</a></li>
+                                      <li><a class="waves-effect waves-dark" href="/Reporte/caja/">Reporte de Caja</a></li>
+                                      <li><a class="waves-effect waves-dark" href="/Reporte/ventas/">Reporte de Ventas</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+
                         </div>
                     </nav>
                     <div class="pcoded-content">
