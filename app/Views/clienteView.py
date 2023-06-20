@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django.shortcuts import redirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from ferreteria import settings
@@ -12,7 +11,7 @@ from app.views import *
 from django.views.decorators.csrf import csrf_exempt
 import json
 from app.fomularios.clienteForm import *
-
+from django.urls import reverse
 
 ##paginacion
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -97,10 +96,9 @@ def editarCliente(request,cliente_id):
             return redirect('/Cliente/listar/')
 
         else:
-            return render(request, '/Cliente/error.html')
+            return render(request, '/')
     else:
         form = ClienteForm(request.POST or None, instance=oCliente)
-        print(form)
         return render(request, 'cliente/editar.html', {'form': form})
 
 def nuevoCliente(request):
@@ -120,7 +118,7 @@ def nuevoCliente(request):
 def listarCliente(request):
     if request.method == 'GET':
         oClientes = Cliente.objects.filter(estado=True).order_by('-id')
-        paginator = Paginator(oClientes,2)
+        paginator = Paginator(oClientes,10)
 
         page = request.GET.get('page')
         try:
@@ -143,9 +141,11 @@ def listarCliente(request):
     else:
         return render(request, 'cliente/nuevo.html', {})
 
-def eliminar_identificador(request):
-    pk = request.POST.get('identificador_id')
-    identificador = Cliente.objects.get(pk=pk)
-    identificador.delete()
-    response = {}
-    return JsonResponse(response)
+def eliminar_cliente(request,pk):
+    oCliente = Cliente.objects.get(pk=pk)
+    oCliente.estado = False
+    oCliente.save()
+    response = {'exito':1}
+    #return JsonResponse(response)
+    #return redirect('listar_cliente', kwargs={})
+    return HttpResponseRedirect(reverse("listar_cliente"))

@@ -191,8 +191,7 @@
                             </div>
 
                             <ul class="pcoded-item pcoded-left-item">
-                                {{ request.resolver_match.url_name }}
-                                {% if request.resolver_match.url_name == 'home' %}
+                                {% if request.resolver_match.url_name == 'Home' %}
                                     <li class="active">
                                 {% else %}
                                     <li class="">

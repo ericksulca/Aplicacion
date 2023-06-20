@@ -44,11 +44,9 @@ from app.Views.loteView import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', Home),
+    path('', Home, name='Home'),
     path('login/', Login, name='Login'),
     path('logout/', Logout, name='Logout'),
-    path('home/', Home, name='Home'),
-    path('Home/', Home, name='home'),
     path('prueba/', Prueba, name='prueba'),
 
     ################## Caja #######################
@@ -75,13 +73,13 @@ urlpatterns = [
     #path('pruebaExcel/', IngresarPrecios),
 
     ################## Cliente #######################
-    path('Cliente/nuevo/', nuevoCliente),
-    path('Cliente/detalle/<int:cliente_id>/', detalleCliente),
-    path('Cliente/editar/<int:cliente_id>/', editarCliente),
-    path('Cliente/listar/', listarCliente),
+    path('Cliente/nuevo/', nuevoCliente, name='nuevo_cliente'),
+    path('Cliente/detalle/<int:cliente_id>/', detalleCliente, name='detalle_cliente'),
+    path('Cliente/editar/<int:cliente_id>/', editarCliente, name='editar_cliente'),
+    path('Cliente/listar/', listarCliente, name='listar_cliente'),
     #path('Cliente/buscar/', IngresarPrecios),
-    path('Cliente/actualizar/', IngresarPrecios),
-    path('liminar_identificador/', eliminar_identificador, name='eliminar_identificador'),
+    path('Cliente/actualizar/', IngresarPrecios, name='actualiza_cliente'),
+    path('Cliente/eliminar/<int:pk>/', eliminar_cliente, name='eliminar_cliente'),
 
     ################## Pedidos #######################
 
