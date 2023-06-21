@@ -50,26 +50,26 @@ urlpatterns = [
     path('prueba/', Prueba, name='prueba'),
 
     ################## Caja #######################
-    path('Caja/apertura/', registrarAperturacaja),
-    path('Caja/cierre/', registrarCierrecaja),
-    path('Caja/movimiento/', registrarOperacion),
+    path('Caja/apertura/', registrarAperturacaja, name='apertura_caja'),
+    path('Caja/cierre/', registrarCierrecaja, name='cierre_caja'),
+    path('Caja/operacion/', registrarOperacion, name='operacion_caja'),
 
     ################## Venta #######################
-    path('Venta/nuevo/', registrarPedido),
+    path('Venta/nuevo/', registrarPedido, name='registrar_venta'),
 
     ################## Producto #######################
-    path('Producto/listar/', ListarProductos),
-    path('Producto/nuevo/', registrarProducto),
-    path('Producto/detalle/<int:producto_id>/', detalleProducto),
-    path('Producto/editar/<int:producto_id>/', editarProducto),
+    path('Producto/listar/', ListarProductos, name ='listar_producto'),
+    path('Producto/nuevo/', registrarProducto, name ='registrar_producto'),
+    path('Producto/detalle/<int:producto_id>/', detalleProducto, name ='ver_producto'),
+    path('Producto/editar/<int:producto_id>/', editarProducto, name ='editar_producto'),
 
     ################## Catalogo #######################
-    path('Presentacion/Listar/<int:producto_id>/', presentacion_detalle),
-    path('Presentacion/registrar/', registrarPresentacionProducto),
-    path('Presentacion/eliminar/<int:presentacion_id>/<int:producto_id>/', eliminarPresentacionProducto),
-    path('Presentacion/getPresentaciones/', getPresentaciones),
+    path('Presentacion/Listar/<int:producto_id>/', presentacion_detalle, name ='listar_presentacion'),
+    path('Presentacion/registrar/', registrarPresentacionProducto, name ='registrar_presentacion'),
+    path('Presentacion/eliminar/<int:presentacion_id>/<int:producto_id>/', eliminarPresentacionProducto, name ='eliminar_presentacion'),
+    path('Presentacion/getPresentaciones/', getPresentaciones, name ='get_presentacion'),
 
-    path('Precios/getPrecios/', getPrecios),
+    path('Precios/getPrecios/', getPrecios, name ='get_precios'),
     #path('pruebaExcel/', IngresarPrecios),
 
     ################## Cliente #######################
