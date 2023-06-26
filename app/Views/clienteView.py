@@ -94,7 +94,6 @@ def editarCliente(request,cliente_id):
         if form.is_valid():
             form = form.save()
             return redirect('/Cliente/listar/')
-
         else:
             return render(request, '/')
     else:

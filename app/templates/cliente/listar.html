@@ -1,18 +1,13 @@
 {% extends "base.html" %}
 {% block imports %}
-Clientes
 	<script type="text/javascript">
+		//evento click para boton editar
+		$(document).on('Click', '.btn-editar', function(e){
 
-	//evento click para boton editar
-
-	$(document).on('Click', '.btn-editar', function(e){
-
-		e.preventDefault();
-		 var row=$(this).paren().parent()[0];
-		 console.log(row);
-	});
-
-
+			e.preventDefault();
+			var row=$(this).paren().parent()[0];
+			console.log(row);
+		});
 	</script>
 {% endblock %}
 

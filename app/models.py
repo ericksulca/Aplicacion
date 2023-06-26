@@ -185,7 +185,6 @@ class Productopresentacionsprecios(models.Model):
         managed = False
         db_table = 'app_producto_presentacions_precios'
 
-
 class Ruta(models.Model):
     nombre   = models.CharField(max_length=45)
     fecha    = models.DateTimeField(auto_now_add=True, blank=True)
