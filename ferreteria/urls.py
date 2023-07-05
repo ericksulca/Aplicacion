@@ -62,6 +62,7 @@ urlpatterns = [
     path('Producto/nuevo/', registrarProducto, name ='registrar_producto'),
     path('Producto/detalle/<int:producto_id>/', detalleProducto, name ='ver_producto'),
     path('Producto/editar/<int:producto_id>/', editarProducto, name ='editar_producto'),
+    path('Producto/eliminar/<int:pk>/', eliminar_producto, name='eliminar_producto'),
 
     ################## Catalogo #######################
     path('Presentacion/Listar/<int:producto_id>/', presentacion_detalle, name ='listar_presentacion'),
@@ -137,7 +138,7 @@ urlpatterns = [
     #path('Producto/detalle/<int:<producto_id>\d+)/$', detalleProducto),
     #path('Producto/editar/<int:<producto_id>\d+)/$', editarProducto),
 
-    path('Lote/nuevo/', nuevoLote),
+    path('Lote/nuevo/', nuevoLote, name='nuevo_lote'),
     #####################################################
 
 #######################Rutas##############################

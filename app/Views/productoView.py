@@ -1,19 +1,21 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, HttpResponseRedirect
-from ferreteria import settings
+from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
+
+from ferreteria import settings
+from ferreteria.urls import *
 # Create your views here.
+from app.fomularios.productoForm import *
 from app.models import *
 from app.views import *
-from ferreteria.urls import *
-from django.views.decorators.csrf import csrf_exempt
-import json
-from app.fomularios.productoForm import *
 
+import json
 ###########################################################
 #   Usuario: Erick Sulca, Ulises Bejar
 #   Fecha: 05/06/18
@@ -66,9 +68,7 @@ def registrarProducto(request):
 def BuscarProducto (request):
     if request.method == 'POST':
         Datos = json.loads(request.body)
-        #print Datos
         usuario=True
-        #usuario= BuscarUsuario(Datos["idUsuario"])
 
         if usuario==True:
             nombreProducto = Datos["nombreProducto"]
@@ -80,36 +80,9 @@ def BuscarProducto (request):
                 jsonProducto["id"] = oProducto.id
                 jsonProducto["nombre"] = oProducto.nombre
                 jsonProducto["codigo"] = oProducto.codigo
-                print ("------------------")
-                print (oProducto.imagen)
-                print ("------------------")
-                if oProducto.imagen=="":
-                    jsonProducto["imagen"] = "/imagen/default.jpg"
-                else:
-                    jsonProducto["imagen"] = oProducto.imagen.url
                 jsonProductos["productos"].append(jsonProducto)
 
             return HttpResponse(json.dumps(jsonProductos), content_type="application/json")
-
-        if request.is_ajax:
-            palabra=request.GET.get('term','')
-
-            doctores=Doctor.objects.filter(name__icontains=palabra)
-
-            results=[]
-
-            for doctor in doctores:
-                doctor_json={}
-                doctor_json['label']=doctor.name
-                doctor_json['value']=doctor.name
-                results.append(doctor_json)
-
-            data_json=json.dumps(results)
-        else:
-            data_json='fail'
-        mimetype="application/json"
-        return HttpResponse(data_json,mimetype)
-
 
 
 @csrf_exempt
@@ -183,3 +156,13 @@ def editarProducto(request,producto_id):
         form = ProductoForm(request.POST or None, instance=oProducto)
         print(form)
         return render(request, 'producto/editar.html', {'form': form})
+
+
+def eliminar_producto(request,pk):
+    oProducto = Producto.objects.get(pk=pk)
+    oProducto.estado = False
+    oProducto.save()
+    response = {'exito':1}
+    #return JsonResponse(response)
+    #return redirect('listar_producto', kwargs={})
+    return HttpResponseRedirect(reverse("listar_producto"))

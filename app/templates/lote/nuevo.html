@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+{% block imports %}
+<script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://unpkg.com/@trevoreyre/autocomplete-js"></script>
+
+
+<script type="text/javascript" src="/static/js/lote.js"></script>
+
+
+ <style>
+    ul.ui-autocomplete {
+        z-index: 1100;
+    }
+    #content{
+        position: absolute;
+        min-height: 50%;
+        width: 80%;
+        top: 20%;
+        left: 5%;
+    }
+
+    .selected{
+        cursor: pointer;
+    }
+    .selected:hover{
+        background-color: #0585C0;
+        color: white;
+    }
+    .seleccionada{
+        background-color: #0585C0;
+        color: white;
+    }
+</style>
+{% endblock %}
+
+
+{% block title %}
+Nueva Venta
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+		<h3 class="box-title">Nuevo Lote</h3>
+        <div class="card-header-right">
+            <ul class="list-unstyled card-option">
+                <li><i class="fa fa fa-wrench open-card-option"></i></li>
+                <li><i class="fa fa-window-maximize full-card"></i></li>
+                <li><i class="fa fa-minus minimize-card"></i></li>
+                <li><i class="fa fa-refresh reload-card"></i></li>
+                <li><i class="fa fa-trash close-card"></i></li>
+            </ul>
+        </div>
+    </div>
+    <div class="card-block table-border-style">
+        <div class="table-responsive">
+            <div class="white-box">
+                <div id="app">
+                    <h3 class="box-title">Nuevo Lote</h3>
+                    <br>
+                    <label for="id_nombre">Cantidad:</label>
+                    <br>
+                    <input type="number" name="cantidad" id="cantidad" required="" class="form-control" >
+                    <label for="id_nombre">Producto:</label>
+                    <br>
+                    <input type="text" v-model="nombreProducto"  class="form-control">
+                    <hr>
+                    <h3>[[nombreProducto]]</h3>
+                    <hr>
+                    <input type="text" name="inpt-producto" id="inpt-producto" required="" class="form-control" maxlength="45" onkeyup="if(event.keyCode == 13) InsertarLote()">
+                    <br>
+                    <label for="id_nombre">Código:</label>
+                    <br>
+                    <input type="text" name="codigo" id="codigo" required="" class="form-control" disabled="disabled">
+                    <br>
+                    
+                    <button id="bt_add" class="btn btn-success">Agregar</button>
+                    <button id="bt_del" class="btn btn-warning">Eliminar</button>
+                    <button id="bt_delall" class="btn btn-danger">Eliminar todo</button>
+                    <div class="row">
+                        <div class="form-group">
+                            <label ><center>Concepto Operación</center></label>
+                            <table id="tabla" class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <td>Nº</td>
+                                    <td>Cantidad</td>
+                                    <td>Cod. Producto</td>
+                                    <td>Nombre</td>
+                                </tr>
+                            </thead>
+                            </table>
+
+                            <br>
+                        </div>
+                            <br>
+
+                        <button id="bt_GenerarLote" class="btn btn-success">Crear Lote</button>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-sm-8 col-md-8 col-lg-6">
+                                <div id="tabs" style="display:none;">
+                                    <table id="listaProducto"></table>
+                                    <div id="pagerlistaProducto"  style="text-align: center;"></div>
+                                </div>
+                            </div>
+                            <div class="col-sm-2 col-md-2 col-lg-4">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer  %}
+
+<script type="text/javascript">
+    //import LanguagesDropdown from 'vue-languages-dropdown'
+    //import Dropdown from 'vue-simple-search-dropdown';
+
+    new Vue({
+        delimiters: ['[[', ']]'],
+        el: '#app',
+        created() {
+        },
+        data:   {
+            nombreProducto: '',
+        },
+        watch: {
+
+        }
+        ,
+        methods: {
+            async set_Guia(){
+                let data = {
+                    nombreProducto : this.nombreProducto,
+                };
+                axios.post("/producto/buscar/", data).then((result) => {
+                    const data = result.data;
+                    if (data.exito== 1){
+                        alert("Guía agregada correctamente")
+                        window.location.href = "/ep-admin/"
+                    }
+                    else{
+                        alert("Error")
+                    }
+                });
+            },
+        },
+    });
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $( "#cantidad" ).focus();
+        //$( "#inpt-producto" ).focus();
+        $('cantidad').prop('disabled', true);
+        $( "#inpt-producto" ).autocomplete({
+            source: function (request, response) {
+                var ListasProductos = result['productos'];
+                response($.map(ListasProductos, function (item) {
+                    return {
+                        label: item.nombre,
+                        idproducto: item.nombre,
+                        codigo: item.codigo,
+                        Id: item.id
+                        };
+                }));
+            },
+            minLength: 2,
+            select: function (event, ui) {
+                $.data(document.body, 'idproducto', ui.item.Id);//guardar el id en memoria el $.data guarda en memoria
+                $( "#codigo" ).val( ui.item.codigo);
+
+                $( "#cantidad" ).focus();
+                $( "#cantidad" ).focus();
+                var iDPro = ui.item.Id;
+                agregar();
+            }
+        });
+  });
+</script>
+{% endblock %}
+
+

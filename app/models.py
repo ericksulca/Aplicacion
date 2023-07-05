@@ -116,7 +116,7 @@ class Producto(models.Model):
     nombre = models.CharField(max_length=45)
     codigo = models.CharField(max_length=45, blank=True, null=True)
     cantidad = models.FloatField(default=0,blank=True, null=True)
-    imagen = models.ImageField(upload_to='', blank=True, null=True)#upload_to='%Y/%m/%d',
+    imagen = models.ImageField(upload_to='', default="/imagen/default.jpg", blank=True, null=True)#upload_to='%Y/%m/%d',
     url = models.CharField(max_length=100, blank=True, null=True)
     valor = models.FloatField(default=1,blank=True)
     estado = models.BooleanField(blank=True,default=True)
@@ -162,12 +162,15 @@ class Venta(models.Model):
     nrecibo = models.CharField(max_length=45, blank=True, null=True)
     estado  = models.BooleanField(blank=True,default=True)
     pedido  = models.ForeignKey(Pedido, on_delete=models.CASCADE)  # Field name made lowercase.
-    cliente = models.ForeignKey(Cliente, blank=True, null=True, on_delete=models.CASCADE)  # Field name made lowercase.
+    #cliente = models.ForeignKey(Cliente, blank=True, null=True, on_delete=models.CASCADE)  # Field name made lowercase.
 
     def __str__(self):
         str_return = 'Fecha : '+str(self.fecha) + ' - Monto S/. ' + str(self.monto)
         return str_return
  
+# tb1
+# tb2
+
 class Pedidoproductospresentacions(models.Model):
     valor                 = models.FloatField(blank=True, null=True)
     cantidad              = models.FloatField(blank=True,default=0)
@@ -176,6 +179,8 @@ class Pedidoproductospresentacions(models.Model):
     class Meta:
         managed = False
         db_table = 'app_pedido_productos_presentacions'
+        #Crear tabla física
+
 
 class Productopresentacionsprecios(models.Model):
     precio                = models.ForeignKey(Precio, on_delete=models.CASCADE)  # Field name made lowercase.
@@ -183,7 +188,10 @@ class Productopresentacionsprecios(models.Model):
     valor                 = models.FloatField(blank=True,default=0)
     class Meta:
         managed = False
-        db_table = 'app_producto_presentacions_precios'
+        db_table = 'app_productopresentacions_precios'
+        #Crear tabla física
+        
+        
 
 class Ruta(models.Model):
     nombre   = models.CharField(max_length=45)
@@ -195,16 +203,17 @@ class Ruta(models.Model):
         return str(self.nombre)
 
 class Rutaclientes(models.Model):
-    fecha        = models.DateTimeField(auto_now_add=True, blank=True)
-    modificacion = models.DateTimeField(auto_now=True, blank=True)
     ruta         = models.ForeignKey(Ruta, on_delete=models.CASCADE)
     cliente      = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+    fecha        = models.DateTimeField(auto_now_add=True, blank=True)
+    modificacion = models.DateTimeField(auto_now=True, blank=True)
     activo       = models.BooleanField(blank=True,default=True)
     estado       = models.BooleanField(blank=True,default=True)
 
     class Meta:
         managed = False
         db_table = 'app_ruta_clientes'
+    #     crear label's fecha ... estado en BD física
 
 class Visita(models.Model):
     fecha        = models.DateTimeField(auto_now_add=True, blank=True)
@@ -225,9 +234,10 @@ class Error(models.Model):
 class Productopresentacions(models.Model):
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE) 
     presentacion = models.ForeignKey(Presentacion, on_delete=models.CASCADE)  
+    precios = models.ManyToManyField(Precio)
     valor = models.FloatField()
     unidadprincipal = models.BooleanField(default=False,blank=True)
-    precios = models.ManyToManyField(Precio)
     class Meta:
         managed = False
         db_table = 'app_producto_presentacions'
+        # crear label's valor, unidadProncipal, precio en BD Física

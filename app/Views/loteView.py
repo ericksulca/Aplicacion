@@ -36,13 +36,13 @@ def nuevoLote(request):
                 idPrecio = str(oPrecio.id)
                 oProductoPresentacionsprecios.valor = Datos[idPrecio]
                 oProductoPresentacionsprecios.save()
-            return render(request, 'lote/lote.html')
+            return render(request, 'lote/nuevo.html')
 
 
     else:
         form = ProductoForm()
         oPrecios = Precio.objects.filter(estado=True)
         oPresentaciones = Presentacion.objects.filter(estado=True)
-    return render(request, 'lote/lote.html', {'form': form,'precios':oPrecios,'presentaciones':oPresentaciones})
+    return render(request, 'lote/nuevo.html', {'form': form,'precios':oPrecios,'presentaciones':oPresentaciones})
 
 
