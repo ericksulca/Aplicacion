@@ -21,7 +21,6 @@ from django.conf.urls.static import static
 from app.views import *
 from app.Views.productoView import *
 from app.Views.precioView import *
-from app.Views.presentacionView import *
 from app.Views.aperturacajaView import *
 from app.Views.cierrecajaView import *
 from app.Views.operacionView import *
@@ -65,12 +64,12 @@ urlpatterns = [
     path('Producto/eliminar/<int:pk>/', eliminar_producto, name='eliminar_producto'),
 
     ################## Catalogo #######################
-    path('Presentacion/Listar/<int:producto_id>/', presentacion_detalle, name ='listar_presentacion'),
-    path('Presentacion/registrar/', registrarPresentacionProducto, name ='registrar_presentacion'),
-    path('Presentacion/eliminar/<int:presentacion_id>/<int:producto_id>/', eliminarPresentacionProducto, name ='eliminar_presentacion'),
-    path('Presentacion/getPresentaciones/', getPresentaciones, name ='get_presentacion'),
-
-    path('Precios/getPrecios/', getPrecios, name ='get_precios'),
+    #path('Presentacion/Listar/<int:producto_id>/', presentacion_detalle, name ='listar_presentacion'),
+    #path('Presentacion/registrar/', registrarPresentacionProducto, name ='registrar_presentacion'),
+    #path('Presentacion/eliminar/<int:presentacion_id>/<int:producto_id>/', eliminarPresentacionProducto, name ='eliminar_presentacion'),
+    #path('Presentacion/getPresentaciones/', getPresentaciones, name ='get_presentacion'),
+#
+    #path('Precios/getPrecios/', getPrecios, name ='get_precios'),
     #path('pruebaExcel/', IngresarPrecios),
 
     ################## Cliente #######################
@@ -95,7 +94,6 @@ urlpatterns = [
     path('Pedido/buscar/', IngresarPrecios),
     path('Pedido/imprimir/', IngresarPrecios),
 
-
     ################## APP Movil #######################
 
     path('usuario/validar/', validarUsuario),
@@ -111,11 +109,13 @@ urlpatterns = [
     path('pedido/listar/', ListarPedido),
     path('pedido/detalle/', DetallePedidoMovil),
     path('pedido/editar/', DetallePedidoMovil),
+    path('pedido/alerta/listar/',Listar_PedidoAlertaView.as_view(),name = 'listar_pedidoalertas'),
 
     path('pago/nuevo/', IngresarPrecios),
 
 
-    path('producto/buscar/', BuscarProducto),
+    path('producto/buscar/', BuscarProducto, name='buscar_producto'),
+    path('producto/json_listar/', get_Productos.as_view(), name='listar_productos'),
     path('producto/presentacion/listar/', ListarPresentacionesProducto),
     path('producto/presentacion/cantidad/', CantidadPresentacionesProducto),
 

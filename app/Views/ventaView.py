@@ -47,12 +47,6 @@ def ListarVentas(request):
 
         for o in oVenta:
             pedido = Pedido.objects.filter(id=o.pedido_id,estado=True)
-            pedidoproductospresentacions = Pedidoproductospresentacions.objects.filter(pedido_id__in=[p.id for p in pedido])
-            for ope in pedidoproductospresentacions:
-                oNuevo={}
-                oNuevo['id']=o.id
-                oNuevo['producto']=ope.productopresentacions.producto.nombre
-                oProductos.append(oNuevo)
 
         return render(request, 'venta/listar.html', {"oVenta": ventaPagina,"oProductos":oProductos,"page_range": page_range})
 
@@ -67,8 +61,6 @@ def Ventas(request):
     fecha_fin = request.GET.get('hasta')
 
     if producto != '':
-        presentacion = Productopresentacions.objects.filter(producto=producto)
-        pedidoproductopresentacion = Pedidoproductospresentacions.objects.filter(productopresentacions_id__in=[p.id for p in presentacion])
         pedido = Pedido.objects.filter(estado=True,id__in=[s.pedido_id for s in pedidoproductopresentacion])
         venta = Venta.objects.filter(estado=True,pedido_id__in=[p.id for p in pedido]).order_by("-id")
         productonombre = Producto.objects.get(id=producto).nombre

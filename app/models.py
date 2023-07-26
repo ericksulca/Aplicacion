@@ -8,6 +8,7 @@
 from __future__ import unicode_literals
  
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Almacen(models.Model):
@@ -83,25 +84,13 @@ class Operacion(models.Model):
     def __str__(self):
         str_return = 'Fecha : '+str(self.fecha) + ' - Monto S/. ' + str(self.monto)
         return str_return
+    
 class Pedido(models.Model):
     fecha = models.DateTimeField(auto_now_add=True, blank=True)
     estado = models.BooleanField(blank=True,default=True)
     empleado = models.ForeignKey('Empleado', on_delete=models.CASCADE)  # Field name made lowercase.
     cliente = models.ForeignKey(Cliente, blank=True, null=True, on_delete=models.CASCADE)  # Field name made lowercase.
 
-class Precio(models.Model):
-    nombre = models.CharField(max_length=45)
-    estado = models.BooleanField(blank=True,default=True)
-    def __str__(self):
-        return str(self.nombre)
-
-class Presentacion(models.Model):
-    nombre = models.CharField(max_length=45)
-    codigo = models.CharField(max_length=45, blank=True, null=True)
-    estado = models.BooleanField(blank=True,default=True)
-    def __str__(self):
-        return str(self.nombre)
-    
 class Empleado(models.Model):
     nombre = models.CharField(max_length=45)
     imei = models.CharField(max_length=45, blank=True, null=True)
@@ -119,8 +108,16 @@ class Producto(models.Model):
     imagen = models.ImageField(upload_to='', default="/imagen/default.jpg", blank=True, null=True)#upload_to='%Y/%m/%d',
     url = models.CharField(max_length=100, blank=True, null=True)
     valor = models.FloatField(default=1,blank=True)
+    precio = models.FloatField(default=1,blank=True)
     estado = models.BooleanField(blank=True,default=True)
-    presentacions = models.ManyToManyField(Presentacion)
+
+    def __str__(self):
+        return str(self.nombre)
+    
+class Insumo(models.Model):
+    nombre = models.CharField(max_length=45)
+    codigo = models.CharField(max_length=45, blank=True, null=True)
+    estado = models.BooleanField(blank=True,default=True)
 
     def __str__(self):
         return str(self.nombre)
@@ -171,27 +168,6 @@ class Venta(models.Model):
 # tb1
 # tb2
 
-class Pedidoproductospresentacions(models.Model):
-    valor                 = models.FloatField(blank=True, null=True)
-    cantidad              = models.FloatField(blank=True,default=0)
-    pedido                = models.ForeignKey(Pedido, on_delete=models.CASCADE)  # Field name made lowercase.
-    productopresentacions = models.ForeignKey('Productopresentacions', on_delete=models.CASCADE)  # Field name made lowercase.
-    class Meta:
-        managed = False
-        db_table = 'app_pedido_productos_presentacions'
-        #Crear tabla física
-
-
-class Productopresentacionsprecios(models.Model):
-    precio                = models.ForeignKey(Precio, on_delete=models.CASCADE)  # Field name made lowercase.
-    productopresentacions = models.ForeignKey('Productopresentacions', on_delete=models.CASCADE)  # Field name made lowercase.
-    valor                 = models.FloatField(blank=True,default=0)
-    class Meta:
-        managed = False
-        db_table = 'app_productopresentacions_precios'
-        #Crear tabla física
-        
-        
 
 class Ruta(models.Model):
     nombre   = models.CharField(max_length=45)
@@ -230,14 +206,10 @@ class Error(models.Model):
     descripcion = models.TextField(blank=True, null=True)
     actividad  = models.CharField(max_length=20)
 
-
-class Productopresentacions(models.Model):
-    producto = models.ForeignKey(Producto, on_delete=models.CASCADE) 
-    presentacion = models.ForeignKey(Presentacion, on_delete=models.CASCADE)  
-    precios = models.ManyToManyField(Precio)
-    valor = models.FloatField()
-    unidadprincipal = models.BooleanField(default=False,blank=True)
-    class Meta:
-        managed = False
-        db_table = 'app_producto_presentacions'
-        # crear label's valor, unidadProncipal, precio en BD Física
+class Alerta(models.Model):
+    fecha = models.DateTimeField(auto_now_add=True, blank=True)
+    usuario = models.OneToOneField(User, on_delete= models.DO_NOTHING, related_name='usuario_alertas')
+    mensaje = models.TextField(blank=True, null=True)
+    activo = models.BooleanField(blank=True,default=True)
+    pedido  = models.ForeignKey(Pedido, on_delete=models.CASCADE, blank=True, null=True)  # Field name made lowercase.
+    estado = models.BooleanField(blank=True,default=True)

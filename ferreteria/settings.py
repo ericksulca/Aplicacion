@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'app',
     'widget_tweaks',
+    'rest_framework',
+
 ]
 
 LOGIN_URL = "/login/"

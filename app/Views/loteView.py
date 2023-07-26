@@ -24,25 +24,13 @@ def nuevoLote(request):
             oProducto = form
             oPresentacion = Presentacion.objects.get(id = int(Datos['cmbPresentacionPrincipal']))
             oProducto.presentacions.add(oPresentacion)
-            oProductopresentacions = Productopresentacions.objects.get(producto=oProducto, presentacion=oPresentacion)
-            oProductopresentacions.valor = 1
-            oProductopresentacions.unidadprincipal = True
-            oProductopresentacions.save()
-            oPrecios = Precio.objects.filter(estado=1)
-            for oPrecio in oPrecios:
-                oProductoPresentacionsprecios = Productopresentacionsprecios()
-                oProductoPresentacionsprecios.precio = oPrecio
-                oProductoPresentacionsprecios.productopresentacions = oProductopresentacions
-                idPrecio = str(oPrecio.id)
-                oProductoPresentacionsprecios.valor = Datos[idPrecio]
-                oProductoPresentacionsprecios.save()
+            
             return render(request, 'lote/nuevo.html')
 
 
     else:
         form = ProductoForm()
         oPrecios = Precio.objects.filter(estado=True)
-        oPresentaciones = Presentacion.objects.filter(estado=True)
-    return render(request, 'lote/nuevo.html', {'form': form,'precios':oPrecios,'presentaciones':oPresentaciones})
+    return render(request, 'lote/nuevo.html', {'form': form,'precios':oPrecios})
 
 

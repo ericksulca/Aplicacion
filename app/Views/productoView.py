@@ -8,6 +8,8 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 
+from rest_framework.generics import (ListAPIView)
+
 from ferreteria import settings
 from ferreteria.urls import *
 # Create your views here.
@@ -81,9 +83,16 @@ def BuscarProducto (request):
                 jsonProducto["nombre"] = oProducto.nombre
                 jsonProducto["codigo"] = oProducto.codigo
                 jsonProductos["productos"].append(jsonProducto)
-
+            
+            print(jsonProductos)
             return HttpResponse(json.dumps(jsonProductos), content_type="application/json")
 
+from app.serializers import ProductoSerializer
+class get_Productos(ListAPIView):
+    serializer_class = ProductoSerializer
+    def get_queryset(self):
+        oProductos = Producto.objects.filter(estado = True)
+        return oProductos
 
 @csrf_exempt
 def ListarPresentacionesProducto (request):
