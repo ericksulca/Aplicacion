@@ -14,7 +14,6 @@ import json
 from app.fomularios.productoForm import *
 
 def nuevoLote(request):
-
     if request.method == 'POST':
         Datos = request.POST
         form = ProductoForm(request.POST)
@@ -22,15 +21,14 @@ def nuevoLote(request):
             form = form.save(commit=False)
             form.save()
             oProducto = form
-            oPresentacion = Presentacion.objects.get(id = int(Datos['cmbPresentacionPrincipal']))
-            oProducto.presentacions.add(oPresentacion)
-            
+            #oPresentacion = Presentacion.objects.get(id = int(Datos['cmbPresentacionPrincipal']))
+            #oProducto.presentacions.add(oPresentacion)
             return render(request, 'lote/nuevo.html')
-
-
     else:
         form = ProductoForm()
-        oPrecios = Precio.objects.filter(estado=True)
-    return render(request, 'lote/nuevo.html', {'form': form,'precios':oPrecios})
+        #oPrecios = Precio.objects.filter(estado=True)
+        oAlmacens = Almacen.objects.filter(estado=True)
+        oProveedors = Proveedor.objects.filter(estado=True)
+    return render(request, 'lote/nuevo.html', {'form': form,'oAlmacens':oAlmacens, 'oProveedors':oProveedors})
 
 

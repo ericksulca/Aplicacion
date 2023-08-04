@@ -36,21 +36,7 @@ Registrar Nuevo Producto
 							{{ field|add_class:"form-control" }}
 				    {% endfor %}
 				    </br>
-					<label for="">Unidad Principal</label></br>
-				    <select class="form-control" id="cmbPresentacionPrincipal" name="cmbPresentacionPrincipal" required="">
-				    	<option value=""> </option>
-                        {% for presentacion in presentaciones %}
-                            <option value="{{presentacion.id}}">
-                            {{presentacion.nombre}}
-                            </option>
-                        {% endfor %}
-                        </select>
-                    <label for="">Cantidad de Unidad Principal</label></br>
-				    <input type="number" name="cantidadPrincipal" id="cantidadPrincipal" required="" class="form-control">
-				    {% for precio in precios%}
-					<label for="">Precio - {{ precio.nombre }}</label></br>
-				    <input type="number" name="{{precio.id}}" id="{{precio.id}}" required="" class="form-control">
-				    {% endfor %}</br>
+                    
 					<!-- <a href='#' onclick='AgregarUnidad();'><button type="button" class="btn btn-success">Agregar Contenido</button></a> -->
 				    </div>
 				    <div class="form-group OtrasUnidades" id="OtrasUnidades">

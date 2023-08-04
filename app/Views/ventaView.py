@@ -61,7 +61,8 @@ def Ventas(request):
     fecha_fin = request.GET.get('hasta')
 
     if producto != '':
-        pedido = Pedido.objects.filter(estado=True,id__in=[s.pedido_id for s in pedidoproductopresentacion])
+        #pedido = Pedido.objects.filter(estado=True,id__in=[s.pedido_id for s in ])
+        pedido = Pedido.objects.filter(estado=True)
         venta = Venta.objects.filter(estado=True,pedido_id__in=[p.id for p in pedido]).order_by("-id")
         productonombre = Producto.objects.get(id=producto).nombre
         for v in venta:

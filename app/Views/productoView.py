@@ -30,7 +30,7 @@ import json
 def ListarProductos(request):
     if request.method == 'POST':
         return render(request, 'pedido/listar.html')
-    else:
+    if request.method == 'GET':
         oProductos = Producto.objects.filter(estado = True)
         return render(request, 'producto/listar.html', {"oProductos": oProductos})
 
@@ -42,9 +42,9 @@ def registrarProducto(request):
             form = form.save(commit=False)
             form.save()
             oProducto = form
-            oPresentacion = Presentacion.objects.get(id = int(Datos['cmbPresentacionPrincipal']))
-            oProducto.presentacions.add(oPresentacion)
-            oProductopresentacions = Productopresentacions.objects.get(producto=oProducto, presentacion=oPresentacion)
+            #oPresentacion = Presentacion.objects.get(id = int(Datos['cmbPresentacionPrincipal']))
+            #oProducto.presentacions.add(oPresentacion)
+            '''oProductopresentacions = Productopresentacions.objects.get(producto=oProducto, presentacion=oPresentacion)
             oProductopresentacions.valor = 1
             oProductopresentacions.unidadprincipal = True
             oProductopresentacions.save()
@@ -56,15 +56,18 @@ def registrarProducto(request):
                 idPrecio = str(oPrecio.id)
                 oProductoPresentacionsprecios.valor = Datos[idPrecio]
                 oProductoPresentacionsprecios.save()
-            return render(request, 'producto/agregarPresentacion.html')
+            '''
+            return redirect('/Producto/listar/')
+            #return render(request, 'producto/listar.html')
+            #return render(request, 'producto/agregarPresentacion.html')
         else:
             return render(request, 'producto/listar.html')
 
     else:
         form = ProductoForm()
-        oPrecios = Precio.objects.filter(estado=True)
-        oPresentaciones = Presentacion.objects.filter(estado=True)
-    return render(request, 'producto/registrar.html', {'form': form,'precios':oPrecios,'presentaciones':oPresentaciones})
+        #oPrecios = Precio.objects.filter(estado=True)
+        #oPresentaciones = Presentacion.objects.filter(estado=True)
+    return render(request, 'producto/registrar.html', {'form': form,'precios':'','presentaciones':''})
 
 @csrf_exempt
 def BuscarProducto (request):

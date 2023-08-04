@@ -8,40 +8,9 @@
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
 <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-<link rel="stylesheet" href="/resources/demos/style.css">
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-<script>
-$(function() {
-  var availableTags = [
-    "ActionScript",
-    "AppleScript",
-    "Asp",
-    "BASIC",
-    "C",
-    "C++",
-    "Clojure",
-    "COBOL",
-    "ColdFusion",
-    "Erlang",
-    "Fortran",
-    "Groovy",
-    "Haskell",
-    "Java",
-    "JavaScript",
-    "Lisp",
-    "Perl",
-    "PHP",
-    "Python",
-    "Ruby",
-    "Scala",
-    "Scheme"
-  ];
-  $( "#tags" ).autocomplete({
-    source: availableTags
-  });
-} );
-</script>
+
 
 {% endblock %}
 
@@ -70,15 +39,37 @@ Nuevo Lote
                 <div class="container" id="app">
                     <h3 class="box-title">Nuevo Lote</h3>
                     <br>
-                    <label for="id_nombre">Cantidad:</label>
-                    <br>
-                    <input type="number" name="cantidad" id="cantidad" required="" class="form-control" >
-                    <label for="id_nombre">Producto:</label>
-                    <br>
-                    <input type="text" v-model="nombreProducto"  class="form-control" name="inpt-producto" id="inpt-producto">
+                    <div class="row">
+                        <div class="col-6">
+                            <p>Seleccione Almacén</p>
+                            <select name="almacen" id="almacen" class="form-control">
+                                {% for oAlmacen in oAlmacens %}
+                                    <option value="{{ oAlmacen.id }}"> {{ oAlmacen.nombre }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <p>Seleccione Proveeodr</p>
+                            <select name="almacen" id="almacen" class="form-control">
+                                {% for oProveedor in oProveedors %}
+                                    <option value="{{ oProveedor.id }}"> {{ oProveedor.nombre }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-6">
+                            <label for="id_nombre">Producto:</label>
+                            <input type="text" v-model="nombreProducto"  class="form-control" name="inpt-producto" id="inpt-producto">
+                        </div>
+                        <div class="col-6">
+                            <label for="id_nombre">Cantidad:</label>
+                            <input type="number" min="1" name="cantidad" id="cantidad" required="" class="form-control" >
+                        </div>
+                    </div>
                     <hr>
                     <h3>[[nombreProducto]]</h3>
-                    <hr>
                     <div class="col-md-8 col-md-offset-2">
                         <div class="ui-widget">
                             <label for="tags">Tags: </label>
@@ -137,10 +128,36 @@ Nuevo Lote
 {% endblock %}
 
 {% block footer  %}
-<script type="text/javascript" >
-    $( "#tags" ).autocomplete({
+<script>
+    $(function() {
+      var availableTags = [
+        "ActionScript",
+        "AppleScript",
+        "Asp",
+        "BASIC",
+        "C",
+        "C++",
+        "Clojure",
+        "COBOL",
+        "ColdFusion",
+        "Erlang",
+        "Fortran",
+        "Groovy",
+        "Haskell",
+        "Java",
+        "JavaScript",
+        "Lisp",
+        "Perl",
+        "PHP",
+        "Python",
+        "Ruby",
+        "Scala",
+        "Scheme"
+      ];
+      $( "#tags" ).autocomplete({
         source: availableTags
-    });
+      });
+    } );
 </script>
 
 <script type="text/javascript">
@@ -154,6 +171,7 @@ Nuevo Lote
             localValues: '',
             done: '',
             nombreProducto: '',
+            arrProductos: [],
             data :  [
             "ActionScript",
             "Bootstrap",
@@ -175,8 +193,8 @@ Nuevo Lote
                 axios.post("/producto/buscar/", data).then((result) => {
                     const data = result.data;
                     if (data){
-                        console.log(data)
-                        this.autocompletar(data)
+                        console.log(data['productos'])
+                        this.autocompletar(data['productos'])
                     }
                     else{
                         alert("Error")
@@ -184,10 +202,15 @@ Nuevo Lote
                 });
             },
             autocompletar: function(data){
-                console.log("fun")
-                console.log(this.data)
-                $( "#inpt-product" ).autocomplete({
-                    source: this.data
+                var arr_productos = []
+                for (let index = 0; index < data.length; index++) {
+                    console.log("-------------PRODUCTO---------------")
+                    arr_productos.push(data[index].nombre);
+                    //arr_productos.push('as');
+                }
+                console.log(arr_productos)
+                $( "#inpt-producto" ).autocomplete({
+                    source: arr_productos
                 });
             },
         },
