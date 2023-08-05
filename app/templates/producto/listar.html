@@ -40,21 +40,21 @@ Clientes
 				{% load widget_tweaks %}
 				{% csrf_token %}
 					<div class="form-group">
-					<table id="tCamiones"  class="table">
+					<table id="tCamiones" class="table">
 						<thead>
 	                        <tr>
-	                            <th>#</th>
-	                            <th>Imagén</th>
-	                            <th>Nombre</th>
-	                            <th>Código</th>
-	                            <th>Cantidad</th>
-	                            <th>Opciones</th>
+							<th>#</th>
+							<th><p class="d-flex justify-content-center">Imagén</p></th>
+							<th><p class="d-flex justify-content-center">Nombre</p></th>
+							<th><p class="d-flex justify-content-center">Código</p></th>
+							<th><p class="d-flex justify-content-center">Cantidad</p></th>
+							<th><p class="d-flex justify-content-center">Opciones</p></th>
 	                        </tr>
 	                    </thead>
 				    {% for oProducto in oProductos %}
 				    <tr>
 				    	<td>{{ forloop.counter }}</td>
-				    	<td>{{oProducto.imagen}}</td>
+				    	<td class="d-flex justify-content-center"><img src="{{oProducto.imagen.url}}" alt="{{oProducto.nombre}}" width="90" height="85"> </td>
 				    	<td>{{oProducto.nombre}}</td>
 				    	<td>{{oProducto.codigo}}</td>
 				    	<td>{{oProducto.cantidad}}</td>

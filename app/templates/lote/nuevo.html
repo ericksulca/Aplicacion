@@ -61,15 +61,46 @@ Nuevo Lote
                     <div class="row">
                         <div class="col-6">
                             <label for="id_nombre">Producto:</label>
-                            <input type="text" v-model="nombreProducto"  class="form-control" name="inpt-producto" id="inpt-producto">
+^
+                            <input type="text" ref="inpProducto" v-model="nombreProductoAgregar"  class="form-control" 
+                            name="inpt-producto" id="inpt-producto" :disabled="producto_completado"
+                            v-on:keyup.enter="changeProductoCompletado">
+                            
+                            <button v-show="producto_completado" type="button" class="btn btn-secondary " @click="changeProductoCompletado">
+                                Editar
+                            </button>
                         </div>
                         <div class="col-6">
-                            <label for="id_nombre">Cantidad:</label>
-                            <input type="number" min="1" name="cantidad" id="cantidad" required="" class="form-control" >
+                            <div class="row">
+                                <div class="col-9">
+                                    <label for="id_nombre">Cantidad:</label>
+                                    <input v-model="cantProductoAgregar" type="number" min="1" name="cantidad" id="cantidad" required="" class="form-control" >
+                                </div>
+                                <div class="d-flex justify-content-center">
+                                    <button class="form-control btn-success" @click="++cantProductoAgregar">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+                                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <div class="d-flex justify-content-center">
+                                    <button class="form-control btn-danger" @click="--cantProductoAgregar">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-dash-circle" viewBox="0 0 16 16">
+                                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                            <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z"/>
+                                          </svg>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
+
                     <hr>
+
                     <h3>[[nombreProducto]]</h3>
+                    
                     <div class="col-md-8 col-md-offset-2">
                         <div class="ui-widget">
                             <label for="tags">Tags: </label>
@@ -82,6 +113,10 @@ Nuevo Lote
                     <br>
                     <input type="text" name="codigo" id="codigo" required="" class="form-control" disabled="disabled">
                     <br>
+
+                    <div class="col-12">
+                        <b-table striped hover :items="arrProductos"></b-table>
+                    </div>
                     
                     <button id="bt_add" class="btn btn-success">Agregar</button>
                     <button id="bt_del" class="btn btn-warning">Eliminar</button>
@@ -161,26 +196,33 @@ Nuevo Lote
 </script>
 
 <script type="text/javascript">
-    
     new Vue({
         delimiters: ['[[', ']]'],
         el: '#app',
         created() {
+            console.log("created")
+            //$("input").focus();
+            //this.$refs.inpProducto.focus()
+            const focus_inicial = this.$refs.inpProducto
+            //focus_inicial.inpProducto.focus()
         },
         data:   {
+            focus_inicial:'',
             localValues: '',
+
             done: '',
+            producto_completado : false,
+            nombreProductoAgregar : '',
             nombreProducto: '',
+            
+
+            cantProductoAgregar: 0,
             arrProductos: [],
-            data :  [
-            "ActionScript",
-            "Bootstrap",
-            "C",
-            "C++",
-            ],
+            
         },
+        
         watch: {
-            nombreProducto: function(val){
+            nombreProductoAgregar: function(val){
                 this.buscar_producto()
             },
         }
@@ -188,7 +230,7 @@ Nuevo Lote
         methods: {
             async buscar_producto(){
                 let data = {
-                    nombreProducto : this.nombreProducto,
+                    nombreProducto : this.nombreProductoAgregar,
                 };
                 axios.post("/producto/buscar/", data).then((result) => {
                     const data = result.data;
@@ -201,17 +243,41 @@ Nuevo Lote
                     }
                 });
             },
+            
+            changeProductoCompletado: function(){
+                if (this.producto_completado == true){
+                    this.producto_completado = false
+                }
+                else{
+                    this.producto_completado = true
+                }
+                
+            },
             autocompletar: function(data){
                 var arr_productos = []
                 for (let index = 0; index < data.length; index++) {
-                    console.log("-------------PRODUCTO---------------")
                     arr_productos.push(data[index].nombre);
-                    //arr_productos.push('as');
                 }
+                this.arrProductos = data
+                
                 console.log(arr_productos)
+                console.log(this.arrProductos)
+                const nomProductComplete = ''
                 $( "#inpt-producto" ).autocomplete({
-                    source: arr_productos
+                    source: arr_productos,
+                    select: function (event, ui) {
+                        $.data(document.body, 'nomProductSelect', ui.item.Id);//guardar el id en memoria el $.data guarda en memoria
+                        nomProductComplete = 'asd'
+                        typeof(nomProductComplete)
+                        //$( "#inpt-producto" ).val(nomProductComplete);
+                        $( "#inpt-producto" ).val('asdas');
+
+                        //$( "#cantidad" ).focus();
+                    }
+                    
                 });
+                console.log(nomProductComplete) 
+
             },
         },
     });
