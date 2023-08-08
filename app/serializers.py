@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from app.models import (Producto, Alerta)
+from app.models import (Producto, Alerta,Presentacion)
 
 class ProductoSerializer(serializers.ModelSerializer):
     class Meta:
@@ -12,3 +12,8 @@ class AlertaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Alerta
         fields = ('__all__')
+
+class PresentacionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Presentacion
+        fields = ('nombre', 'codigo')

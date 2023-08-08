@@ -20,7 +20,7 @@ import json
 ###########################################################
 
 def Login(request):
-    next = request.GET.get('next', '/home/')
+    next = request.GET.get('next', '/')
     if request.method == "POST":
         username = request.POST['username']
         password = request.POST['password']

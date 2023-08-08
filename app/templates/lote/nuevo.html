@@ -11,6 +11,28 @@
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 
+<link rel="stylesheet" href="">
+
+<style>
+    .cantidadProductoPedido-field {
+        font-size: 32px
+    }
+    .nombreProductoPedido-field {
+        font-size: 32px
+    }
+    .selectPresentacion-field {
+        font-size: 40px
+    }
+    .option-selectPresentacion-field {
+        font-size: 30px
+    }
+
+    .button-agregarProducto-field {
+        font-size: 40px;
+        font-weight: bold
+    }
+</style>
+
 
 {% endblock %}
 
@@ -36,9 +58,7 @@ Nuevo Lote
     <div class="card-block table-border-style">
         <div class="table-responsive">
             <div class="white-box">
-                <div class="container" id="app">
-                    <h3 class="box-title">Nuevo Lote</h3>
-                    <br>
+                <div class="container col-12" id="app">
                     <div class="row">
                         <div class="col-6">
                             <p>Seleccione Almacén</p>
@@ -49,7 +69,7 @@ Nuevo Lote
                             </select>
                         </div>
                         <div class="col-6">
-                            <p>Seleccione Proveeodr</p>
+                            <p>Seleccione Provedor</p>
                             <select name="almacen" id="almacen" class="form-control">
                                 {% for oProveedor in oProveedors %}
                                     <option value="{{ oProveedor.id }}"> {{ oProveedor.nombre }}</option>
@@ -58,27 +78,53 @@ Nuevo Lote
                         </div>
                     </div>
                     <hr>
+
+                    
                     <div class="row">
+                        
                         <div class="col-6">
                             <label for="id_nombre">Producto:</label>
-^
-                            <input type="text" ref="inpProducto" v-model="nombreProductoAgregar"  class="form-control" 
-                            name="inpt-producto" id="inpt-producto" :disabled="producto_completado"
-                            v-on:keyup.enter="changeProductoCompletado">
-                            
-                            <button v-show="producto_completado" type="button" class="btn btn-secondary " @click="changeProductoCompletado">
-                                Editar
-                            </button>
+                            <div class="row">
+                                <div class="col">
+                                    <input type="text" ref="inpProducto" v-model="nombreProductoAgregar"  class="form-control nombreProductoPedido-field " 
+                                    name="inpt-producto" id="inpt-producto" :disabled="producto_completado"
+                                    v-on:keyup.enter="changeProductoCompletado">
+                                </div>
+    
+                                <div class="col" v-show="producto_completado">
+                                    <button  type="button" class="btn btn-secondary " @click="changeProductoCompletado">
+                                        Editar
+                                    </button>
+                                </div>
+    
+                                <div class="col" v-show="!producto_completado">
+                                    <button type="button" class="btn btn-danger " @click="set_nombreProducto('')">
+                                        Borrar
+                                    </button>
+                                </div>
+                            </div>
                         </div>
+
                         <div class="col-6">
                             <div class="row">
-                                <div class="col-9">
+                                
+                                <div id="selector" class="col">
+                                    <label for="id_nombre">Presentación:</label>
+                                    <select v-model="selectedPresentacion" class="selectPresentacion-field">
+                                        <option class="form-control option-selectPresentacion-field " v-for="(item, key) in lista_presentaciones" :value="key">
+                                            [[item]]
+                                        </option>
+                                        
+                                    </select>
+                                </div>
+
+                                <div class="col">
                                     <label for="id_nombre">Cantidad:</label>
-                                    <input v-model="cantProductoAgregar" type="number" min="1" name="cantidad" id="cantidad" required="" class="form-control" >
+                                    <input v-model="cantProductoAgregar" type="number" min="1" name="cantidad" id="cantidad" required="" class="form-control cantidadProductoPedido-field " >
                                 </div>
                                 <div class="d-flex justify-content-center">
                                     <button class="form-control btn-success" @click="++cantProductoAgregar">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="60" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
                                             <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
                                             <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
                                         </svg>
@@ -87,7 +133,7 @@ Nuevo Lote
 
                                 <div class="d-flex justify-content-center">
                                     <button class="form-control btn-danger" @click="--cantProductoAgregar">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-dash-circle" viewBox="0 0 16 16">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="60" fill="currentColor" class="bi bi-dash-circle" viewBox="0 0 16 16">
                                             <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
                                             <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z"/>
                                           </svg>
@@ -95,66 +141,50 @@ Nuevo Lote
                                 </div>
                             </div>
                         </div>
+
                     </div>
 
-                    <hr>
-
-                    <h3>[[nombreProducto]]</h3>
-                    
-                    <div class="col-md-8 col-md-offset-2">
-                        <div class="ui-widget">
-                            <label for="tags">Tags: </label>
-                            <input id="tags">
-                        </div>
-                    </div>
-
-                    <hr>
-                    <label for="id_nombre">Código:</label>
-                    <br>
-                    <input type="text" name="codigo" id="codigo" required="" class="form-control" disabled="disabled">
                     <br>
 
-                    <div class="col-12">
-                        <b-table striped hover :items="arrProductos"></b-table>
-                    </div>
-                    
-                    <button id="bt_add" class="btn btn-success">Agregar</button>
-                    <button id="bt_del" class="btn btn-warning">Eliminar</button>
-                    <button id="bt_delall" class="btn btn-danger">Eliminar todo</button>
                     <div class="row">
-                        <div class="form-group">
-                            <label ><center>Concepto Operación</center></label>
-                            <table id="tabla" class="table table-bordered">
-                            <thead>
+                        <div class="col-6">
+                            <div class="row">
                                 <tr>
-                                    <td>Nº</td>
-                                    <td>Cantidad</td>
-                                    <td>Cod. Producto</td>
-                                    <td>Nombre</td>
+                                    {% for oProductoTop in oProductosTop %}
+                                        <td>
+                                            <button @click="set_nombreProducto('{{oProductoTop}}')">
+                                                <img src="{{ oProductoTop.imagen.url }}" class="card-img-top " alt="{{ oProductoTop.nombre }}" style="height: 75px; height: 80px;">
+                                                <p>{{ oProductoTop.nombre }}</p>
+                                        <td>
+                                        {% if forloop.counter|divisibleby:5 %}
+                                            {# Start new row #}
+                                            </tr>
+                                            <tr>
+                                        {% endif %}
+                                    {% endfor %}
                                 </tr>
-                            </thead>
-                            </table>
-
-                            <br>
-                        </div>
-                            <br>
-
-                        <button id="bt_GenerarLote" class="btn btn-success">Crear Lote</button>
-
-                    </div>
-
-                    <div class="row">
-                        <div class="form-group">
-                            <div class="col-sm-8 col-md-8 col-lg-6">
-                                <div id="tabs" style="display:none;">
-                                    <table id="listaProducto"></table>
-                                    <div id="pagerlistaProducto"  style="text-align: center;"></div>
-                                </div>
-                            </div>
-                            <div class="col-sm-2 col-md-2 col-lg-4">
                             </div>
                         </div>
                     </div>
+
+                    <hr>
+
+                    <div class="col-12 ">
+                        
+                        <button class="btn btn-success col-12 button-agregarProducto-field"> Agregar Producto</button>
+                    </div>
+
+                    <hr>
+                    
+                    <div class="col-10">
+                        <p>hola</p>
+                        <b-table striped hover caption-top
+                        label="Table Options"
+                        :items="items" :fields="fields">
+                            <template v-slot:table-caption>表サンプル</template>
+                        </b-table>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -163,37 +193,6 @@ Nuevo Lote
 {% endblock %}
 
 {% block footer  %}
-<script>
-    $(function() {
-      var availableTags = [
-        "ActionScript",
-        "AppleScript",
-        "Asp",
-        "BASIC",
-        "C",
-        "C++",
-        "Clojure",
-        "COBOL",
-        "ColdFusion",
-        "Erlang",
-        "Fortran",
-        "Groovy",
-        "Haskell",
-        "Java",
-        "JavaScript",
-        "Lisp",
-        "Perl",
-        "PHP",
-        "Python",
-        "Ruby",
-        "Scala",
-        "Scheme"
-      ];
-      $( "#tags" ).autocomplete({
-        source: availableTags
-      });
-    } );
-</script>
 
 <script type="text/javascript">
     new Vue({
@@ -201,10 +200,7 @@ Nuevo Lote
         el: '#app',
         created() {
             console.log("created")
-            //$("input").focus();
-            //this.$refs.inpProducto.focus()
-            const focus_inicial = this.$refs.inpProducto
-            //focus_inicial.inpProducto.focus()
+            //this.buscar_presentaciones_producto()
         },
         data:   {
             focus_inicial:'',
@@ -212,13 +208,52 @@ Nuevo Lote
 
             done: '',
             producto_completado : false,
+            lista_presentaciones: {
+                "select1": "Select 1",
+                "select2": "Select 2",
+                "select3": "Select 3",
+                "select4": "Select 4",
+                "select5": "Select 5",
+                "select6": "Select 6",
+                "select7": "Select 7"
+            },
+            fields:[
+                {
+                  key: "id",
+                  label: "Nº",
+                },
+                {
+                  key: "nombre_producto",
+                  label: "Nombre Producto"
+                },
+                {
+                  key: "presentacion_producto",
+                  label: "Presentación Producto"
+                },
+                {
+                  key: "cantidad_producto",
+                  label: "Cantidad Producto"
+                },
+                {
+                  key: "precio_producto",
+                  label: "Precio Producto"
+                },
+                {
+                  key: "fechaVenc_producto",
+                  label: "Fecha Vencimiento Producto"
+                }
+            ],
+            items: [
+                { id: 1, nombre_producto: "Producto 01", presentacion_producto:"CA", cantidad_producto:"10",precio_producto:"S/. 3.00", fechaVenc_producto: new Date().toLocaleString() },
+                { id: 1, nombre_producto: "Producto 02", presentacion_producto:"CA", cantidad_producto:"4",precio_producto:"S/. 4.00", fechaVenc_producto: new Date().toLocaleString() },
+                { id: 1, nombre_producto: "Producto 03", presentacion_producto:"CA", cantidad_producto:"8",precio_producto:"S/. 5.00", fechaVenc_producto: new Date().toLocaleString() }
+            ],
+            selectedPresentacion: '',
             nombreProductoAgregar : '',
             nombreProducto: '',
-            
 
             cantProductoAgregar: 0,
             arrProductos: [],
-            
         },
         
         watch: {
@@ -243,6 +278,20 @@ Nuevo Lote
                     }
                 });
             },
+            async buscar_presentaciones_producto(){
+                //const pk = this.nombreProductoAgregar
+                const pk = '123'
+                
+                axios.get("/producto/presentacion/listar/?pk=555")
+                    .then((response) => {
+                        const data = response.data;
+                        this.lista_clientes = data
+                        console.log(data)
+                    })
+                    .catch(function(error){
+
+                    });    
+            },
             
             changeProductoCompletado: function(){
                 if (this.producto_completado == true){
@@ -251,7 +300,18 @@ Nuevo Lote
                 else{
                     this.producto_completado = true
                 }
-                
+            },
+            set_nombreProducto: function(obj){
+                if (this.producto_completado==false){
+                    console.log(obj)
+                    this.producto_completado = false
+                    this.nombreProductoAgregar = obj
+                    if (obj!=''){this.producto_completado = true}
+                    this.buscar_presentaciones_producto()
+                }
+            },
+            setValueProductoAgregar: function(oProducto){
+                $( "#inpt-producto" ).val(oProducto.nombre);
             },
             autocompletar: function(data){
                 var arr_productos = []
@@ -262,15 +322,17 @@ Nuevo Lote
                 
                 console.log(arr_productos)
                 console.log(this.arrProductos)
+
                 const nomProductComplete = ''
                 $( "#inpt-producto" ).autocomplete({
                     source: arr_productos,
                     select: function (event, ui) {
                         $.data(document.body, 'nomProductSelect', ui.item.Id);//guardar el id en memoria el $.data guarda en memoria
-                        nomProductComplete = 'asd'
-                        typeof(nomProductComplete)
+                        alert('Producto seleccionado: '+toString(ui.item.value))
                         //$( "#inpt-producto" ).val(nomProductComplete);
-                        $( "#inpt-producto" ).val('asdas');
+                        console.log("Datos selected option input: ")
+
+                        console.log(ui.item.value)
 
                         //$( "#cantidad" ).focus();
                     }

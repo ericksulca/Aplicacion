@@ -29,6 +29,7 @@ def nuevoLote(request):
         #oPrecios = Precio.objects.filter(estado=True)
         oAlmacens = Almacen.objects.filter(estado=True)
         oProveedors = Proveedor.objects.filter(estado=True)
-    return render(request, 'lote/nuevo.html', {'form': form,'oAlmacens':oAlmacens, 'oProveedors':oProveedors})
+        oProductosTop = Producto.objects.filter(estado=True).order_by('-valor')[:9]
+    return render(request, 'lote/nuevo.html', {'form': form,'oAlmacens':oAlmacens, 'oProveedors':oProveedors, 'oProductosTop': oProductosTop})
 
 

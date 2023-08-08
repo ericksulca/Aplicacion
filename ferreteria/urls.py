@@ -20,6 +20,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from app.views import *
 from app.Views.productoView import *
+from app.Views.presentacionView import *
 from app.Views.precioView import *
 from app.Views.aperturacajaView import *
 from app.Views.cierrecajaView import *
@@ -116,7 +117,12 @@ urlpatterns = [
 
     path('producto/buscar/', BuscarProducto, name='buscar_producto'),
     path('producto/json_listar/', get_Productos.as_view(), name='listar_productos'),
-    path('producto/presentacion/listar/', ListarPresentacionesProducto),
+    
+    ############### Pruebas presentación ###################
+    #path('producto/presentacion/listar/', ListarPresentacionesProducto),
+    path('producto/presentacion/listar/', get_PresentacionProducto.as_view()),
+
+
     path('producto/presentacion/cantidad/', CantidadPresentacionesProducto),
 
     path('error/registrar/', registrarError),

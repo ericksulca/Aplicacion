@@ -114,7 +114,7 @@ class Producto(models.Model):
     def __str__(self):
         return str(self.nombre)
     
-class Insumo(models.Model):
+class Presentacion(models.Model):
     nombre = models.CharField(max_length=45)
     codigo = models.CharField(max_length=45, blank=True, null=True)
     estado = models.BooleanField(blank=True,default=True)
