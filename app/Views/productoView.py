@@ -85,6 +85,7 @@ def BuscarProducto (request):
                 jsonProducto["id"] = oProducto.id
                 jsonProducto["nombre"] = oProducto.nombre
                 jsonProducto["codigo"] = oProducto.codigo
+                jsonProducto["precio"] = oProducto.precio
                 jsonProductos["productos"].append(jsonProducto)
             
             print(jsonProductos)

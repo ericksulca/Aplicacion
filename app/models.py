@@ -68,17 +68,21 @@ class Detalletipooperacion(models.Model):
 class Lote(models.Model):
     fecha = models.DateTimeField(auto_now_add=True, blank=True)
     modificado = models.DateTimeField(auto_now=True, blank=True)
-    estado = models.BooleanField(blank=True,default=True)
     proveedor = models.ForeignKey('Proveedor', on_delete=models.CASCADE)  # Field name made lowercase.
     recibo = models.ForeignKey('Recibo', on_delete=models.CASCADE)  # Field name made lowercase.
-    
+    monto = models.FloatField(blank=True, null=True)
+    estado = models.BooleanField(blank=True,default=True)
 
+    def __str__(self):
+        str_return = 'Fecha : '+str(self.fecha) + ' - Monto S/. ' + str(self.monto)
+        return str_return
+    
 class Operacion(models.Model):
     fecha = models.DateTimeField(auto_now_add=True, blank=True)
     monto = models.FloatField()
     descripcion = models.TextField(blank=True, null=True)
     estado = models.BooleanField(blank=True,default=True)
-    caja = models.ForeignKey(Caja, on_delete=models.CASCADE)  # Field name made lowercase.
+    aperturacaja = models.ForeignKey(Aperturacaja, on_delete=models.CASCADE)  # Field name made lowercase.
     detalletipooperacion = models.ForeignKey(Detalletipooperacion, on_delete=models.CASCADE)  # Field name made lowercase.
     cobro = models.ForeignKey(Cobro, blank=True, null=True, on_delete=models.CASCADE)  # Field name made lowercase.
     def __str__(self):
@@ -116,11 +120,24 @@ class Producto(models.Model):
     
 class Presentacion(models.Model):
     nombre = models.CharField(max_length=45)
-    codigo = models.CharField(max_length=45, blank=True, null=True)
+    codigo = models.CharField(max_length=45, blank=True, null=True, unique=True)
     estado = models.BooleanField(blank=True,default=True)
 
     def __str__(self):
         return str(self.nombre)
+    
+class Producto_presentacions(models.Model):
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)  # Field name made lowercase.
+    presentacion = models.ForeignKey(Presentacion, on_delete=models.CASCADE)  # Field name made lowercase.
+    precio_compra = models.FloatField(default=0,blank=True)
+    precio_venta = models.FloatField(default=0,blank=True)
+    valor = models.FloatField(default=1,blank=True)
+    favorito = models.BooleanField(blank=True,default=False)
+    estado = models.BooleanField(blank=True,default=True)
+    
+    def __str__(self):
+        str_producto_presentacions = 'Producto: '+self.producto.nombre+' | Presentación: '+self.presentacion.nombre
+        return str(str_producto_presentacions)
 
 class Producto_almacens(models.Model):
     cantidad = models.FloatField()

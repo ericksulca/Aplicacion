@@ -8,6 +8,7 @@ from app.models import *
 admin.site.register(Proveedor)
 admin.site.register(Presentacion)
 admin.site.register(Producto)
+admin.site.register(Producto_presentacions)
 admin.site.register(Categoria)
 admin.site.register(Cliente)
 admin.site.register(Venta)

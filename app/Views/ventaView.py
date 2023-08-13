@@ -21,7 +21,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 def nuevoVenta(request):
     if request.method == 'GET':
         Datos = request.POST
-        return render(request, 'venta/nuevo.html', {})
+        oProductosTop = Producto.objects.filter(estado=True).order_by('-valor')[:9]
+        return render(request, 'venta/nuevo.html', {'oProductosTop': oProductosTop})
 
 def ListarVentas(request):
     oProductos=[]

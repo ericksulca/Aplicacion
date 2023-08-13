@@ -1,169 +1,411 @@
 {% extends "base.html" %}
+
+
 {% block imports %}
 
-<script src="/static/assets/js/jquery/jquery.min.js" type="text/javascript"></script>
-<script src="/static/assets/js/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
-<script type="text/javascript" src="/static/assets/js/crearPedido.js"></script>
-<script type="text/javascript">
-$(document).ready(function(){
-    $( "#inpt-producto" ).focus();
-    $('cantidad').prop('disabled', true);
-    $( "#inpt-producto" ).autocomplete({
-        source: function (request, response) {
 
-            var datos = {nombreProducto: $("#inpt-producto").val()};
-            var sendData = JSON.stringify(datos);
-            $.ajax({
-                type: "POST",
-                dataType: "json",
-                url: "/producto/buscar/",
-                data: sendData,
-                contentType: "application/json; charset=utf-8",
-                async: false,
-                cache: false,
-                CrossDomain: true,
+<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
-                success: function (result) {
-                var ListasProductos = result['productos'];
-                response($.map(ListasProductos, function (item) {
-                    return {
-                        label: item.nombre,
-                        idproducto: item.nombre,
-                        precio: item.precio,
-                        codigo: item.codigo,
-                        Id: item.id
-                        };
-                    }));
-                }
-            });
-        },
-        minLength: 1,
-        select: function (event, ui) {
-            $.data(document.body, 'idproducto', ui.item.Id);//guardar el id en memoria el $.data guarda en memoria
-            $( "#precio" ).val( ui.item.precio);
-            $( "#codigo" ).val( ui.item.codigo);
+<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 
-            $( "#cantidad" ).focus();
-            $( "#cantidad" ).focus();
-            var iDPro = ui.item.Id;
-            //agregar();
-        }
-
-
-    });
-});
-
-</script>
+<link rel="stylesheet" href="">
 
 <style>
-ul.ui-autocomplete {
-    z-index: 1100;
-}
-#content{
-    position: absolute;
-    min-height: 50%;
-    width: 80%;
-    top: 20%;
-    left: 5%;
-}
+    .cantidadProductoPedido-field {
+        font-size: 32px
+    }
+    .nombreProductoPedido-field {
+        font-size: 32px
+    }
+    .selectPresentacion-field {
+        font-size: 40px
+    }
+    .option-selectPresentacion-field {
+        font-size: 30px
+    }
 
-.selected{
-    cursor: pointer;
-}
-.selected:hover{
-    background-color: #0585C0;
-    color: white;
-}
-.seleccionada{
-    background-color: #0585C0;
-    color: white;
-}
+    .button-agregarProducto-field {
+        font-size: 20px;
+        font-weight: bold
+    }
 </style>
+
+
 {% endblock %}
 
 
 {% block title %}
-Nueva Venta
+Nuevo Lote
 {% endblock %}
 
 {% block content %}
-<div class="card">
-    <div class="card-header">
-		<h3 class="box-title">Formulario de nueva Venta</h3>
-        <div class="card-header-right">
-            <ul class="list-unstyled card-option">
-                <li><i class="fa fa fa-wrench open-card-option"></i></li>
-                <li><i class="fa fa-window-maximize full-card"></i></li>
-                <li><i class="fa fa-minus minimize-card"></i></li>
-                <li><i class="fa fa-refresh reload-card"></i></li>
-                <li><i class="fa fa-trash close-card"></i></li>
-            </ul>
-        </div>
-    </div>
-    <div class="card-block table-border-style">
-        <div class="table-responsive">
-            <div class="white-box">
-                <h3 class="box-title">Nueva Venta</h3>
-                <label for="id_nombre">Producto:</label>
-                <br>
-                <input type="text" name="inpt-producto" id="inpt-producto" required="" class="form-control" maxlength="45">
-                <br>
-                <label for="id_nombre">Código:</label>
-                <br>
-                <input type="text" name="codigo" id="codigo" required="" class="form-control" disabled="disabled">
-                <br>
-                <!--<label for="id_nombre">Precio:</label>
-                <br>
-                <input type="number" name="precio" id="precio" required="" class="form-control">
-                <br>-->
-                <label for="id_nombre">Cantidad:</label>
-                <br>
-                <input type="number" name="cantidad" id="cantidad" required="" class="form-control" >
-                <br>
-                <button id="bt_add" class="btn btn-default">Agregar</button>
-                <button id="bt_del" class="btn btn-default">Eliminar</button>
-                <button id="bt_delall" class="btn btn-default">Eliminar todo</button>
-
-                <div class="row">
-                    <div class="form-group">
-                        <label ><center>Concepto Operación</center></label>
-                        <table id="tabla" class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <td>Nº</td>
-                                <td>Cantidad</td>
-                                <td>Cod. Producto</td>
-                                <td>Nombre</td>
-                                <td>Precio Unit.</td>
-                                <td>Total</td>
-                            </tr>
-                        </thead>
-                        </table>
-                        <br>
-                    </div>
-                </div>
-                TOTAL: S/. <label for="id_Total" id="id_Total" name="id_Total"></label>
-                <br>
-                <br>
-
-                <button id="bt_GenerarVenta" class="btn btn-success">Generar Pedido</button>
+<div id="app">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="box-title">Nuevo Lote</h3>
+            <div class="card-header-right">
+                <ul class="list-unstyled card-option">
+                    <li><i class="fa fa fa-wrench open-card-option"></i></li>
+                    <li><i class="fa fa-window-maximize full-card"></i></li>
+                    <li><i class="fa fa-minus minimize-card"></i></li>
+                    <li><i class="fa fa-refresh reload-card"></i></li>
+                    <li><i class="fa fa-trash close-card"></i></li>
+                </ul>
             </div>
+        </div>
+        <div class="card-block table-border-style">
+            <div class="table-responsive">
+                <div class="white-box">
+                    <div class="container col-12">
+                        <div class="row">
+                            <div class="col-6">
+                                <p>Cliente</p>
+                                <input type="text" ref="inpProducto" v-model="nombreProductoAgregar"  class="form-control nombreProductoPedido-field ">
+                            </div>
+                            <div class="col-6">
+                                <p>Seleccione Provedor</p>
+                                <select name="almacen" id="almacen" class="form-control">
+                                    {% for oProveedor in oProveedors %}
+                                    <option value="{{ oProveedor.id }}"> {{ oProveedor.nombre }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <hr>
 
-            <div class="row">
-                <div class="form-group">
-                    <div class="col-sm-8 col-md-8 col-lg-6">
-                        <div id="tabs" style="display:none;">
-                            <table id="listaProducto"></table>
-                            <div id="pagerlistaProducto"  style="text-align: center;"></div>
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="id_nombre">Producto:</label>
+                                <div class="row">
+                                    <div class="col">
+                                        <input type="text" ref="inpProducto" v-model="nombreProductoAgregar"  class="form-control nombreProductoPedido-field " 
+                                        name="inpt-producto" id="inpt-producto" :disabled="producto_completado"
+                                        v-on:keyup.enter="changeProductoCompletado">
+                                    </div>
+                                    
+                                    <div class="col" v-show="producto_completado">
+                                        <button  type="button" class="btn btn-secondary " @click="changeProductoCompletado">
+                                            Editar
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="col" v-show="!producto_completado">
+                                        <button type="button" class="btn btn-danger " @click="set_nombreProducto('',0)">
+                                            Borrar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            
+                            <div class="col-6">
+                                <div class="row">
+                                    <div id="selector" class="col">
+                                        <label for="id_nombre">Presentación:</label>
+                                        <select v-model="selectedPresentacion" class="selectPresentacion-field col-12">
+                                            <option class="form-control option-selectPresentacion-field " v-for="(item, key) in lista_presentaciones" :value="key">
+                                                [[item]]
+                                            </option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="col">
+                                        <label for="id_nombre">Cantidad:</label>
+                                        <input v-model="cantProductoAgregar" type="number" min="1" name="cantidad" id="cantidad" required="" class="form-control cantidadProductoPedido-field " >
+                                    </div>
+                                    <div class="d-flex justify-content-center">
+                                        <button class="form-control btn-success" @click="++cantProductoAgregar">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="60" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+                                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+
+                                    <div class="d-flex justify-content-center">
+                                        <button class="form-control btn-danger" @click="--cantProductoAgregar">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="60" fill="currentColor" class="bi bi-dash-circle" viewBox="0 0 16 16">
+                                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                                <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="row">
+                                    <tr>
+                                        {% for oProductoTop in oProductosTop %}
+                                            <td>
+                                                <button @click="set_nombreProducto('{{oProductoTop}}',{{ oProductoTop.precio }})">
+                                                <img src="{{ oProductoTop.imagen.url }}" class="card-img-top " alt="{{ oProductoTop.nombre }}" style="height: 75px; height: 80px;">
+                                                <p>{{ oProductoTop.nombre }}</p>
+                                            <td>
+                                            {% if forloop.counter|divisibleby:5 %}
+                                                {# Start new row #}
+                                                </tr>
+                                                <tr>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </tr>
+                                </div>
+
+                                
+                            </div>
+                            <div class="row col-6">
+                                <div class="col">
+                                    <hr>
+                                </div>
+                                <div class="col">
+                                    <p style="font-size: 20px;" v-if="precioProductoAgregar!==0"> PRECIO UNIT.: [[precioProductoAgregar]]</p>
+                                    <p style="font-size: 40px;"> TOTAL S/. [[totalProductoAgregar]]</p>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-12 ">
+                                <button class="btn btn-success col-12 button-agregarProducto-field" @click="agregarProductoPedido"> Agregar Producto</button>
+                            </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                    <div class="col-sm-2 col-md-2 col-lg-4">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="box-title">Datos:</h3>
+            <div class="card-header-right">
+                <ul class="list-unstyled card-option">
+                    <li><i class="fa fa fa-wrench open-card-option"></i></li>
+                    <li><i class="fa fa-window-maximize full-card"></i></li>
+                    <li><i class="fa fa-minus minimize-card"></i></li>
+                    <li><i class="fa fa-refresh reload-card"></i></li>
+                    <li><i class="fa fa-trash close-card"></i></li>
+                </ul>
+            </div>
+        </div>
+        <div class="card-block table-border-style">
+            <div class="table-responsive">
+                <div class="white-box">
+                    <div class="container col-12">
+                        <div class="row">
+                            <div class="col-6">
+                                Contenido nuevo Lote:
+                                <div class="table table-borderless" id="table">
+                                    <table class="table table-borderless" id="table">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Nombre Producto</th>
+                                                <th scope="col">Presentación Producto</th>
+                                                <th scope="col">Cantidad Producto</th>
+                                                <th scope="col">Precio Producto</th>
+                                                <th scope="col">Fecha Vencimiento Producto</th>
+                                                <th scope="col">Opciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tr v-for="item in items">
+                                            <td>1</td>
+                                            <td>[[item.nombre_producto]]</td>
+                                            <td>[[item.presentacion_producto]]</td>
+                                            <td>[[item.cantidad_producto]]</td>
+                                            <td>[[item.precio_producto]]</td>
+                                            <td>[[item.fechaVenc_producto]]</td>
+                                            <td>|Editar|Borrar|</td></tr>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
 
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col">
+                                    <h1>Monto Total S/. [[monto_total]]</h1>
+                                </div>
+                                <div class="col">
+                                    <button class="btn btn-success col-12 button-agregarProducto-field" @click=""> Guardar</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 {% endblock %}
+
+{% block footer  %}
+
+<script type="text/javascript">
+    new Vue({
+        delimiters: ['[[', ']]'],
+        el: '#app',
+        created() {
+            console.log("created")
+            this.buscar_producto()
+            console.log(this.arrProductos)
+            //this.buscar_presentaciones_producto()
+        },
+        data:   {
+             
+
+            done: '',
+            producto_completado : false,
+            lista_presentaciones: {
+                "select1": "Select 1",
+                "select2": "Select 2",
+                "select3": "Select 3",
+                "select4": "Select 4",
+            },
+             
+            items: [
+                { id: 1, nombre_producto: "Producto 01", presentacion_producto:"CA", cantidad_producto:"10",precio_producto:"S/. 3.00", fechaVenc_producto: 'new Date()'.toLocaleString() },
+                { id: 1, nombre_producto: "Producto 02", presentacion_producto:"CA", cantidad_producto:"4",precio_producto:"S/. 4.00", fechaVenc_producto: 'new Date()'.toLocaleString() },
+                { id: 1, nombre_producto: "Producto 03", presentacion_producto:"CA", cantidad_producto:"8",precio_producto:"S/. 5.00", fechaVenc_producto: 'new Date()'.toLocaleString() }
+            ],
+            selectedPresentacion: '',
+            nombreProductoAgregar : '',
+            nombreProducto: '',
+            precioProductoAgregar: 0,
+            totalProductoAgregar: 0,
+            cantProductoAgregar: 0,
+            arrProductos: [],
+
+            monto_total: 0,
+        },
+        
+        watch: {
+            nombreProductoAgregar: function(val){
+                this.buscar_producto()
+            },
+            cantProductoAgregar: function(val){
+                if (this.precioProductoAgregar != 0 && this.cantProductoAgregar !=0){
+                    this.totalProductoAgregar = this.cantProductoAgregar*this.precioProductoAgregar
+                    
+                } 
+            },
+        }
+        ,
+        methods: {
+            async buscar_producto(){
+                let data = {
+                    nombreProducto : this.nombreProductoAgregar,
+                };
+                axios.post("/producto/buscar/", data).then((result) => {
+                    const data = result.data;
+                    if (data){
+                        console.log(data['productos'])
+                        this.autocompletar(data['productos'])
+                        
+                    }
+                    else{
+                        alert("Error")
+                    }
+                });
+            },
+            async buscar_presentaciones_producto(){
+                //const pk = this.nombreProductoAgregar
+                const pk = '123'
+                
+                axios.get("/producto/presentacion/listar/?pk=555")
+                    .then((response) => {
+                        const data = response.data;
+                        this.lista_clientes = data
+                        console.log(data)
+                    })
+                    .catch(function(error){
+
+                    });    
+            },
+
+            agregarProductoPedido: function(){
+                if (this.nomProductComplete=!''&&this.cantProductoAgregar>0){
+                    objProducto = { id: 1, nombre_producto: this.nombreProductoAgregar, presentacion_producto:"CA", cantidad_producto:this.cantProductoAgregar,precio_producto:this.precioProductoAgregar, fechaVenc_producto:'cc' }
+                    this.items.push(objProducto)
+                    console.log(this.items)
+                    this.nombreProductoAgregar = ''
+                    this.cantProductoAgregar = 0
+                    this.precioProductoAgregar = 0
+                    this.totalProductoAgregar = 0
+                    this.producto_completado = false
+                }
+
+            },
+            
+            changeProductoCompletado: function(){
+                if (this.producto_completado == true){
+                    this.producto_completado = false
+                }
+                else{
+                    this.producto_completado = true
+                }
+            },
+            set_nombreProducto: function(obj,precio){
+                if (this.producto_completado==false){
+                    console.log("obj set nombre product")
+                    console.log(obj)
+                    this.producto_completado = false
+                    this.nombreProductoAgregar = obj
+                    this.precioProductoAgregar = precio
+                    
+                    if (obj!=''){this.producto_completado = true}
+                    else{this.totalProductoAgregar = 0}
+                    this.buscar_presentaciones_producto()
+                    this.cantProductoAgregar = 0
+                }
+            },
+            setValueProductoAgregar: function(oProducto){
+                $( "#inpt-producto" ).val(oProducto.nombre);
+            },
+            autocompletar: function(data){
+                var arr_productos = []
+                for (let index = 0; index < data.length; index++) {
+                    arr_productos.push(data[index].nombre);
+                }
+                this.arrProductos = data
+                
+                console.log(arr_productos)
+                console.log(this.arrProductos)
+
+                const nomProductComplete = ''
+                $( "#inpt-producto" ).autocomplete({
+                    source: arr_productos,
+                    select: function (event, ui) {
+                        $.data(document.body, 'nomProductSelect', ui.item.Id);//guardar el id en memoria el $.data guarda en memoria
+                        alert('Producto seleccionado: '+toString(ui.item.value))
+                        //$( "#inpt-producto" ).val(nomProductComplete);
+                        console.log("Datos selected option input: ")
+
+                        console.log(ui.item.value)
+
+                        //$( "#cantidad" ).focus();
+                    }
+                    
+                });
+                console.log(nomProductComplete) 
+
+            },
+        },
+    });
+</script>
+
+
+{% endblock %}
+
+

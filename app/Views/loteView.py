@@ -16,14 +16,13 @@ from app.fomularios.productoForm import *
 def nuevoLote(request):
     if request.method == 'POST':
         Datos = request.POST
-        form = ProductoForm(request.POST)
-        if form.is_valid():
-            form = form.save(commit=False)
-            form.save()
-            oProducto = form
-            #oPresentacion = Presentacion.objects.get(id = int(Datos['cmbPresentacionPrincipal']))
-            #oProducto.presentacions.add(oPresentacion)
-            return render(request, 'lote/nuevo.html')
+        print("############ log POST function nuevo_Lote #############")
+        print(Datos)
+        jsonProductos= {}
+        #oPresentacion = Presentacion.objects.get(id = int(Datos['cmbPresentacionPrincipal']))
+        #oProducto.presentacions.add(oPresentacion)
+        return HttpResponse(json.dumps(jsonProductos), content_type="application/json")
+        return render(request, 'lote/nuevo.html')
     else:
         form = ProductoForm()
         #oPrecios = Precio.objects.filter(estado=True)

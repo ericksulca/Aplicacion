@@ -1,3 +1,7 @@
 Agregar > Lote > producto.fecha_venc
 
 add boton  add Lote
+
+función option select 'error nombre producto'
+
+guardar Lote|Venta , agregar|descontar => producto_presentacion_operacion

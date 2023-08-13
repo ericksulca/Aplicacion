@@ -9,9 +9,18 @@
 
 <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 
-<link rel="stylesheet" href="">
+
+<!-- IMPORT DATIMEPICKER -->
+<!-- Minified Bootstrap JS -->
+<!-- Minified JS library -->
+<!-- Minified Bootstrap CSS 
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+-->
 
 <style>
     .cantidadProductoPedido-field {
@@ -28,7 +37,7 @@
     }
 
     .button-agregarProducto-field {
-        font-size: 40px;
+        font-size: 20px;
         font-weight: bold
     }
 </style>
@@ -98,12 +107,13 @@ Nuevo Lote
                                     </div>
                                     
                                     <div class="col" v-show="!producto_completado">
-                                        <button type="button" class="btn btn-danger " @click="set_nombreProducto('')">
+                                        <button type="button" class="btn btn-danger " @click="set_nombreProducto('',0)">
                                             Borrar
                                         </button>
                                     </div>
                                 </div>
                             </div>
+                            
                             
                             <div class="col-6">
                                 <div class="row">
@@ -150,9 +160,9 @@ Nuevo Lote
                                     <tr>
                                         {% for oProductoTop in oProductosTop %}
                                             <td>
-                                                <button @click="set_nombreProducto('{{oProductoTop}}')">
-                                                    <img src="{{ oProductoTop.imagen.url }}" class="card-img-top " alt="{{ oProductoTop.nombre }}" style="height: 75px; height: 80px;">
-                                                    <p>{{ oProductoTop.nombre }}</p>
+                                                <button @click="set_nombreProducto('{{oProductoTop.id}}','{{oProductoTop}}',{{ oProductoTop.precio }})">
+                                                <img src="{{ oProductoTop.imagen.url }}" class="card-img-top " alt="{{ oProductoTop.nombre }}" style="height: 75px; height: 80px;">
+                                                <p>{{ oProductoTop.nombre }}</p>
                                             <td>
                                             {% if forloop.counter|divisibleby:5 %}
                                                 {# Start new row #}
@@ -162,12 +172,22 @@ Nuevo Lote
                                         {% endfor %}
                                     </tr>
                                 </div>
+                                <meta name="csrf-token" content="{{ csrf_token }}">
+                            </div>
+                            <div class="row col-6">
+                                <div class="col">
+                                    <hr>
+                                </div>
+                                <div class="col">
+                                    <p style="font-size: 20px;" v-if="precioProductoAgregar!==0"> PRECIO UNIT.: [[precioProductoAgregar]]</p>
+                                    <p style="font-size: 40px;"> TOTAL S/. [[totalProductoAgregar]]</p>
+                                </div>
                             </div>
                         </div>
                         <hr>
                         <div class="row">
                             <div class="col-12 ">
-                                <button class="btn btn-success col-12 button-agregarProducto-field"> Agregar Producto</button>
+                                <button class="btn btn-success col-12 button-agregarProducto-field" @click="agregarProductoPedido"> Agregar Producto</button>
                             </div>
                         </div>
                     </div>
@@ -178,7 +198,7 @@ Nuevo Lote
 
     <div class="card">
         <div class="card-header">
-            <h3 class="box-title">Datos:</h3>
+            <h3 class="box-title">Contenido:</h3>
             <div class="card-header-right">
                 <ul class="list-unstyled card-option">
                     <li><i class="fa fa fa-wrench open-card-option"></i></li>
@@ -195,7 +215,6 @@ Nuevo Lote
                     <div class="container col-12">
                         <div class="row">
                             <div class="col-6">
-                                Contenido nuevo Lote:
                                 <div class="table table-borderless" id="table">
                                     <table class="table table-borderless" id="table">
                                         <thead>
@@ -203,17 +222,58 @@ Nuevo Lote
                                                 <th scope="col">#</th>
                                                 <th scope="col">Nombre Producto</th>
                                                 <th scope="col">Presentación Producto</th>
-                                                <th scope="col">Cantidad Producto</th>
-                                                <th scope="col">Precio Producto</th>
+                                                <th scope="col">
+                                                    <p @click="change_editar_cantidadItems">
+                                                        Cantidad Producto 
+                                                    </p>
+                                                    
+                                                    <button v-if="editar_cantidadItems" class="btn btn-success" @click="change_editar_cantidadItems">Guardar</button>
+                                                </th>
+                                                <th scope="col">
+                                                    <p @click="change_editar_precioItems">
+                                                        Precio Producto
+                                                    </p>    
+                                                    <button v-if="editar_precioItems" class="btn btn-success" @click="change_editar_precioItems">Guardar</button>
+                                                </th>
                                                 <th scope="col">Fecha Vencimiento Producto</th>
-                                                <th scope="col">Opciones</th>
                                             </tr>
                                         </thead>
                                         <tr v-for="item in items">
-                                            <td>1</td><td>[[item.nombre_producto]]</td><td>Kg</td><td>5</td><td>110</td><td>--</td><td>|Editar|Borrar|</td></tr>
+                                            <td>[[item.id]]</td>
+                                            <td>[[item.nombre_producto]]</td>
+                                            <td>[[item.presentacion_producto]]</td>
+                                            <td>
+                                                <p v-if="!editar_cantidadItems">
+                                                    [[item.cantidad_producto]]
+                                                </p>
+                                                <input v-if="editar_cantidadItems" type="number" min="0" v-model ="item.cantidad_producto" class="form-control"> 
+                                            </td>
+                                            <td>
+                                                <p v-if="!editar_precioItems">
+                                                    [[item.precio_producto]]
+                                                </p>
+                                                <input v-if="editar_precioItems" type="number" min="0" v-model ="item.precio_producto" class="form-control"> 
+                                            </td>
+                                            <td>
+                                                <input size="16" type="date" v-model="item.fechaVenc_producto" class="form-control" id="datetime" >
+                                            </td>
+
                                         </tr>
                                     </tbody>
                                 </table>
+                                
+                            </div>
+                        </div>
+                         
+
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col">
+                                    <h1>Monto Total S/. [[monto_total]]</h1>
+                                </div>
+                                <div class="col">
+                                    <button class="btn btn-success col-12 button-agregarProducto-field" @click="guardar_operacion"> Guardar</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -231,67 +291,82 @@ Nuevo Lote
     new Vue({
         delimiters: ['[[', ']]'],
         el: '#app',
+        computed: {
+            editableFields() {
+            return this.fields.filter(field => field.editable)
+            }
+        },
         created() {
+            window.csrfToken = document.querySelector('meta[name="csrf-token"]').content;
             console.log("created")
+            this.buscar_producto()
+            console.log(this.arrProductos)
             //this.buscar_presentaciones_producto()
+
+            
         },
         data:   {
-             
+            fields: [
+                { key: "name", label: "Name"},
+                { key: "department", label: "Department" },
+                { key: "age", label: "Age" },
+                { key: "dateOfBirth", label: "Date Of Birth" },
+            ],
 
             done: '',
             producto_completado : false,
-            lista_presentaciones: {
-                "select1": "Select 1",
-                "select2": "Select 2",
-                "select3": "Select 3",
-                "select4": "Select 4",
-                "select5": "Select 5",
-                "select6": "Select 6",
-                "select7": "Select 7"
-            },
-            fields:[
-                {
-                  key: "id",
-                  label: "Nº",
-                },
-                {
-                  key: "nombre_producto",
-                  label: "Nombre Producto"
-                },
-                {
-                  key: "presentacion_producto",
-                  label: "Presentación Producto"
-                },
-                {
-                  key: "cantidad_producto",
-                  label: "Cantidad Producto"
-                },
-                {
-                  key: "precio_producto",
-                  label: "Precio Producto"
-                },
-                {
-                  key: "fechaVenc_producto",
-                  label: "Fecha Vencimiento Producto"
-                }
-            ],
+            editar_precioItems: false,
+            editar_cantidadItems: false,
+            lista_presentaciones: {},
+             
             items: [
-                { id: 1, nombre_producto: "Producto 01", presentacion_producto:"CA", cantidad_producto:"10",precio_producto:"S/. 3.00", fechaVenc_producto: 'new Date()'.toLocaleString() },
-                { id: 1, nombre_producto: "Producto 02", presentacion_producto:"CA", cantidad_producto:"4",precio_producto:"S/. 4.00", fechaVenc_producto: 'new Date()'.toLocaleString() },
-                { id: 1, nombre_producto: "Producto 03", presentacion_producto:"CA", cantidad_producto:"8",precio_producto:"S/. 5.00", fechaVenc_producto: 'new Date()'.toLocaleString() }
+                { id: 1, nombre_producto: "Producto 01", presentacion_producto:"CA", cantidad_producto:"10",precio_producto:"3.00", fechaVenc_producto: '' },
+                { id: 1, nombre_producto: "Producto 02", presentacion_producto:"CA", cantidad_producto:"4",precio_producto:"4.00", fechaVenc_producto: '' },
+                { id: 1, nombre_producto: "Producto 03", presentacion_producto:"CA", cantidad_producto:"8",precio_producto:"5.00", fechaVenc_producto: '' }
             ],
             selectedPresentacion: '',
+            idProductoAgregar : 0,
             nombreProductoAgregar : '',
             nombreProducto: '',
-
+            precioProductoAgregar: 0,
+            totalProductoAgregar: 0,
             cantProductoAgregar: 0,
             arrProductos: [],
+            objsPresentaciones: [],
+            monto_total: 0,
         },
         
         watch: {
             nombreProductoAgregar: function(val){
                 this.buscar_producto()
             },
+            items: function(val){
+                console.log("Lof Func: vuejs_watch_items[]")
+            },
+            cantProductoAgregar: function(val){
+                if (this.precioProductoAgregar != 0 && this.cantProductoAgregar !=0){
+                    this.totalProductoAgregar = this.cantProductoAgregar*this.precioProductoAgregar
+                    
+                } 
+            },
+            idProductoAgregar: function(val){
+                if(this.idProductoAgregar !=0){
+                    this.buscar_presentaciones_producto()
+                    console.log("LOG FUNC: 'IDPRODUCTOAGREGAR'")
+                }
+            },
+            selectedPresentacion: function(val){
+                this.totalProductoAgregar = 0
+                this.cantProductoAgregar = 0
+                for (let index = 0; index < this.objsPresentaciones.length; index++) {
+                    //const element = array[index];
+                    if(this.objsPresentaciones[index]['presentacion']['codigo']==val){
+                        this.precioProductoAgregar = this.objsPresentaciones[index]['precio_venta']
+                    }
+                    
+                }
+            }
+
         }
         ,
         methods: {
@@ -299,10 +374,11 @@ Nuevo Lote
                 let data = {
                     nombreProducto : this.nombreProductoAgregar,
                 };
+                
                 axios.post("/producto/buscar/", data).then((result) => {
                     const data = result.data;
                     if (data){
-                        console.log(data['productos'])
+                        //console.log(data['productos'])
                         this.autocompletar(data['productos'])
                     }
                     else{
@@ -310,19 +386,67 @@ Nuevo Lote
                     }
                 });
             },
-            async buscar_presentaciones_producto(){
-                //const pk = this.nombreProductoAgregar
-                const pk = '123'
+
+            async send_datos_operacion(){
+                alert(window.csrfToken)
+                let datos = this.items
+                axios.post(".",datos,{headers: {'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN' : window.csrfToken}}).then((result)=> {
+                    let data = result.data;
+                    console.log (data)
+                    alert("send_datos completado!")
+                });
                 
-                axios.get("/producto/presentacion/listar/?pk=555")
+            },
+
+            async buscar_presentaciones_producto(){
+                const pk = this.idProductoAgregar
+                //const pk = '123'
+                
+                axios.get("/producto/presentacion/listar/?pk="+pk)
                     .then((response) => {
                         const data = response.data;
                         this.lista_clientes = data
+                        console.log("log func: listar producto presentacion")
                         console.log(data)
+                        console.log(data.length)
+                        this.lista_presentaciones = {}
+                        let presentaciones = {}
+                        for (let index = 0; index < data.length; index++) {
+                            console.log("# Log func: buscar presentacion producto  FOR")
+                            let codigo = data[index]['presentacion']['codigo']
+                            let element = data[index]['presentacion']['nombre'];
+
+                            console.log(element)
+                            console.log(codigo)
+                            presentaciones[codigo] = element
+                            console.log("LOG presentaciones")
+                            console.log(presentaciones)
+                            
+                        }
+                        this.objsPresentaciones = data
+                        this.lista_presentaciones = presentaciones
                     })
                     .catch(function(error){
 
                     });    
+            },
+
+            agregarProductoPedido: function(){
+                if (this.nomProductComplete=!''&&this.cantProductoAgregar>0){
+                    objProducto = {
+                         id: 1, nombre_producto: this.nombreProductoAgregar, presentacion_producto:"CA", cantidad_producto:this.cantProductoAgregar,precio_producto:this.precioProductoAgregar, fechaVenc_producto:''
+                         }
+                    this.items.push(objProducto)
+                    console.log(this.items)
+                    this.nombreProductoAgregar = ''
+                    this.cantProductoAgregar = 0
+                    this.precioProductoAgregar = 0
+                    this.totalProductoAgregar = 0
+                    this.producto_completado = false
+                    this.calcular_total_operacion()
+                }
+
             },
             
             changeProductoCompletado: function(){
@@ -333,17 +457,58 @@ Nuevo Lote
                     this.producto_completado = true
                 }
             },
-            set_nombreProducto: function(obj){
+            change_editar_cantidadItems: function(){
+                console.log(this.editar_cantidadItems)
+                if (this.editar_cantidadItems == true){
+                    this.editar_cantidadItems = false
+                    this.calcular_total_operacion()
+                }
+                else{
+                    this.editar_cantidadItems = true
+                }
+
+            },
+            change_editar_precioItems: function(){
+                console.log(this.editar_precioItems)
+                if (this.editar_precioItems == true){
+                    this.editar_precioItems = false
+                    this.calcular_total_operacion()
+                }
+                else{
+                    this.editar_precioItems = true
+                }
+            },
+            calcular_total_operacion: function(){
+                this.monto_total = 0
+                for (let index = 0; index < this.items.length; index++) {
+                    this.monto_total += this.items[index]['cantidad_producto']*this.items[index]['precio_producto']
+                    //const element = array[index];
+                }
+                this.monto_total = Math.round((this.monto_total)*100)/ 100
+            },
+            set_nombreProducto: function(idProducto,obj,precio){
                 if (this.producto_completado==false){
+                    console.log("obj set nombre product")
                     console.log(obj)
+                    this.idProductoAgregar = idProducto
                     this.producto_completado = false
                     this.nombreProductoAgregar = obj
+                    this.precioProductoAgregar = precio
+                    
                     if (obj!=''){this.producto_completado = true}
+                    else{this.totalProductoAgregar = 0}
                     this.buscar_presentaciones_producto()
+                    this.cantProductoAgregar = 0
                 }
             },
             setValueProductoAgregar: function(oProducto){
                 $( "#inpt-producto" ).val(oProducto.nombre);
+            },
+            guardar_operacion: function(){
+                console.log("Log Func: guardar_operacion ")
+                console.log(this.items)
+                this.send_datos_operacion()
+
             },
             autocompletar: function(data){
                 var arr_productos = []
