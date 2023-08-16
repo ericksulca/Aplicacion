@@ -22,7 +22,7 @@ import json
 
 from app.serializers import AlertaSerializer
 from app.fomularios.cierrecajaForm import *
-from app.fomularios.pedidoForm import *
+#from app.fomularios.pedidoForm import *
 
 ###########################################################
 #   Usuario: Erick Sulca, Ulises Bejar

@@ -58,7 +58,7 @@ class Cobro(models.Model):
     monto = models.FloatField()
     estado = models.BooleanField(blank=True,default=True)
     venta = models.ForeignKey('Venta', on_delete=models.CASCADE)  # Field name made lowercase.
-    recibo = models.ForeignKey('Recibo', blank=True, null=True, on_delete=models.CASCADE)  # Field name made lowercase.
+    #recibo = models.ForeignKey('Recibo', blank=True, null=True, on_delete=models.CASCADE)  # Field name made lowercase.
 
 class Detalletipooperacion(models.Model):
     nombre = models.CharField(max_length=45)
@@ -69,7 +69,7 @@ class Lote(models.Model):
     fecha = models.DateTimeField(auto_now_add=True, blank=True)
     modificado = models.DateTimeField(auto_now=True, blank=True)
     proveedor = models.ForeignKey('Proveedor', on_delete=models.CASCADE)  # Field name made lowercase.
-    recibo = models.ForeignKey('Recibo', on_delete=models.CASCADE)  # Field name made lowercase.
+    almacen = models.ForeignKey('Almacen', on_delete=models.CASCADE, blank=True,null=True)  # Field name made lowercase.
     monto = models.FloatField(blank=True, null=True)
     estado = models.BooleanField(blank=True,default=True)
 
@@ -92,7 +92,8 @@ class Operacion(models.Model):
 class Pedido(models.Model):
     fecha = models.DateTimeField(auto_now_add=True, blank=True)
     estado = models.BooleanField(blank=True,default=True)
-    empleado = models.ForeignKey('Empleado', on_delete=models.CASCADE)  # Field name made lowercase.
+    #empleado = models.ForeignKey('Empleado', on_delete=models.CASCADE)  # Field name made lowercase.
+    usuario = models.OneToOneField(User, on_delete= models.DO_NOTHING, related_name='usuario_pedidos', blank=True, null=True)
     cliente = models.ForeignKey(Cliente, blank=True, null=True, on_delete=models.CASCADE)  # Field name made lowercase.
 
 class Empleado(models.Model):
@@ -138,13 +139,25 @@ class Producto_presentacions(models.Model):
     def __str__(self):
         str_producto_presentacions = 'Producto: '+self.producto.nombre+' | Presentación: '+self.presentacion.nombre
         return str(str_producto_presentacions)
+    
+class Pedido_productopresentacions(models.Model):
+    cantidad = models.FloatField(blank=True,null=True)
+    producto_presentacions = models.ForeignKey(Producto_presentacions, on_delete=models.CASCADE)  # Field name made lowercase.
+    pedido = models.ForeignKey(Pedido, on_delete=models.DO_NOTHING)
+    precio_pedido = models.FloatField(default=0,blank=True)
+    fecha_caducidad = models.DateTimeField(null=True, blank=True)
+    estado = models.BooleanField(blank=True,default=True)
 
-class Producto_almacens(models.Model):
-    cantidad = models.FloatField()
-    cantidadinicial = models.FloatField()
-    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)  # Field name made lowercase.
-    almacen = models.ForeignKey(Almacen, on_delete=models.CASCADE)  # Field name made lowercase.
-    lote = models.ForeignKey(Lote, on_delete=models.CASCADE)  # Field name made lowercase.
+class Lote_productopresentacions(models.Model):
+    cantidad = models.FloatField(blank=True,null=True)
+    cnt_cantidad = models.FloatField(blank=True,null=True) # descuento respectoa ventas 
+    producto_presentacions = models.ForeignKey(Producto_presentacions, on_delete=models.CASCADE)  # Field name made lowercase.
+    precio_lote = models.FloatField(default=0,blank=True)
+    lote = models.ForeignKey(Lote, on_delete=models.DO_NOTHING)
+    fecha_caducidad = models.DateTimeField(null=True, blank=True)
+    estado = models.BooleanField(blank=True,default=True)
+
+    # FUNCION CANTIDAD CONTAR_STOCK() ON
 
 class Producto_categorias(models.Model):
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)  # Field name made lowercase.
@@ -159,7 +172,7 @@ class Proveedor(models.Model):
     def __str__(self):
         return str(self.nombre)
 
-class Recibo(models.Model):
+class Tipo_recibo(models.Model):
     nombre = models.CharField(max_length=45)
     estado = models.BooleanField(blank=True,default=True)
 
