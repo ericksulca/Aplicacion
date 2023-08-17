@@ -154,7 +154,6 @@ def detalleProducto(request,producto_id):
     oProducto = Producto.objects.get(id=producto_id,estado=True)
     return render(request, 'producto/detalle.html', {'oProducto':oProducto})
 
-
 def editarProducto(request,producto_id):
     oProducto = Producto.objects.get(id = producto_id)
     if request.method == 'POST':

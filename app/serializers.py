@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from app.models import (Producto, Alerta,Presentacion,Producto_presentacions)
+from app.models import (Producto, Alerta, Presentacion, Producto_presentacions, Lote, Detalletipooperacion)
 
 class ProductoSerializer(serializers.ModelSerializer):
     class Meta:
@@ -24,3 +24,12 @@ class Producto_presentacionsSerializer(serializers.ModelSerializer):
         model = Producto_presentacions
         fields = ('id', 'presentacion', 'precio_compra', 'precio_venta', 'favorito')
 
+class LoteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Lote
+        fields = ('id','fecha','proveedor','almacen','monto')
+
+class detalleTipoOperacionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Detalletipooperacion
+        fields = ('id','nombre','tipooperacion')

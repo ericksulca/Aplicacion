@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block imports %}
+
+{% endblock %}
+
+{% block title %}
+OPeraciones
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+		<h3 class="box-title">Lista de Operaciones</h3>
+        <div class="card-header-right">
+            <ul class="list-unstyled card-option">
+                <li><i class="fa fa fa-wrench open-card-option"></i></li>
+                <li><i class="fa fa-window-maximize full-card"></i></li>
+                <li><i class="fa fa-minus minimize-card"></i></li>
+                <li><i class="fa fa-refresh reload-card"></i></li>
+                <li><i class="fa fa-trash close-card"></i></li>
+            </ul>
+        </div>
+    </div>
+    <div class="card-block table-border-style">
+        <div class="table-responsive">
+            <div class="white-box">
+				{% load widget_tweaks %}
+				{% csrf_token %}
+					<div class="form-group">
+					<table id="tCamiones" class="table">
+						<thead>
+	                        <tr>
+							<th>#</th>
+							<th><p class="d-flex justify-content-center">Fecha</p></th>
+							<th><p class="d-flex justify-content-center">Detalle Operación</p></th>
+							<th><p class="d-flex justify-content-center">Venta?</p></th>
+							<th><p class="d-flex justify-content-center">Descripción</p></th>
+							<th><p class="d-flex justify-content-center">Opciones</p></th>
+	                        </tr>
+	                    </thead>
+				    {% for oOperacion in oOperacions %}
+				    <tr>
+				    	<td>{{ forloop.counter }}</td>
+				    	<td>{{oOperacion.fecha}}</td>
+				    	<td>{{oOperacion.detalletipooperacion.nombre}}</td>
+				    	<td>{{oOperacion.venta}}</td>
+				    	<td>{{oOperacion.descripcion}}</td>
+				    	<td class="d-flex justify-content-center">
+				    		<a href="/Cja/operacion/detalle/{{oOperacion.id}}/"><button type="button" class="btn btn-info">Ver</button> </a>
+				    	</td>
+				    </tr>
+
+				    {% endfor %}
+
+					</table>
+				    <br>
+	    			<a href="/Producto/nuevo/"><button type="button" class="btn btn-success" >Nuevo Producto</button> </a>
+
+			</div>
+	    </div>
+    </div>
+</div>
+{% endblock %}

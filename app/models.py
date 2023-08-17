@@ -40,7 +40,7 @@ class Cierrecaja(models.Model):
     fecha = models.DateTimeField(auto_now_add=True, blank=True)
     monto = models.FloatField()
     estado = models.BooleanField(blank=True,default=True)
-    aperturacaja = models.ForeignKey(Aperturacaja, on_delete=models.CASCADE)  # Field name made lowercase.
+    aperturacaja = models.ForeignKey(Aperturacaja, on_delete=models.CASCADE, related_name='apertura_cierrecaja')  # Field name made lowercase.
 
 class Cliente(models.Model):
     nombre = models.CharField(max_length=45)
@@ -81,10 +81,10 @@ class Operacion(models.Model):
     fecha = models.DateTimeField(auto_now_add=True, blank=True)
     monto = models.FloatField()
     descripcion = models.TextField(blank=True, null=True)
-    estado = models.BooleanField(blank=True,default=True)
     aperturacaja = models.ForeignKey(Aperturacaja, on_delete=models.CASCADE)  # Field name made lowercase.
     detalletipooperacion = models.ForeignKey(Detalletipooperacion, on_delete=models.CASCADE)  # Field name made lowercase.
-    cobro = models.ForeignKey(Cobro, blank=True, null=True, on_delete=models.CASCADE)  # Field name made lowercase.
+    venta = models.ForeignKey('Venta', blank=True, null=True, on_delete=models.CASCADE)  # Field name made lowercase.
+    estado = models.BooleanField(blank=True,default=True)
     def __str__(self):
         str_return = 'Fecha : '+str(self.fecha) + ' - Monto S/. ' + str(self.monto)
         return str_return

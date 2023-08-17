@@ -53,6 +53,7 @@ urlpatterns = [
     path('Caja/apertura/', registrarAperturacaja, name='apertura_caja'),
     path('Caja/cierre/', registrarCierrecaja, name='cierre_caja'),
     path('Caja/operacion/', registrarOperacion, name='operacion_caja'),
+    path('Caja/operaciones/listar', listarOperacions, name='operaciones_listar'),
 
     ################## Venta #######################
     path('Venta/nuevo/', registrarPedido, name='registrar_venta'),
@@ -81,7 +82,11 @@ urlpatterns = [
     #path('Cliente/buscar/', IngresarPrecios),
     path('Cliente/actualizar/', IngresarPrecios, name='actualiza_cliente'),
     path('Cliente/eliminar/<int:pk>/', eliminar_cliente, name='eliminar_cliente'),
-
+    
+    ################## Lote #######################
+    path('Lote/nuevo/', nuevoLote, name='nuevo_lote'),
+    path('Lote/listar/', listarLote, name='listar_lote'),
+    path('Lote/detalle/<int:lote_id>/', detalleLote, name ='ver_lote'),
     ################## Pedidos #######################
 
     path('Pedido/nuevo/', registrarPedido),
@@ -118,9 +123,10 @@ urlpatterns = [
     path('producto/buscar/', BuscarProducto, name='buscar_producto'),
     path('producto/json_listar/', get_Productos.as_view(), name='listar_productos'),
     
-    ############### Pruebas presentación ###################
     #path('producto/presentacion/listar/', ListarPresentacionesProducto),
     path('producto/presentacion/listar/', get_PresentacionProducto.as_view()),
+
+    path('detalletipooperacion/lista/',get_detalleTipoOperacion.as_view(),name ='listar_detalletipooperacio'),
 
 
     path('producto/presentacion/cantidad/', CantidadPresentacionesProducto),
@@ -144,7 +150,8 @@ urlpatterns = [
     #path('Producto/detalle/<int:<producto_id>\d+)/$', detalleProducto),
     #path('Producto/editar/<int:<producto_id>\d+)/$', editarProducto),
 
-    path('Lote/nuevo/', nuevoLote, name='nuevo_lote'),
+    
+
     #####################################################
 
 #######################Rutas##############################

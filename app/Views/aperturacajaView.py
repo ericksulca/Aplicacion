@@ -25,12 +25,17 @@ def registrarAperturacaja(request):
             return render(request, 'caja/aperturaRegistrada.html')
         else:
             return render(request, 'caja/apertura.html')
-    else:
+    if request.method == 'GET':
         oCajas = Caja.objects.filter(estado=True)
+
         form = AperturacajaForm()
         try:
             oAperturacaja = Aperturacaja.objects.latest('id')
             if  oAperturacaja.activo==True:
                 return render(request, 'caja/aperturaRegistrada.html', {'Aperturacaja': oAperturacaja})
+            if  oAperturacaja.activo==False:
+
+                return render(request, 'caja/apertura.html',{'form': form,'cajas':oCajas})
+
         except Exception as e:
             return render(request, 'caja/apertura.html', {'form': form,'cajas':oCajas})

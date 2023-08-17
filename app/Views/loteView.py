@@ -13,6 +13,26 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from app.fomularios.productoForm import *
 
+from app.serializers import ProductoSerializer, LoteSerializer
+
+class get_Lotes(ListAPIView):
+    serializer_class = LoteSerializer
+    def get_queryset(self):
+        oLotes = Lote.objects.filter(estado = True)
+        return oLotes
+    
+def detalleLote(request,lote_id):
+    oLote = Lote.objects.get(id=lote_id,estado=True)
+    oLote_productopresentacions = Lote_productopresentacions.objects.filter(lote=oLote)
+    return render(request, 'lote/detalle.html', {'oLote':oLote, 'oLote_productopresentacions':oLote_productopresentacions})
+    
+def listarLote(request):
+    if request.method == 'POST':
+        return render(request, 'lote/listar.html', {"oLotes": oLotes})
+    if request.method == 'GET':
+        oLotes = Lote.objects.filter(estado = True)
+        return render(request, 'lote/listar.html', {"oLotes": oLotes})
+
 def nuevoLote(request):
     if request.method == 'POST':
         Datos = request.POST
