@@ -44,10 +44,12 @@ class Cierrecaja(models.Model):
 
 class Cliente(models.Model):
     nombre = models.CharField(max_length=45)
-    direccion = models.CharField(max_length=45)
+    direccion = models.CharField(max_length=45,blank=True, null=True)
+    numerodocumento = models.CharField(max_length=11, blank=True, null=True)
+    telefono = models.CharField(max_length=15,blank=True, null=True)
+    imagen = ResizedImageField(size=[100, None],upload_to='clientes/', default="/imagen/default_cliente.jpg", blank=True, null=True)#upload_to='%Y/%m/%d',
     longitud = models.CharField(max_length=25, blank=True, null=True)
     latitud = models.CharField(max_length=25, blank=True, null=True)
-    numerodocumento = models.CharField(max_length=11, blank=True, null=True)
     estado = models.BooleanField(blank=True,default=True)
 
     def __str__(self):

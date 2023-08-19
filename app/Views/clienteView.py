@@ -35,10 +35,12 @@ def buscarCliente(request):
             jsonfinal = {}
             jsonfinal["clientes"] = []
             try:
-                oClientes = Cliente.objects.filter(nombre__icontains=nombreCliente,estado = 1)
+                oClientes = Cliente.objects.filter(nombre__icontains=nombreCliente,estado = 1)[:6]
                 for oCliente in oClientes:
                     jsonCliente = {}
                     jsonCliente["id"] = oCliente.id
+                    jsonCliente["imagen"] = oCliente.imagen.url
+                    jsonCliente["telefono"] = oCliente.telefono
                     jsonCliente["direccion"] = oCliente.direccion
                     jsonCliente["nombre"] = oCliente.nombre
                     jsonCliente["numerodocumento"] = oCliente.numerodocumento

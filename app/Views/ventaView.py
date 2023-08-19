@@ -19,8 +19,11 @@ from datetime import datetime,date
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def nuevoVenta(request):
+    if request.method == 'POST':
+        Datos = json.loads(request.body.decode('utf-8'))
+        print(Datos)
+        return redirect ('venta_listar')
     if request.method == 'GET':
-        Datos = request.POST
         oProductosTop = Producto.objects.filter(estado=True).order_by('-valor')[:9]
         return render(request, 'venta/nuevo.html', {'oProductosTop': oProductosTop})
 

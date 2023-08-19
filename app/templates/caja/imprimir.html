@@ -41,20 +41,20 @@
         </div>
         <button id="btnPrint">Print</button>
 
-<button type="button" onclick="printJS('http://127.0.0.1:8000/media/pdf/prueba_printPDF.pdf')">
-Print PDF
-</button>
-    <script>
-        $(document).ready(function(){
-            $("#btnPrint").on("click",function(){
-                printJS({
-                    maxWidth: 300,
-                    type: 'html',
-                    printable: 'print-area',
-                    //type: 'html'
-                });
+        <button type="button" onclick="printJS('http://127.0.0.1:8000/media/pdf/prueba_printPDF.pdf')">
+            Print PDF
+        </button>
+        <script>
+            $(document).ready(function(){
+                $("#btnPrint").on("click",function(){
+                    printJS({
+                        maxWidth: 300,
+                        type: 'html',
+                        printable: 'print-area',
+                        //type: 'html'
+                    });
+                })
             })
-        })
-    </script>
+        </script>
     </body>
 </html>

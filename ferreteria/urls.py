@@ -138,7 +138,7 @@ urlpatterns = [
 
 #######################Ventas##############################
 
-    path('venta/nuevo/', nuevoVenta),
+    path('venta/nuevo/', nuevoVenta,name="venta_nuevo"),
     path('venta/listar/', ListarVentas, name="venta_listar"),
     # path('venta/listar/<int:<producto_buscado>\d+)/<int:<dni>\d+)/<int:<fecha_ini>[0-9]{2}-?[0-9]{2}-?[0-9]{4})/<int:<fecha_f>[0-9]{2}-?[0-9]{2}-?[0-9]{4})/', Fentas),
     # path('venta/listar/<int:<producto_buscado>\d+)/<int:<dni>\d+)/', Fentas),

@@ -77,7 +77,7 @@ def BuscarProducto (request):
 
         if usuario==True:
             nombreProducto = Datos["nombreProducto"]
-            oProductos = Producto.objects.filter(nombre__icontains=nombreProducto,estado = True)
+            oProductos = Producto.objects.filter(nombre__icontains=nombreProducto,estado = True)[:7]
             jsonProductos = {}
             jsonProductos["productos"] = []
             for oProducto in oProductos:
