@@ -35,6 +35,7 @@ OPeraciones
 							<th><p class="d-flex justify-content-center">Detalle Operación</p></th>
 							<th><p class="d-flex justify-content-center">Venta?</p></th>
 							<th><p class="d-flex justify-content-center">Descripción</p></th>
+							<th><p class="d-flex justify-content-center">Monto S/. </p></th>
 							<th><p class="d-flex justify-content-center">Opciones</p></th>
 	                        </tr>
 	                    </thead>
@@ -45,8 +46,9 @@ OPeraciones
 				    	<td>{{oOperacion.detalletipooperacion.nombre}}</td>
 				    	<td>{{oOperacion.venta}}</td>
 				    	<td>{{oOperacion.descripcion}}</td>
+				    	<td>S/. {{oOperacion.monto}}</td>
 				    	<td class="d-flex justify-content-center">
-				    		<a href="/Cja/operacion/detalle/{{oOperacion.id}}/"><button type="button" class="btn btn-info">Ver</button> </a>
+				    		<a href="/Caja/operacion/detalle/{{oOperacion.id}}"><button type="button" class="btn btn-info">Ver</button> </a>
 				    	</td>
 				    </tr>
 
@@ -54,7 +56,7 @@ OPeraciones
 
 					</table>
 				    <br>
-	    			<a href="/Producto/nuevo/"><button type="button" class="btn btn-success" >Nuevo Producto</button> </a>
+	    			<a href="{% url 'operacion_caja' %}"><button type="button" class="btn btn-success" >Nueva Operación</button> </a>
 
 			</div>
 	    </div>

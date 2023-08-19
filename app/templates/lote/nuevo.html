@@ -40,9 +40,11 @@
         font-size: 20px;
         font-weight: bold
     }
+    .button-guardarOperacion-field {
+        font-size: 40px;
+        font-weight: bold
+    }
 </style>
-
-
 {% endblock %}
 
 
@@ -72,19 +74,28 @@ Nuevo Lote
                         <div class="row">
                             <div class="col-6">
                                 <p>Seleccione Almacén</p>
-                                <select name="almacen" id="almacen" class="form-control" v-model="almacen_selected">
+                                <select name="almacen" id="almacen" class="form-control" v-model="almacen_selected" required>
                                     {% for oAlmacen in oAlmacens %}
-                                    <option value="{{ oAlmacen.id }}"> {{ oAlmacen.nombre }}</option>
+                                    <option class="form-control" value="{{ oAlmacen.id }}"> {{ oAlmacen.nombre }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
                             <div class="col-6">
-                                <p>Seleccione Provedor</p>
-                                <select name="proveedor" id="proveedor" class="form-control" v-model="proveedor_selected">
-                                    {% for oProveedor in oProveedors %}
-                                    <option value="{{ oProveedor.id }}"> {{ oProveedor.nombre }}</option>
-                                    {% endfor %}
-                                </select>
+                                <div class="row">
+                                    <div class="col">
+                                        <p>Seleccione Provedor</p>
+                                        <select name="proveedor" id="proveedor" class="form-control" v-model="proveedor_selected" required>
+                                            {% for oProveedor in oProveedors %}
+                                            <option class="form-control" value="{{ oProveedor.id }}"> {{ oProveedor.nombre }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                        
+                                    <div class="col">
+                                        <p>Ingrese Nro Documento:</p>
+                                        <input type="text" v-model="nroDocumento" class="form-control" >
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         
@@ -147,7 +158,6 @@ Nuevo Lote
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                         
                         <hr>
@@ -162,8 +172,8 @@ Nuevo Lote
                                 <div class="row" style="height: 75 px;">
                                     <div class="col" v-for="(item, index) in arrProductos">
                                             <td>
-                                                <button @click="set_nombreProducto(item.id,item.nombre,item.precio)">
-                                                    <img :src=[[item.imagen]] class="card-img-top " style="height: 75px; width: 80px;">
+                                                <button @click="set_nombreProducto(item.id,item.nombre,item.precio)" style="width: 100px;">
+                                                    <img :src=[[item.imagen]] class="card-img-top " style="width: 80px;">
                                                     <p>[[item.nombre]]
                                                 </button>
                                             </td>
@@ -181,8 +191,8 @@ Nuevo Lote
                                     <tr>
                                         {% for oProductoTop in oProductosTop %}
                                             <td>
-                                                <button @click="set_nombreProducto('{{oProductoTop.id}}','{{oProductoTop}}',{{ oProductoTop.precio }})">
-                                                    <img src="{{ oProductoTop.imagen.url }}" class="card-img-top " alt="{{ oProductoTop.nombre }}" style="height: 75px; height: 80px;">
+                                                <button @click="set_nombreProducto('{{oProductoTop.id}}','{{oProductoTop}}',{{ oProductoTop.precio }})" style="width: 100px;">
+                                                    <img src="{{ oProductoTop.imagen.url }}" class="card-img-top " alt="{{ oProductoTop.nombre }}" style="height: 80px;">
                                                     <p>{{ oProductoTop.nombre }}</p>
                                                 </button>
 
@@ -202,8 +212,16 @@ Nuevo Lote
                                     <hr>
                                 </div>
                                 <div class="col">
-                                    <p style="font-size: 20px;" v-if="precioProductoAgregar!==0"> PRECIO UNIT.: [[precioProductoAgregar]]</p>
-                                    <p style="font-size: 40px;"> TOTAL S/. [[totalProductoAgregar]]</p>
+                                    <div class="row">
+                                        <p style="font-size: 20px;" v-if="precioProductoAgregar!==0"> PRECIO UNIT.: </p>
+                                    </div>
+                                    <div class="row">
+                                        <p style="font-size: 40px;"> TOTAL S/. : [[ totalProductoAgregar ]] </p>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <input v-if="precioProductoAgregar!==0" type="number" name="" id="" v-model="precioProductoAgregar" class="form-control">
+                                    
                                 </div>
                             </div>
                         </div>
@@ -259,10 +277,11 @@ Nuevo Lote
                                                     <button v-if="editar_precioItems" class="btn btn-success" @click="change_editar_precioItems">Guardar</button>
                                                 </th>
                                                 <th scope="col">Fecha Vencimiento Producto</th>
+                                                <th scope="col">Opciones</th>
                                             </tr>
                                         </thead>
-                                        <tr v-for="item in items">
-                                            <td>[[item.id]]</td>
+                                        <tr v-for="(item, index) in items">
+                                            <td>[[index+1]]</td>
                                             <td>[[item.nombre_producto]]</td>
                                             <td>[[item.presentacion_producto]]</td>
                                             <td>
@@ -280,6 +299,15 @@ Nuevo Lote
                                             <td>
                                                 <input size="16" type="date" v-model="item.fechaVenc_producto" class="form-control" id="datetime" >
                                             </td>
+                                            
+                                            <td>
+                                                <button @click="eliminar_fila_pedido(index)" class="btn btn-outline-danger">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+                                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                                                  </svg> 
+                                                </button>
+                                            </td>
 
                                         </tr>
                                     </tbody>
@@ -292,10 +320,24 @@ Nuevo Lote
                         <div class="col-6">
                             <div class="row">
                                 <div class="col">
-                                    <h1>Monto Total S/. [[monto_total]]</h1>
+                                    <div class="row">
+                                        <h1>Monto Total S/. [[monto_total]]</h1>
+                                    </div>
+                                    <div class="row"> 
+                                        <div class="col">
+                                            <input type="checkbox" v-model="bool_pagoTotal" name="" id="" class="form-control">
+                                        </div>
+                                        <div class="col">
+                                            <p>Pago Total</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <input type="number" v-if="!bool_pagoTotal" v-mode="monto_pago" name="" id="" class="form-control cantidadProductoPedido-field">
+                                    </div>
                                 </div>
                                 <div class="col">
-                                    <button class="btn btn-success col-12 button-agregarProducto-field" @click="guardar_operacion"> Guardar</button>
+"
+                                    <button class="btn btn-success col-12 button-agregarProducto-field" @click="guardar_operacion" style="height: 150px;"> Guardar</button>
                                 </div>
                             </div>
                         </div>
@@ -315,34 +357,23 @@ Nuevo Lote
         delimiters: ['[[', ']]'],
         el: '#app',
         computed: {
-            editableFields() {
-            return this.fields.filter(field => field.editable)
-            }
+            
         },
         created() {
             window.csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-            console.log("created")
-            //this.buscar_producto()
-            console.log(this.arrProductos)
-            //this.buscar_presentaciones_producto()
         },
         data:   {
-            fields: [
-                { key: "name", label: "Name"},
-                { key: "department", label: "Department" },
-                { key: "age", label: "Age" },
-                { key: "dateOfBirth", label: "Date Of Birth" },
-            ],
-
-            done: '',
+             
+            bool_pagoTotal: true,
             producto_completado : false,
             editar_precioItems: false,
             editar_cantidadItems: false,
             lista_presentaciones: {},
-             
+            
             items: [
                 {id: '13', nombre_producto: 'Molde', presentacion_producto: 'Ca', cantidad_producto: 1, precio_producto: 129, fechaVenc_producto: ''}, {id: '13', nombre_producto: 'Molde', presentacion_producto: 'De(10)', cantidad_producto: 1, precio_producto: 23, fechaVenc_producto: ''}, {id: '13', nombre_producto: 'Molde', presentacion_producto: 'Un', cantidad_producto: 1, precio_producto: 2.4, fechaVenc_producto: ''}
             ],
+            nroDocumento: '',
             selectedPresentacion: '',
             idProductoAgregar : 0,
             nombreProductoAgregar : '',
@@ -354,6 +385,7 @@ Nuevo Lote
             arr_productos_sugeridos: [],
             objsPresentaciones: [],
             monto_total: 0,
+            monto_pago: 0,
 
             almacen_selected: '',
             proveedor_selected: '',
@@ -363,26 +395,27 @@ Nuevo Lote
             nombreProductoAgregar: function(val){
                 this.buscar_producto()
             },
-            items: function(val){
-                console.log("Lof Func: vuejs_watch_items[]")
-            },
+             
             cantProductoAgregar: function(val){
                 if (this.precioProductoAgregar != 0 && this.cantProductoAgregar !=0){
                     this.totalProductoAgregar = this.cantProductoAgregar*this.precioProductoAgregar
                     
                 } 
             },
+            precioProductoAgregar: function(val){
+                if (this.precioProductoAgregar != 0 && this.cantProductoAgregar !=0){
+                    this.totalProductoAgregar = this.cantProductoAgregar*this.precioProductoAgregar
+                } 
+            },
             idProductoAgregar: function(val){
                 if(this.idProductoAgregar !=0){
                     this.buscar_presentaciones_producto()
-                    console.log("LOG FUNC: 'IDPRODUCTOAGREGAR'")
                 }
             },
             selectedPresentacion: function(val){
                 this.totalProductoAgregar = 0
                 this.cantProductoAgregar = 0
                 for (let index = 0; index < this.objsPresentaciones.length; index++) {
-                    //const element = array[index];
                     if(this.objsPresentaciones[index]['presentacion']['codigo']==val){
                         this.precioProductoAgregar = this.objsPresentaciones[index]['precio_venta']
                     }
@@ -399,7 +432,6 @@ Nuevo Lote
                     axios.post("/producto/buscar/", data).then((result) => {
                         const data = result.data;
                         if (data){
-                            //console.log(data['productos'])
                             this.autocompletar(data['productos'])
                         }
                         else{
@@ -407,50 +439,43 @@ Nuevo Lote
                         }
                     });
                 }else{
-                    //alert('Alerta: nombre_producto ')
                     this.nombreProductoAgregar = ''
                     this.arrProductos = []
                 }
             },
 
             async send_datos_operacion(){
-                //alert(window.csrfToken)
                 let datos = {}
                 datos["productos"] = this.items
                 datos["almacen"] = this.almacen_selected
                 datos["proveedor"] = this.proveedor_selected
+                datos["nroDocumento"] = this.nroDocumento
+                
+                if (this.bool_pagoTotal=true){
+                    this.monto_pago = this.monto_total
+                }
+                datos["monto_pago"] = this.monto_pago
 
                 axios.post(".",datos,{headers: {'X-CSRFToken' : window.csrfToken}}).then((result)=> {
                     let data = result.data;
-                    console.log (data)
-                    //alert("send_datos completado!")
+                    alert("Datos guardados correctamente!")
+                    window.location.replace("/Caja/operaciones/listar")
                 });
             },
 
             async buscar_presentaciones_producto(){
                 const pk = this.idProductoAgregar
-                //const pk = '123'
                 if (pk>0){
                     axios.get("/producto/presentacion/listar/?pk="+pk)
                         .then((response) => {
                             const data = response.data;
                             this.lista_clientes = data
-                            console.log("log func: listar producto presentacion")
-                            console.log(data)
-                            console.log(data.length)
                             this.lista_presentaciones = {}
                             let presentaciones = {}
                             for (let index = 0; index < data.length; index++) {
-                                console.log("# Log func: buscar presentacion producto  FOR")
                                 let codigo = data[index]['presentacion']['codigo']
                                 let element = data[index]['presentacion']['nombre'];
-    
-                                console.log(element)
-                                console.log(codigo)
                                 presentaciones[codigo] = element
-                                console.log("LOG presentaciones")
-                                console.log(presentaciones)
-                                
                             }
                             this.objsPresentaciones = data
                             this.lista_presentaciones = presentaciones
@@ -463,10 +488,9 @@ Nuevo Lote
             agregarProductoPedido: function(){
                 if (this.nomProductComplete=!''&&this.cantProductoAgregar>0){
                     objProducto = {
-                         id: this.idProductoAgregar, nombre_producto: this.nombreProductoAgregar, presentacion_producto:this.selectedPresentacion, cantidad_producto:this.cantProductoAgregar,precio_producto:this.precioProductoAgregar, fechaVenc_producto:''
-                         }
+                        id: this.idProductoAgregar, nombre_producto: this.nombreProductoAgregar, presentacion_producto:this.selectedPresentacion, cantidad_producto:this.cantProductoAgregar,precio_producto:this.precioProductoAgregar, fechaVenc_producto:''
+                    }
                     this.items.push(objProducto)
-                    console.log(this.items)
                     this.nombreProductoAgregar = ''
                     this.cantProductoAgregar = 0
                     this.precioProductoAgregar = 0
@@ -485,7 +509,6 @@ Nuevo Lote
                 }
             },
             change_editar_cantidadItems: function(){
-                console.log(this.editar_cantidadItems)
                 if (this.editar_cantidadItems == true){
                     this.editar_cantidadItems = false
                     this.calcular_total_operacion()
@@ -495,7 +518,6 @@ Nuevo Lote
                 }
             },
             change_editar_precioItems: function(){
-                console.log(this.editar_precioItems)
                 if (this.editar_precioItems == true){
                     this.editar_precioItems = false
                     this.calcular_total_operacion()
@@ -504,11 +526,19 @@ Nuevo Lote
                     this.editar_precioItems = true
                 }
             },
+            eliminar_fila_pedido: function(val){
+                let new_items = []
+                for (let index = 0; index < this.items.length; index++) {
+                    if (val != index){
+                        new_items.push(this.items[index])
+                    }
+                }
+                this.items = new_items
+            },
             calcular_total_operacion: function(){
                 this.monto_total = 0
                 for (let index = 0; index < this.items.length; index++) {
                     this.monto_total += this.items[index]['cantidad_producto']*this.items[index]['precio_producto']
-                    //const element = array[index];
                 }
                 this.monto_total = Math.round((this.monto_total)*100)/ 100
             },
@@ -517,7 +547,6 @@ Nuevo Lote
                     this.idProductoAgregar = idProducto
                     this.producto_completado = false
                     this.nombreProductoAgregar = nombre_producto
-                    this.precioProductoAgregar = precio
                     
                     if (nombre_producto!=''){
                         this.producto_completado = true
@@ -534,10 +563,19 @@ Nuevo Lote
                 $( "#inpt-producto" ).val(oProducto.nombre);
             },
             guardar_operacion: function(){
-                console.log("Log Func: guardar_operacion ")
-                console.log(this.items)
-                this.send_datos_operacion()
-
+                let cant_items = this.items.length
+                if (this.almacen_selected !='' && this.proveedor_selected != '' && cant_items>0){
+                    this.send_datos_operacion()
+                }
+                if (this.almacen_selected ==''){
+                    alert("Seleccione un Almacén")
+                }
+                if (this.proveedor_selected ==''){
+                    alert("Seleccione un Proveedor")
+                }
+                if (cant_items < 0){
+                    alert("Agrege productos!")
+                }
             },
             autocompletar: function(data){
                 var arr_productos = []
@@ -545,16 +583,8 @@ Nuevo Lote
                     arr_productos.push(data[index].nombre);
                 }
                 this.arrProductos = data
-                
-                console.log(arr_productos)
-                console.log(this.arrProductos)
-
             },
         },
     });
 </script>
-
-
 {% endblock %}
-
-

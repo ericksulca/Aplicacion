@@ -1,8 +1,6 @@
 {% extends "base.html" %}
 
-
 {% block imports %}
-
 <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
@@ -10,20 +8,18 @@
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
- 
 {% endblock %}
 
 {% block title %}
-Registrar Nuevo Producto
+Registrar Nueva Operación
 {% endblock %}
 
 {% block content %}
 <div class="card">
     <div class="card-block table-border-style">
-        <div class="table-responsive">
-            <div class="white-box" id="app">
+        <div id="app">
+            <div class="white-box" >
                 <h3 class="box-title">Formulario de registro de Operaciones</h3>
-
                 <form class="form form-horizontal" action="." method="post" enctype="multipart/form-data"> {% csrf_token %}
                     <div class="row">
                         <label class="col-2">Tipo Operación</label>

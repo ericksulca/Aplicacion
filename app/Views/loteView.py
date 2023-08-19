@@ -38,7 +38,6 @@ def nuevoLote(request):
         Datos = request.POST
         data = json.loads(request.body.decode('utf-8'))
         print(data)
-
         # PRODUCTO ALMACENS REQUIRED: | CANTIDAD | PRODUCTO_PRESENTACION | ALMACEN | LOTE
         oAlmacen = Almacen.objects.filter(estado=True)
         oAlmacen = oAlmacen[0]
@@ -46,34 +45,44 @@ def nuevoLote(request):
         oAlmacen = Almacen.objects.get(id=data['almacen'])
         oProveedor = Proveedor.objects.get(id=data['proveedor'])
         oLote.proveedor= oProveedor
+        oLote.nro_documento= data['nroDocumento']
         oLote.almacen= oAlmacen
         oLote.save()
+        total_precio_lote = 0
 
         for item in data['productos']:
             oLote_productopresentacions = Lote_productopresentacions()
             oLote_productopresentacions.cantidad = int(item['cantidad_producto'])
             oLote_productopresentacions.cnt_cantidad = int(item['cantidad_producto'])
             oLote_productopresentacions.precio_lote = float(item['precio_producto'])
+            total_precio_lote += float(item['precio_producto'])
             oPresentacion = Presentacion.objects.get(codigo=item['presentacion_producto'])
             oProducto = Producto.objects.get(id= item['id'],nombre = item['nombre_producto'] )
             oProducto_presentacions = Producto_presentacions.objects.get(producto=oProducto,presentacion=oPresentacion)
             oLote_productopresentacions.producto_presentacions = oProducto_presentacions
             oLote_productopresentacions.lote = oLote
             oLote_productopresentacions.save()
+
+        oLote.monto = total_precio_lote
+        oLote.save()
+        oOperacion = Operacion()
+        oOperacion.monto = data['monto_pago'] #calcular monto Total Lote
+        oOperacion.descripcion = 'Ingreso de Productos'
+        oAperturacaja = Aperturacaja.objects.latest('id')
+        if  oAperturacaja.activo==True:
+            oOperacion.aperturacaja = oAperturacaja
+        else:
+            return redirect('apertura_caja')
+        #funcion estado Caja Activo: true | false
         
+        oDetalletipooperacion = Detalletipooperacion.objects.get(nombre='Pago Proveedor')
 
-
-        #'nombre_producto': 'Producto 01', 'presentacion_producto': 'CA', 'cantidad_producto': '10', 'precio_producto': '3.00', 'fechaVenc_producto': ''
-
+        oOperacion.detalletipooperacion = oDetalletipooperacion
+        oOperacion.save()
         print("############ log POST function nuevo_Lote #############")
-
         #print(Datos)
-        jsonProductos= {}
-        
-        #oPresentacion = Presentacion.objects.get(id = int(Datos['cmbPresentacionPrincipal']))
-        #oProducto.presentacions.add(oPresentacion)
+        jsonProductos= {'exito':1}
         return HttpResponse(json.dumps(jsonProductos), content_type="application/json")
-        #return render(request, 'lote/nuevo.html')
     else:
         form = ProductoForm()
         #oPrecios = Precio.objects.filter(estado=True)

@@ -14,13 +14,17 @@ import json
 from app.fomularios.productoForm import *
 from django.shortcuts import redirect
 
+
+def detalleOperacion(request,id_operacion):
+    oOperacion = Operacion.objects.get(id=id_operacion,estado=True)
+    return render(request, 'caja/operacion_detalle.html', {'oOperacion':oOperacion})
+
 def listarOperacions(request):
     if request.method == 'POST':
         return render(request, 'caja/operacion_listar.html')
     if request.method == 'GET':
         oOperacions = Operacion.objects.filter(estado = True).order_by('-id')
         return render(request, 'caja/operacion_listar.html', {"oOperacions": oOperacions})
-
 
 def registrarOperacion(request):
     if request.method == 'POST':
@@ -29,22 +33,28 @@ def registrarOperacion(request):
         oOperacion = Operacion()
         oOperacion.monto = float(Datos['txtMontoOperacion'])
         oOperacion.descripcion = Datos['txtDesoperacion']
-        #funcion estado Caja Activo: true | false
         oAperturacaja = Aperturacaja.objects.latest('id')
         if  oAperturacaja.activo==True:
-                return render(request, 'caja/aperturaRegistrada.html', {'Aperturacaja': oAperturacaja})
-        if  oAperturacaja.activo==False:
+            oOperacion.aperturacaja = oAperturacaja
+        else:
             return redirect('apertura_caja')
+        #funcion estado Caja Activo: true | false
+        
         idTipoOP = int(Datos['cmbDetalleTipoOperacion'])
         oDetalletipooperacion = Detalletipooperacion.objects.get(id=idTipoOP)
 
         oOperacion.detalletipooperacion = oDetalletipooperacion
         oOperacion.save()
-        return redirect('listar_lote')
+        return redirect('operaciones_listar')
     else:
         try:
-            oTipooperacion = Tipooperacion.objects.filter(estado=1)
-            return render(request, 'caja/operacion.html', {'oTipooperacion':oTipooperacion})
+            oAperturacaja = Aperturacaja.objects.latest('id')
+            if  oAperturacaja.activo==True:
+                oTipooperacion = Tipooperacion.objects.filter(estado=1)
+                return render(request, 'caja/operacion.html', {'oTipooperacion':oTipooperacion})
+                return render(request, 'caja/aperturaRegistrada.html', {'Aperturacaja': oAperturacaja})
+            if  oAperturacaja.activo==False:
+                return redirect('apertura_caja')
         except Exception as e:
             return render(request, 'caja/operacion2.html', {})
 

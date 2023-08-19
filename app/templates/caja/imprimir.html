@@ -1,0 +1,60 @@
+<html>
+    <head>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.js"></script>
+        <script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
+          
+
+        <link href="https://printjs-4de6.kxcdn.com/print.min.css" rel="stylesheet">   
+        <style>
+            /* style sheet for "A4" printing */
+           /* A4 Landscape*/
+            @page {
+                size: A4 landscape;
+                margin: 10%;
+            }
+
+            @media print {
+            body {
+                width: 20px;
+                height:40px
+            }
+            /* etc */
+}
+        </style>
+    </head>
+    <body>
+        <div id="print-area" class="print-main" style="width: 300;">
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Age</th>
+                </tr>
+                <tr>
+                    <td>AAA</td>
+                    <td>25</td>
+                </tr>
+                <tr>
+                    <td>BBB</td>
+                    <td>24</td>
+                </tr>
+            </table>
+        </div>
+        <button id="btnPrint">Print</button>
+
+<button type="button" onclick="printJS('http://127.0.0.1:8000/media/pdf/prueba_printPDF.pdf')">
+Print PDF
+</button>
+    <script>
+        $(document).ready(function(){
+            $("#btnPrint").on("click",function(){
+                printJS({
+                    maxWidth: 300,
+                    type: 'html',
+                    printable: 'print-area',
+                    //type: 'html'
+                });
+            })
+        })
+    </script>
+    </body>
+</html>

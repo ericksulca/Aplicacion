@@ -12,6 +12,9 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from app.fomularios.aperturacajaForm import *
 
+def imprimir_prueba(request):
+    return render(request, 'caja/imprimir.html')
+
 def registrarAperturacaja(request):
     if request.method == 'POST':
         Datos = request.POST

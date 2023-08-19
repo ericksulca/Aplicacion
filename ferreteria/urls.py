@@ -50,9 +50,11 @@ urlpatterns = [
     path('prueba/', Prueba, name='prueba'),
 
     ################## Caja #######################
+    path('Caja/imprimir/', imprimir_prueba, name='imprimir_caja'),
     path('Caja/apertura/', registrarAperturacaja, name='apertura_caja'),
     path('Caja/cierre/', registrarCierrecaja, name='cierre_caja'),
     path('Caja/operacion/', registrarOperacion, name='operacion_caja'),
+    path('Caja/operacion/detalle/<int:id_operacion>', detalleOperacion, name='operaciones_detalle'),
     path('Caja/operaciones/listar', listarOperacions, name='operaciones_listar'),
 
     ################## Venta #######################

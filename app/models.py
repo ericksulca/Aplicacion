@@ -9,7 +9,7 @@ from __future__ import unicode_literals
  
 from django.db import models
 from django.contrib.auth.models import User
-
+from django_resized import ResizedImageField
 
 class Almacen(models.Model):
     nombre = models.CharField(max_length=45)
@@ -64,11 +64,14 @@ class Detalletipooperacion(models.Model):
     nombre = models.CharField(max_length=45)
     estado = models.BooleanField(blank=True,default=True)
     tipooperacion = models.ForeignKey('Tipooperacion', on_delete=models.CASCADE)  # Field name made lowercase.
+    def __str__(self):
+        return self.nombre
 
 class Lote(models.Model):
     fecha = models.DateTimeField(auto_now_add=True, blank=True)
     modificado = models.DateTimeField(auto_now=True, blank=True)
     proveedor = models.ForeignKey('Proveedor', on_delete=models.CASCADE)  # Field name made lowercase.
+    nro_documento = models.CharField(max_length=45, blank=True, null=True)
     almacen = models.ForeignKey('Almacen', on_delete=models.CASCADE, blank=True,null=True)  # Field name made lowercase.
     monto = models.FloatField(blank=True, null=True)
     estado = models.BooleanField(blank=True,default=True)
@@ -83,7 +86,8 @@ class Operacion(models.Model):
     descripcion = models.TextField(blank=True, null=True)
     aperturacaja = models.ForeignKey(Aperturacaja, on_delete=models.CASCADE)  # Field name made lowercase.
     detalletipooperacion = models.ForeignKey(Detalletipooperacion, on_delete=models.CASCADE)  # Field name made lowercase.
-    venta = models.ForeignKey('Venta', blank=True, null=True, on_delete=models.CASCADE)  # Field name made lowercase.
+    venta = models.ForeignKey('Venta', blank=True, null=True, on_delete=models.CASCADE, related_name='venta_operacions')  # Field name made lowercase.
+    lote = models.ForeignKey('Lote', blank=True, null=True, on_delete=models.CASCADE, related_name='lote_operacions')  # Field name made lowercase.
     estado = models.BooleanField(blank=True,default=True)
     def __str__(self):
         str_return = 'Fecha : '+str(self.fecha) + ' - Monto S/. ' + str(self.monto)
@@ -110,7 +114,9 @@ class Producto(models.Model):
     nombre = models.CharField(max_length=45)
     codigo = models.CharField(max_length=45, blank=True, null=True)
     cantidad = models.FloatField(default=0,blank=True, null=True)
-    imagen = models.ImageField(upload_to='', default="/imagen/default.jpg", blank=True, null=True)#upload_to='%Y/%m/%d',
+    imagen = ResizedImageField(size=[100, None],upload_to='productos/', default="/imagen/default.jpg", blank=True, null=True)#upload_to='%Y/%m/%d',
+    #ResizedImageField(size=[500, 300], upload_to=get_image_path, blank=True, null=True)
+
     url = models.CharField(max_length=100, blank=True, null=True)
     valor = models.FloatField(default=1,blank=True)
     precio = models.FloatField(default=1,blank=True)
@@ -143,7 +149,7 @@ class Producto_presentacions(models.Model):
 class Pedido_productopresentacions(models.Model):
     cantidad = models.FloatField(blank=True,null=True)
     producto_presentacions = models.ForeignKey(Producto_presentacions, on_delete=models.CASCADE)  # Field name made lowercase.
-    pedido = models.ForeignKey(Pedido, on_delete=models.DO_NOTHING)
+    pedido = models.ForeignKey(Pedido, on_delete=models.DO_NOTHING, related_name='pedido_presentacions')
     precio_pedido = models.FloatField(default=0,blank=True)
     fecha_caducidad = models.DateTimeField(null=True, blank=True)
     estado = models.BooleanField(blank=True,default=True)
@@ -152,13 +158,12 @@ class Lote_productopresentacions(models.Model):
     cantidad = models.FloatField(blank=True,null=True)
     cnt_cantidad = models.FloatField(blank=True,null=True) # descuento respectoa ventas 
     producto_presentacions = models.ForeignKey(Producto_presentacions, on_delete=models.CASCADE)  # Field name made lowercase.
-    precio_lote = models.FloatField(default=0,blank=True)
-    lote = models.ForeignKey(Lote, on_delete=models.DO_NOTHING)
+    precio_lote = models.FloatField(default=0,blank=True, )
+    lote = models.ForeignKey(Lote, on_delete=models.DO_NOTHING, related_name="lote_presentacions")
     fecha_caducidad = models.DateTimeField(null=True, blank=True)
     estado = models.BooleanField(blank=True,default=True)
 
     # FUNCION CANTIDAD CONTAR_STOCK() ON
-
 class Producto_categorias(models.Model):
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)  # Field name made lowercase.
     categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)  # Field name made lowercase.

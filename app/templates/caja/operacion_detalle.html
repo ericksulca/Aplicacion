@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% block imports %}
+
+{% endblock %}
+
+{% block title %}
+Información de Operación
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+		<h3 class="box-title">Detalle de Operacion</h3>
+        <div class="card-header-right">
+            <ul class="list-unstyled card-option">
+                <li><i class="fa fa fa-wrench open-card-option"></i></li>
+                <li><i class="fa fa-window-maximize full-card"></i></li>
+                <li><i class="fa fa-minus minimize-card"></i></li>
+                <li><i class="fa fa-refresh reload-card"></i></li>
+                <li><i class="fa fa-trash close-card"></i></li>
+            </ul>
+        </div>
+    </div>
+    <div class="card-block table-border-style">
+        <div class="table-responsive">
+            <div class="white-box">
+				<table id="tCamiones"  class="table">
+					<tr>
+						<td>Fecha: </td>
+						<td>{{ oOperacion.fecha }}</td>
+					</tr>
+					<tr>
+						<td>Monto: </td>
+						<td> S/. {{ oOperacion.monto }}</td>
+					</tr>
+                    <tr>
+                        {% if not oOperacion.venta is None %}
+                            <td>Venta : </td>
+                            <td>
+                                <div class="col">
+                                    <div class="row">
+                                        Detalles:
+                                    </div>
+                                    <div class="row">
+                                        <table>
+                                            <thead>
+                                                <th>Producto</th>
+                                                <th>Presentación</th>
+                                                <th>Cantidad</th>
+                                                <th>Precio</th>
+                                                <th>Fecha Caducidad</th>
+                                            </thead>
+                                            <tbody>
+                                                {% for oPedidoPresentacion in oOperacion.venta.pedido.pedido_presentacions.all %}
+                                                <tr>
+                                                    <td>
+                                                        {{oPedidoPresentacion.producto_presentacions.producto.nombre }}
+                                                    </td>
+                                                    <td>
+                                                        {{oPedidoPresentacion.producto_presentacions.presentacion.nombre }}
+                                                    </td>
+                                                    <td>
+                                                        {{oPedidoPresentacion.cantidad }}
+                                                    </td>
+                                                    <td>
+                                                        S/. {{oPedidoPresentacion.precio_pedido }}
+                                                    </td>
+                                                    <td>
+                                                        {{oPedidoPresentacion.fecha_caducidad }} 
+                                                    </td>
+                                                </tr>    
+                                                    <br>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                             </td>
+                         
+                        
+                        {% elif not oOperacion.lote is None %}
+                            <td>Lote : </td>
+                            <td>
+                                <div class="col">
+                                    <div class="row">
+                                        Detalles:
+                                    </div>
+                                    <div class="row">
+                                        <table>
+                                            <thead>
+                                                <th>Producto</th>
+                                                <th>Presentación</th>
+                                                <th>Cantidad</th>
+                                                <th>Precio</th>
+                                                <th>Fecha Caducidad</th>
+                                            </thead>
+                                            <tbody>
+                                                {% for oProductoPresentacion in oOperacion.lote.lote_presentacions.all %}
+                                                <tr>
+                                                    <td>
+                                                        {{oProductoPresentacion.producto_presentacions.producto.nombre }}
+                                                    </td>
+                                                    <td>
+                                                        {{oProductoPresentacion.producto_presentacions.presentacion.nombre }}
+                                                    </td>
+                                                    <td>
+                                                        {{oProductoPresentacion.cantidad }}
+                                                    </td>
+                                                    <td>
+                                                        S/. {{oProductoPresentacion.precio_pedido }}
+                                                    </td>
+                                                    <td>
+                                                        {{oProductoPresentacion.fecha_caducidad }} 
+                                                    </td>
+                                                </tr>    
+                                                    <br>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </td>
+                        {% else %}
+                            <td>Detalles Operación: </td>
+                            <td>
+                                <div class="col">
+                                    <div class="row">
+                                        {{oOperacion.detalletipooperacion.nombre}}
+                                    </div>
+                                    <div class="row">
+                                        Msg Operador: {{oOperacion.descripcion}}
+                                    </div>
+                                </div>
+                            </td>   
+                        {% endif %}
+					</tr>
+                </table>
+			</div>
+	    </div>
+    </div>
+</div>
+
+{% endblock %}
