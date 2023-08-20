@@ -61,6 +61,7 @@ def nuevoLote(request):
             oProducto_presentacions = Producto_presentacions.objects.get(producto=oProducto,presentacion=oPresentacion)
             oLote_productopresentacions.producto_presentacions = oProducto_presentacions
             oLote_productopresentacions.lote = oLote
+            oLote_productopresentacions.fecha_caducidad = item['fechaVenc_producto']
             oLote_productopresentacions.save()
 
         oLote.monto = total_precio_lote
@@ -78,6 +79,7 @@ def nuevoLote(request):
         oDetalletipooperacion = Detalletipooperacion.objects.get(nombre='Pago Proveedor')
 
         oOperacion.detalletipooperacion = oDetalletipooperacion
+        oOperacion.lote = oLote
         oOperacion.save()
         print("############ log POST function nuevo_Lote #############")
         #print(Datos)

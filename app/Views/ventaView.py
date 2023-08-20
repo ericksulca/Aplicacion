@@ -20,9 +20,56 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def nuevoVenta(request):
     if request.method == 'POST':
-        Datos = json.loads(request.body.decode('utf-8'))
-        print(Datos)
-        return redirect ('venta_listar')
+        data = json.loads(request.body.decode('utf-8'))
+        print(data)
+        oPedido = Pedido()
+        #oPedido.usuario = request.user
+        if data['oCliente']!={}:
+            oPedido.cliente = data['oCliente']
+        oPedido.save()
+
+        #Producto_presentacions
+
+        total_precio_pedido = 0
+
+        for item in data['productos']:
+            oPedido_productopresentacions = Pedido_productopresentacions()
+            oPedido_productopresentacions.precio_pedido = float(item['precio_producto'])
+            oPedido_productopresentacions.cantidad = int(item['cantidad_producto'])
+            total_precio_pedido += float(item['precio_producto'])
+            oPresentacion = Presentacion.objects.get(codigo=item['presentacion_producto'])
+            oProducto = Producto.objects.get(id= item['id'],nombre = item['nombre_producto'] )
+            oProducto_presentacions = Producto_presentacions.objects.get(producto=oProducto,presentacion=oPresentacion)
+            oPedido_productopresentacions.producto_presentacions = oProducto_presentacions
+            oPedido_productopresentacions.pedido = oPedido
+            oPedido_productopresentacions.save()
+
+        #oLote.monto = total_precio_lote
+        oVenta= Venta()
+        oVenta.monto = total_precio_pedido
+        oVenta.pedido = oPedido
+        oVenta.save()
+
+        oOperacion = Operacion()
+        oOperacion.monto = data['pago_cliente'] 
+        oOperacion.descripcion = 'Venta de Productos'
+        oAperturacaja = Aperturacaja.objects.latest('id')
+        if  oAperturacaja.activo==True:
+            oOperacion.aperturacaja = oAperturacaja
+        else:
+            return redirect('apertura_caja')
+        
+        # NOMBRE DE VENTA 
+        oDetalletipooperacion = Detalletipooperacion.objects.get(nombre='Venta en caja')
+
+        oOperacion.detalletipooperacion = oDetalletipooperacion
+        oOperacion.venta = oVenta
+        oOperacion.save()
+        print("############ log POST function nueva_Venta #############")
+        #print(Datos)
+        jsonProductos= {'exito':1}
+        return HttpResponse(json.dumps(jsonProductos), content_type="application/json")
+        #return redirect ('venta_listar')
     if request.method == 'GET':
         oProductosTop = Producto.objects.filter(estado=True).order_by('-valor')[:9]
         return render(request, 'venta/nuevo.html', {'oProductosTop': oProductosTop})

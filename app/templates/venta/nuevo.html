@@ -335,14 +335,16 @@ Nueva Venta
                                     </div>
                                     <div class="row"> 
                                         <div class="col">
-                                            <input type="checkbox" v-model="bool_pagoTotal" name="" id="" class="form-control">
+                                            <input type="checkbox" v-model="bool_pagoTotal" name="cbxPago" id="cbxPago" class="form-control">
                                         </div>
                                         <div class="col">
                                             <p>Pago Total</p>
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <input type="number" v-if="!bool_pagoTotal" v-mode="monto_pago" name="" id="" class="form-control cantidadProductoPedido-field">
+                                        <input type="number" min="0" v-show="!bool_pagoTotal" v-mode="pago_cliente" name="montoPago" id="montoPago" class="form-control ">
+                                        <input type="number" v-show="!bool_pagoTotal"  v-model="pago_cliente"  class="form-control" name="inpt-producto" id="inpt-producto">
+                                        Primer pago: S/. [[pago_cliente]]
                                     </div>
                                 </div>
                                 <div class="col">
@@ -402,13 +404,14 @@ Nueva Venta
             oCliente: {},
 
             monto_total: 0,
-            monto_pago: 0,
+            pago_cliente: 0,
 
             almacen_selected: '',
             proveedor_selected: '',
         },
         
         watch: {
+            
             nombreProductoAgregar: function(val){
                 this.buscar_producto()
                 console.log("Buscar producto")
@@ -489,11 +492,10 @@ Nueva Venta
                 let datos = {}
                 datos["productos"] = this.items
                 datos["oCliente"] = this.oCliente
-                
-                if (this.bool_pagoTotal=true){
-                    this.monto_pago = this.monto_total
-                }
-                datos["monto_pago"] = this.monto_pago
+                if (this.bool_pagoTotal=false){
+                    this.pago_cliente = this.monto_total
+                }    
+                datos["pago_cliente"] = this.pago_cliente
 
                 axios.post(".",datos,{headers: {'X-CSRFToken' : window.csrfToken}}).then((result)=> {
                     let data = result.data;

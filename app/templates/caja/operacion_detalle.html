@@ -48,7 +48,6 @@ Información de Operación
                                                 <th>Presentación</th>
                                                 <th>Cantidad</th>
                                                 <th>Precio</th>
-                                                <th>Fecha Caducidad</th>
                                             </thead>
                                             <tbody>
                                                 {% for oPedidoPresentacion in oOperacion.venta.pedido.pedido_presentacions.all %}
@@ -65,9 +64,7 @@ Información de Operación
                                                     <td>
                                                         S/. {{oPedidoPresentacion.precio_pedido }}
                                                     </td>
-                                                    <td>
-                                                        {{oPedidoPresentacion.fecha_caducidad }} 
-                                                    </td>
+                                                     
                                                 </tr>    
                                                     <br>
                                                 {% endfor %}

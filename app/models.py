@@ -97,10 +97,11 @@ class Operacion(models.Model):
     
 class Pedido(models.Model):
     fecha = models.DateTimeField(auto_now_add=True, blank=True)
-    estado = models.BooleanField(blank=True,default=True)
-    #empleado = models.ForeignKey('Empleado', on_delete=models.CASCADE)  # Field name made lowercase.
     usuario = models.OneToOneField(User, on_delete= models.DO_NOTHING, related_name='usuario_pedidos', blank=True, null=True)
     cliente = models.ForeignKey(Cliente, blank=True, null=True, on_delete=models.CASCADE)  # Field name made lowercase.
+    estado = models.BooleanField(blank=True,default=True)
+    def __str__(self):
+        return str(self.fecha)
 
 class Empleado(models.Model):
     nombre = models.CharField(max_length=45)
@@ -153,8 +154,11 @@ class Pedido_productopresentacions(models.Model):
     producto_presentacions = models.ForeignKey(Producto_presentacions, on_delete=models.CASCADE)  # Field name made lowercase.
     pedido = models.ForeignKey(Pedido, on_delete=models.DO_NOTHING, related_name='pedido_presentacions')
     precio_pedido = models.FloatField(default=0,blank=True)
-    fecha_caducidad = models.DateTimeField(null=True, blank=True)
+    #fecha_caducidad = models.DateTimeField(null=True, blank=True)
     estado = models.BooleanField(blank=True,default=True)
+    def __str__(self):
+        str_pedido_productos = 'Producto: '+self.producto_presentacions.producto.nombre+' | Presentación: '+self.producto_presentacions.presentacion.nombre
+        return str(str_pedido_productos)
 
 class Lote_productopresentacions(models.Model):
     cantidad = models.FloatField(blank=True,null=True)
@@ -164,6 +168,9 @@ class Lote_productopresentacions(models.Model):
     lote = models.ForeignKey(Lote, on_delete=models.DO_NOTHING, related_name="lote_presentacions")
     fecha_caducidad = models.DateTimeField(null=True, blank=True)
     estado = models.BooleanField(blank=True,default=True)
+    def __str__(self):
+        str_lote_productos = 'Producto: '+self.producto_presentacions.producto.nombre+' | Presentación: '+self.producto_presentacions.presentacion.nombre
+        return str(str_lote_productos)
 
     # FUNCION CANTIDAD CONTAR_STOCK() ON
 class Producto_categorias(models.Model):
@@ -194,8 +201,8 @@ class Venta(models.Model):
     fecha   = models.DateTimeField(auto_now_add=True, blank=True)
     monto   = models.FloatField()
     nrecibo = models.CharField(max_length=45, blank=True, null=True)
-    estado  = models.BooleanField(blank=True,default=True)
     pedido  = models.ForeignKey(Pedido, on_delete=models.CASCADE)  # Field name made lowercase.
+    estado  = models.BooleanField(blank=True,default=True)
     #cliente = models.ForeignKey(Cliente, blank=True, null=True, on_delete=models.CASCADE)  # Field name made lowercase.
 
     def __str__(self):
