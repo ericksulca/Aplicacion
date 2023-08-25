@@ -58,7 +58,22 @@ urlpatterns = [
     path('Caja/operaciones/listar', listarOperacions, name='operaciones_listar'),
 
     ################## Venta #######################
-    path('Venta/nuevo/', registrarPedido, name='registrar_venta'),
+
+    path('venta/nuevo/', nuevoVenta,name="venta_nuevo"),
+    path('venta/listar/', ListarVentas, name="venta_listar"),
+    path('venta/imprimir/<int:venta_id>/', ImprimirVenta, name="venta_imprimir"),
+    #path('Venta/nuevo/', registrarPedido, name='registrar_venta'),
+    # path('venta/listar/<int:<producto_buscado>\d+)/<int:<dni>\d+)/<int:<fecha_ini>[0-9]{2}-?[0-9]{2}-?[0-9]{4})/<int:<fecha_f>[0-9]{2}-?[0-9]{2}-?[0-9]{4})/', Fentas),
+    # path('venta/listar/<int:<producto_buscado>\d+)/<int:<dni>\d+)/', Fentas),
+    #
+    # path('venta/listar/<int:<producto_buscado>)/$', Fentas,name="listar_productoid"),
+    # path('venta/listar/<int:<dni>\d+)/$', Fentas),
+    # path('venta/listar/<int:<fecha_ini>[0-9]{2}-?[0-9]{2}-?[0-9]{4})/<int:<fecha_f>[0-9]{2}-?[0-9]{2}-?[0-9]{4})/$', Fentas),
+    # path('venta/listar/<int:<fecha_f>[0-9]{2}-?[0-9]{2}-?[0-9]{4})/$', Fentas),
+    path('venta/filtrar/', filterVentas, name = "filtra_ventas"),
+    #path('venta/listar/<int:<producto>\d+)$', FiltrarVentas.as_view, name="filtra_ventas"),
+    #path('Producto/detalle/<int:<producto_id>\d+)/$', detalleProducto),
+    #path('Producto/editar/<int:<producto_id>\d+)/$', editarProducto),
 
     ################## Producto #######################
     path('Producto/listar/', ListarProductos, name ='listar_producto'),
@@ -106,7 +121,6 @@ urlpatterns = [
 
     path('usuario/validar/', validarUsuario),
     path('usuario/ruta/', rutaUsuario),
-
     path('usuario/visita/cancelar/', cancelarVisita),
     path('usuario/visita/reiniciar/', reiniciarVisita),
 
@@ -122,35 +136,20 @@ urlpatterns = [
     path('pago/nuevo/', IngresarPrecios),
 
 
+    #path('producto/presentacion/listar/', ListarPresentacionesProducto),
     path('producto/buscar/', BuscarProducto, name='buscar_producto'),
     path('producto/json_listar/', get_Productos.as_view(), name='listar_productos'),
-    
-    #path('producto/presentacion/listar/', ListarPresentacionesProducto),
     path('producto/presentacion/listar/', get_PresentacionProducto.as_view()),
+    path('producto/presentacion/cantidad/', CantidadPresentacionesProducto),
 
     path('detalletipooperacion/lista/',get_detalleTipoOperacion.as_view(),name ='listar_detalletipooperacio'),
 
-
-    path('producto/presentacion/cantidad/', CantidadPresentacionesProducto),
+    path('venta/detalle/<int:id_venta>',detalleVenta, name='detalle_venta'),
 
     path('error/registrar/', registrarError),
 
 
-#######################Ventas##############################
 
-    path('venta/nuevo/', nuevoVenta,name="venta_nuevo"),
-    path('venta/listar/', ListarVentas, name="venta_listar"),
-    # path('venta/listar/<int:<producto_buscado>\d+)/<int:<dni>\d+)/<int:<fecha_ini>[0-9]{2}-?[0-9]{2}-?[0-9]{4})/<int:<fecha_f>[0-9]{2}-?[0-9]{2}-?[0-9]{4})/', Fentas),
-    # path('venta/listar/<int:<producto_buscado>\d+)/<int:<dni>\d+)/', Fentas),
-    #
-    # path('venta/listar/<int:<producto_buscado>)/$', Fentas,name="listar_productoid"),
-    # path('venta/listar/<int:<dni>\d+)/$', Fentas),
-    # path('venta/listar/<int:<fecha_ini>[0-9]{2}-?[0-9]{2}-?[0-9]{4})/<int:<fecha_f>[0-9]{2}-?[0-9]{2}-?[0-9]{4})/$', Fentas),
-    # path('venta/listar/<int:<fecha_f>[0-9]{2}-?[0-9]{2}-?[0-9]{4})/$', Fentas),
-    path('venta/filtrar/', Ventas, name = "filtra_ventas"),
-    #path('venta/listar/<int:<producto>\d+)$', FiltrarVentas.as_view, name="filtra_ventas"),
-    #path('Producto/detalle/<int:<producto_id>\d+)/$', detalleProducto),
-    #path('Producto/editar/<int:<producto_id>\d+)/$', editarProducto),
 
     
 

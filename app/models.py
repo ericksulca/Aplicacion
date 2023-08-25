@@ -257,3 +257,15 @@ class Alerta(models.Model):
     activo = models.BooleanField(blank=True,default=True)
     pedido  = models.ForeignKey(Pedido, on_delete=models.CASCADE, blank=True, null=True)  # Field name made lowercase.
     estado = models.BooleanField(blank=True,default=True)
+    def __str__(self):
+        return str(self.fecha)
+class Negocio(models.Model):
+    nombre   = models.CharField(max_length=45)
+    ruc   = models.CharField(max_length=11)
+    direccion = models.TextField(blank=True, null=True)
+    imagen = ResizedImageField(size=[100, None],upload_to='negocio/', default="/imagen/default_negocio.jpg", blank=True, null=True)#upload_to='%Y/%m/%d',
+    msg_cliente = models.TextField(blank=True, null=True)
+    descripcion = models.TextField(blank=True, null=True)
+    estado = models.BooleanField(blank=True,default=True)
+    def __str__(self):
+        return str(self.nombre)

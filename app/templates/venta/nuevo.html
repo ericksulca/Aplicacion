@@ -348,13 +348,41 @@ Nueva Venta
                                     </div>
                                 </div>
                                 <div class="col">
-"
                                     <button class="btn btn-success col-12 button-agregarProducto-field" @click="guardar_operacion" style="height: 150px;"> Guardar</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ticketModal">
+            Modal
+        </button>
+        <iframe width="800" height="230" src="http://127.0.0.1:8000/venta/imprimir/30/"></iframe>
+        
+        <!-- Modal -->
+        <div class="modal fade" id="ticketModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Detalles de la Nota de Venta</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                <iframe v-if="ventaCompletada" :src="url_documentoVenta" frameborder="0"></iframe>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
             </div>
         </div>
     </div>
@@ -403,6 +431,10 @@ Nueva Venta
             arrClientes: [],
             oCliente: {},
 
+            oDocumentoImprimir: {},
+            ventaCompletada: false,
+            url_documentoVenta: '',
+
             monto_total: 0,
             pago_cliente: 0,
 
@@ -418,6 +450,20 @@ Nueva Venta
             },
             nombreClienteAgregar: function(val){
                 this.buscar_cliente()
+            },
+            oDocumentoImprimir: function(val){
+                if (this.oDocumentoImprimir['idVenta']){
+                    this.buscar_venta()
+                }
+            },
+            ventaCompletada:function(val){
+                if (this.ventaCompletada == true){
+                    console.log("### LOG: fun_ventacompletada")
+                    this.url_documentoVenta = '/venta/imprimir/'+this.oDocumentoImprimir['idVenta']
+                    window.open (this.url_documentoVenta,"documentoImprimir","menubar=0,resizable=1,width=620,height=670");
+                    window.location.replace("/venta/listar")
+
+                }
             },
              
             cantProductoAgregar: function(val){
@@ -488,6 +534,15 @@ Nueva Venta
                 }
             },
 
+            async buscar_venta(){
+                axios.get("/venta/detalle/6")
+                .then((response) => {
+                    const data = response.data;
+                    //this.lista_clientes = data
+                    console.log(data)
+                })
+            },
+
             async send_datos_operacion(){
                 let datos = {}
                 datos["productos"] = this.items
@@ -500,7 +555,9 @@ Nueva Venta
                 axios.post(".",datos,{headers: {'X-CSRFToken' : window.csrfToken}}).then((result)=> {
                     let data = result.data;
                     alert("Datos guardados correctamente!")
-                    window.location.replace("/venta/listar")
+                    this.oDocumentoImprimir = data
+                    this.ventaCompletada = true
+                    
                 });
             },
 

@@ -206,7 +206,6 @@ Ventas
   </div>
   <div class="card-block table-border-style">
       <div class="table-responsive">
-        <li>
           <form action="{% url 'filtra_ventas' %}" method="get" class="form-inline mr-auto">
             {% csrf_token %}
               <input type="text" id="inpt-producto" placeholder="Producto..." name="producto_buscado" class="form-inline mr-auto">
@@ -215,11 +214,9 @@ Ventas
               <input type="text" class="form-inline mr-auto" id="hasta" placeholder="Fecha final..." name="hasta" autocomplete="off">
               <button class="btn blue-gradient btn-rounded btn-sm my-0" type="submit">Buscar</button>
           </form>
-        </li>
         <div class="row">
           <div class="col-sm-12">
               <div class="white-box">
-                <h3 class="box-title">Lista de Ventas</h3>
                   {% load widget_tweaks %}
                   {% csrf_token %}
                   <div class="form-group">
@@ -236,17 +233,17 @@ Ventas
                       </tr>
                   </thead>
                   <tbody>
-                    {% for oVent in oVenta %}
+                    {% for oVenta in oVenta %}
                       <tr>
                         <td>{{ forloop.counter }}</td>
-                        <td>{{oVent.fecha}}</td>
-                        <td>{{oVent.monto}}</td>
-                        <td>{{oVent.nrecibo}}</td>
-                        <td>{{oVent.cliente.nombre }}</td>
-                        <td>{{oVent.pedido.id }}</td>
+                        <td>{{oVenta.fecha}}</td>
+                        <td>{{oVenta.monto}}</td>
+                        <td>{{oVenta.nrecibo}}</td>
+                        <td>{{oVenta.cliente.nombre }}</td>
+                        <td>{{oVenta.pedido.id }}</td>
                         <td>
                           {% for oNue in oProductos %}
-                            {% if oVent.id == oNue.id %}
+                            {% if oVenta.id == oNue.id %}
                                 <table class="table">
                                   <tr>
                                     {{ oNue.producto }}
@@ -256,20 +253,20 @@ Ventas
                           {% endfor %}
                         </td>
                         <td>
-                          <a href="/Venta/detalle/{{oVent.id}}/"><button type="button" class="btn btn-info">Ver</button> </a>
-                          <a href="/Venta/editar/{{oVent.id}}/"><button type="button" class="btn btn-primary btn-edit">Editar</button></a>
-                          <a href="/Venta/eliminar/{{oVent.id}}/"><button type="button" class="btn btn-danger btn-delete">Eliminar</button></a>
+                          <a href="/Venta/detalle/{{oVenta.id}}/"><button type="button" class="btn btn-info">Ver</button> </a>
+                          <a href="/Venta/editar/{{oVenta.id}}/"><button type="button" class="btn btn-primary btn-edit">Editar</button></a>
+                          <a href="/Venta/eliminar/{{oVenta.id}}/"><button type="button" class="btn btn-danger btn-delete">Eliminar</button></a>
                         </td>
                       </tr>
                     {% endfor %}
                   </tbody>
                 </table>
-                <br>
+                
                 <div class="pagination" style="text-align: center;">
                     <div class="pages">
                         <ul>
                           {% if oVenta.has_previous %}
-                              <li><a href="?page={{oVenta.previous_page_number}}"><<</a></li>
+                              <li><a href="?page={{oVenta.previous_page_number}}"></a></li>
                           {% endif %}
                         </ul>
                         <ul>
@@ -288,7 +285,6 @@ Ventas
                         </ul>
                     </div>
                 </div>
-                <br>
                 <a href="/venta/nuevo/"><button type="button" class="btn btn-success">Nueva Venta</button> </a>
               </div>
             </div>

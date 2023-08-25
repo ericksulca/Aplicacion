@@ -5,6 +5,7 @@ from django.contrib import admin
 from app.models import *
 
 # Register your models here.
+admin.site.register(Negocio)
 admin.site.register(Proveedor)
 admin.site.register(Presentacion)
 admin.site.register(Producto)

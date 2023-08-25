@@ -1,4 +1,4 @@
-#holaS
+
 """
 Django settings for ferreteria project.
 
@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'app',
     'widget_tweaks',
     'rest_framework',
+    'django.contrib.humanize',
+    'django_template_maths'
 
 ]
 

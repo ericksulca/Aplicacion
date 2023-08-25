@@ -1,0 +1,117 @@
+<html>
+    <head>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.js"></script>
+        <script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
+          
+        <link rel="stylesheet" type="text/css" href="/static/assets/css/bootstrap/css/bootstrap.min.css">
+        <link href="https://printjs-4de6.kxcdn.com/print.min.css" rel="stylesheet">   
+        <style>
+            /* style sheet for "A4" printing */
+           /* A4 Landscape*/
+            @page {
+                size: A4 landscape;
+                margin: 10%;
+            }
+
+            @media print {
+                body {
+                    width: 20px;
+                    height:40px
+                }
+            }
+        </style>
+    </head>
+    <body>
+        {% load humanize %}
+        {% load django_template_maths %}
+        <div id="print-area" class="print-main row" style="width: 300px;">
+            <div class="row">
+                <td>
+                    <div class="col d-flex justify-content-center" >
+                        <table>
+                            <tr><td><h1> {{oNegocio.nombre }} </h1></td></tr>
+                            <tr><td>RUC: {{oNegocio.ruc }} </td></tr>
+                            <tr><td>Dirección:{{oNegocio.direccion }} </td></tr>
+                        </table>
+                    </div>
+                </td>
+            </div>
+            
+            <div class="row">
+                <td>
+                    <b>Detalles:</b>
+                </td>
+                <td>
+                    <table>
+                        <thead>
+                            <th>Cant </th>
+                            <th>Descripción</th>
+                            <th>Unidad</th>
+                            <th>P.U.</th>
+                            <th>Total</th>
+                        </thead>
+                        <tbody>
+                            {% for oPedidoPresentacion in oVenta.pedido.pedido_presentacions.all %}
+                            <tr>
+                                <td>
+                                    {{oPedidoPresentacion.cantidad }}
+                                </td>
+                                <td>
+                                    {{oPedidoPresentacion.producto_presentacions.producto.nombre }}
+                                </td>
+                                <td>
+                                    {{oPedidoPresentacion.producto_presentacions.presentacion.nombre }}
+                                </td>
+                                <td>
+                                    S/. {{oPedidoPresentacion.precio_pedido|floatformat:2|intcomma }}
+                                </td>
+                                <td>
+                                    S/. {{oPedidoPresentacion.precio_pedido|mul:oPedidoPresentacion.cantidad|floatformat:2|intcomma }}
+                                </td>
+                            </tr>    
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="d-flex justify-content-end">
+                    </div>
+                    <p style="font-size: 20; text-align: right;" >
+                        TOTAL : S/. {{oVenta.monto|floatformat:2|intcomma}}
+                    </p>
+                </td>
+            </div>
+            <div class="row">
+                Operador: {{ user.get_username}}
+                <hr>
+                {{oNegocio.msg_cliente}}
+            </div>
+        </div>
+        <button id="btnPrint">Print</button>
+
+        <script>
+            $(document).ready(function(){
+                $("#btnPrint").on("click",function(){
+                    printJS({
+                        maxWidth: 300,
+                        type: 'html',
+                        printable: 'print-area',
+                        //onPrintDialogClose: fun_closewindow,
+                        //type: 'html'
+                    });
+                })
+
+                printJS({
+                        maxWidth: 300,
+                        type: 'html',
+                        printable: 'print-area',
+                        onPrintDialogClose: fun_closewindow,
+                        //type: 'html'
+                    });
+                function fun_closewindow(){
+                    window.close()
+                }
+            })
+            
+        </script>
+    </body>
+</html>

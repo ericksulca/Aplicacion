@@ -12,11 +12,23 @@ from app.models import *
 from app.views import *
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView
+from django.shortcuts import get_object_or_404
 import json
 from datetime import datetime,date
 
 ##paginacion
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
+from django.core import serializers
+
+def detalleVenta(request,id_venta):
+    oVenta = get_object_or_404(Venta,id=id_venta)
+    #oVenta = serializers.serialize("json", oVenta)
+    oVenta = {}
+    oNegocio = Negocio.objects.filter(estado=True)[:1]
+    oNegocio = serializers.serialize("json", oNegocio)
+    jsonProductos= {'exito':1, 'oVenta': oVenta, 'oNegocio': oNegocio}
+    return HttpResponse(json.dumps(jsonProductos), content_type="application/json")
 
 def nuevoVenta(request):
     if request.method == 'POST':
@@ -67,12 +79,21 @@ def nuevoVenta(request):
         oOperacion.save()
         print("############ log POST function nueva_Venta #############")
         #print(Datos)
-        jsonProductos= {'exito':1}
+        #oNegocio = serializers.serialize("json", oNegocio)
+        #oVentaJson = serializers.serialize("json", oVenta)
+        jsonProductos= {'exito':1, 'idVenta': oVenta.id}
         return HttpResponse(json.dumps(jsonProductos), content_type="application/json")
         #return redirect ('venta_listar')
     if request.method == 'GET':
         oProductosTop = Producto.objects.filter(estado=True).order_by('-valor')[:9]
         return render(request, 'venta/nuevo.html', {'oProductosTop': oProductosTop})
+
+def ImprimirVenta(request, venta_id):
+    oVenta = get_object_or_404(Venta, id=venta_id)
+    oNegocio = Negocio.objects.filter(estado=True)[:1]
+    print(oNegocio)
+    print(oNegocio[0])
+    return render(request,'venta/ticket_imprimir.html',{'oVenta': oVenta,'oNegocio':oNegocio[0]})
 
 def ListarVentas(request):
     oProductos=[]
@@ -80,7 +101,7 @@ def ListarVentas(request):
         return render(request, 'venta/listar.html')
     else:
         oVenta = Venta.objects.filter(estado = True).order_by('-id')
-        paginator = Paginator(oVenta,2)
+        paginator = Paginator(oVenta,5)
 
         page = request.GET.get('page')
         try:
@@ -100,6 +121,66 @@ def ListarVentas(request):
             pedido = Pedido.objects.filter(id=o.pedido_id,estado=True)
 
         return render(request, 'venta/listar.html', {"oVenta": ventaPagina,"oProductos":oProductos,"page_range": page_range})
+    
+def filterVentas(request):
+    oVentas = Venta.objects.filter(estado = True).order_by('-id')
+    oVentas_return = oVentas
+
+    producto = request.GET.get('producto_buscado')
+    dni= request.GET.get('cliente_buscado')
+    fecha_inicio = request.GET.get('desde')
+    fecha_fin = request.GET.get('hasta')
+
+    print("### LOG: fun_Ventas")
+    print(type(producto))
+    print(producto)
+
+    print(type(dni))
+    print(dni)
+
+    print(type(fecha_inicio))
+    print(fecha_inicio)
+
+    print(type(fecha_fin))
+    print(fecha_fin)
+    if producto != '':
+        oProducto = Producto.objects.filter(id= producto)
+        
+        oProducto_presentacions = Producto_presentacions.objects.filter(estado=True,producto__in=[p.id for p in oProducto])
+        print("## Productos Presentaciones")
+        print(oProducto_presentacions)
+        print(oProducto_presentacions.count())
+        
+        oPedido_productopresentacions = Pedido_productopresentacions.objects.filter(estado=True,producto_presentacions__in = [p.id for p in oProducto_presentacions])
+        
+        print("## pedidos Productos ")
+        print(oPedido_productopresentacions)
+        print(oPedido_productopresentacions.count())
+        oPedidos = oPedido_productopresentacions
+
+        oVentas = oVentas.filter(estado=True,id__in=[p.pedido.id for p in oPedidos]).order_by('-id')
+
+        print("## Ventas Producto ")
+        print(oVentas)
+        print(oVentas.count())
+
+    paginator = Paginator(oVentas,5)
+
+    page = request.GET.get('page')
+    try:
+        ventaPagina = paginator.page(page)
+    except PageNotAnInteger:
+        ventaPagina = paginator.page(1)
+    except EmptyPage:
+        ventaPagina = paginator.page(paginator.num_pages)
+
+    index = ventaPagina.number - 1
+    max_index = len(paginator.page_range)
+    start_index = index - 5 if index >= 5 else 0
+    end_index = index + 5 if index <= max_index - 5 else max_index
+    page_range = paginator.page_range[start_index:end_index]
+
+    return render(request, 'venta/listar.html', {"oVenta": ventaPagina,"oProductos":{},"page_range": page_range})
 
 def Ventas(request):
     #producto = get_object_or_404(Producto, producto_buscado=producto_buscado)
@@ -110,6 +191,20 @@ def Ventas(request):
     dni= request.GET.get('cliente_buscado')
     fecha_inicio = request.GET.get('desde')
     fecha_fin = request.GET.get('hasta')
+
+    print("### LOG: fun_Ventas")
+    print(type(producto))
+    print(producto)
+
+    print(type(dni))
+    print(dni)
+
+    print(type(fecha_inicio))
+    print(fecha_inicio)
+
+    print(type(fecha_fin))
+    print(fecha_fin)
+    #oVentas
 
     if producto != '':
         #pedido = Pedido.objects.filter(estado=True,id__in=[s.pedido_id for s in ])
@@ -129,6 +224,7 @@ def Ventas(request):
 
         else:
             oProductos=[]
+            print(dni)
             cliente = Cliente.objects.get(numerodocumento=dni)
             venta = Venta.objects.filter(estado=True,cliente_id=cliente.id).order_by('-id')
             for oVenta in venta:
