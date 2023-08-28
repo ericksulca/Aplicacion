@@ -17,7 +17,7 @@
       dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],
       dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],
       weekHeader: 'Sm',
-      dateFormat: 'dd-mm-yy',
+      dateFormat: 'yy-mm-dd',
       firstDay: 1,
       isRTL: false,
       showMonthAfterYear: false,
@@ -73,7 +73,6 @@ $(document).on('Click', '.btn-editar', function(e){
 
 <script type="text/javascript">
 $(document).ready(function(){
-  $( "#inpt-cliente" ).focus();
   $( "#inpt-cliente" ).autocomplete({
       source: function (request, response) {
 
@@ -90,17 +89,14 @@ $(document).ready(function(){
               CrossDomain: true,
 
               success: function (result) {
-              var ListasClientes = result['clientes'];
-              response($.map(ListasClientes, function (item) {
+                console.log(request)
+                var ListasClientes = result['clientes'];
+                response($.map(ListasClientes, function (item) {
                   return {
-                      label: item.id,
-                      idcliente: item.nombre,
-                      label: item.numerodocumento,
-                      idcliente: item.nombre,
-                      numerodocumento: item.numerodocumento,
-                      Id: item.id
-                      };
-                  }));
+                    label: item.nombre,
+                    idproducto: item.id,
+                  };
+                }));
               }
           });
       },
@@ -132,8 +128,8 @@ $(document).ready(function(){
               var ListasProductos = result['productos'];
               response($.map(ListasProductos, function (item) {
                   return {
-                      label: item.id,
-                      idproducto: item.nombre,
+                      label: item.nombre,
+                      idproducto: item.id,
                       };
                   }));
               }
@@ -226,10 +222,9 @@ Ventas
                           <th>#id</th>
                           <th>Fecha</th>
                           <th>Monto</th>
-                          <th>nPedido</th>
                           <th>Cliente</th>
-                          <th>Pedidoid</th>
-                          <th>Producto</th>
+                          <th>Productos</th>
+                          <th>Opciones</th>
                       </tr>
                   </thead>
                   <tbody>
@@ -238,24 +233,20 @@ Ventas
                         <td>{{ forloop.counter }}</td>
                         <td>{{oVenta.fecha}}</td>
                         <td>{{oVenta.monto}}</td>
-                        <td>{{oVenta.nrecibo}}</td>
                         <td>{{oVenta.cliente.nombre }}</td>
-                        <td>{{oVenta.pedido.id }}</td>
                         <td>
-                          {% for oNue in oProductos %}
-                            {% if oVenta.id == oNue.id %}
-                                <table class="table">
-                                  <tr>
-                                    {{ oNue.producto }}
-                                  </tr>
-                                </table>
-                            {% endif %}
+                          {% for Pedido_productopresentacions in oVenta.pedido.pedido_presentacions.all %}
+                              <table class="table">
+                                <tr>
+                                  <td>
+                                    {{ Pedido_productopresentacions.producto_presentacions.producto.nombre }}
+                                  </td>
+                                </tr>
+                              </table>
                           {% endfor %}
                         </td>
                         <td>
-                          <a href="/Venta/detalle/{{oVenta.id}}/"><button type="button" class="btn btn-info">Ver</button> </a>
-                          <a href="/Venta/editar/{{oVenta.id}}/"><button type="button" class="btn btn-primary btn-edit">Editar</button></a>
-                          <a href="/Venta/eliminar/{{oVenta.id}}/"><button type="button" class="btn btn-danger btn-delete">Eliminar</button></a>
+                          <a href="/Venta/detalle/{{oVenta.id}}/"><button type="button" class="btn btn-info">Detalles</button> </a>
                         </td>
                       </tr>
                     {% endfor %}

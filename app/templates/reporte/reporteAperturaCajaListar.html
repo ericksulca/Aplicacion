@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block imports %}
+<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+
+{% endblock %}
+
+{% block title %}
+Reporte por apertura de Caja
+{% endblock %}
+
+{% block content %}
+
+{% load django_template_maths %}
+<div class="card " id="app">
+    <div class="card-header">
+		<h3 class="box-title">Reporte de apertura de caja</h3>
+        <div class="card-header-right">
+            <ul class="list-unstyled card-option">
+                <li><i class="fa fa fa-wrench open-card-option"></i></li>
+                <li><i class="fa fa-window-maximize full-card"></i></li>
+                <li><i class="fa fa-minus minimize-card"></i></li>
+                <li><i class="fa fa-refresh reload-card"></i></li>
+                <li><i class="fa fa-trash close-card"></i></li>
+            </ul>
+        </div>
+    </div>
+    <div class="card-block table-border-style">
+        <div class="table-responsive">
+            <div class="white-box">
+                <div class="form-group">
+                    {% for oAperturacaja in oAperturacajas %}
+                        <h3 class="box-title">
+                            Apertura Registrada: {{ oAperturacaja.fecha}}
+                        </h3>
+                        <table id="tCamiones"  class="table">
+                            <thead>
+                                <tr> 
+                                    <th>#</th>
+                                    <th>Fecha</th>
+                                    <th>Cliente | Proveedor</th>
+                                    <th>Detalle Operación</th>
+                                    <th>Monto S/.</th>
+                                </tr>
+                            </thead>
+                            {% for oOperacion in oAperturacaja.apertura_operacions.all %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{oOperacion.fecha}}</td>
+                                <td>
+                                    {{oOperacion.venta.pedido.cliente.nombre}}
+                                    {{oOperacion.lote.proveedor.nombre}}
+                                </td>
+                                <td>{{oOperacion.detalletipooperacion.nombre}}</td>
+                                <td> 
+                                    {{oOperacion.monto}} 
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                        <hr>
+                    {% endfor %}
+                </div>
+                <h3>Total Operaciones Ingreso: S/. {{ oDatosSumOperaciones.Ingreso }}</h3>
+                <h3>Total Operaciones Egreso: S/. {{ oDatosSumOperaciones.Egreso }}</h3>
+                <hr>
+                {% load humanize %}
+                <h2>Total: S/. {{ oDatosSumOperaciones.Ingreso|sub:oDatosSumOperaciones.Egreso|floatformat:2|intcomma }}</h2>
+            </div>
+	    </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer  %}
+
+<script type="text/javascript">
+    new Vue({
+        delimiters: ['[[', ']]'],
+        el: '#app',
+        computed: {
+            
+        },
+        created() {
+
+            console.log(this.oDatosSumOperaciones)
+        },
+        data:   {
+            oDatosSumOperaciones: '{{oDatosSumOperaciones}}',
+        },
+    });
+</script>
+{% endblock %}

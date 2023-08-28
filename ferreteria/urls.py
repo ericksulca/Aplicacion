@@ -35,6 +35,8 @@ from app.Views.errorView import *
 from app.Views.ventaView import *
 
 from app.Views.loteView import *
+ 
+from app.Views.reporteView import *
 ###########################################################
 #   Usuario: Erick Sulca, Ulises Bejar
 #   Fecha: 05/06/18
@@ -163,7 +165,10 @@ urlpatterns = [
 #######################Información y Reportes##############################
 
     #path('Reporte/almacen/$', reporteAlmacen),
-    #path('Reporte/caja/$', reporteCaja),
+    path('Reporte/aperturascaja/', ReporteAperturasCaja, name="reporte_aperturascaja"),
+    #path('Reporte/operaciones/', ReporteOperaciones, name="reporte_operaciones"),
+    path('Reporte/venta/productos/', ReporteVentaProductos, name="reporte_venta_productos"),
+    path('Reporte/ingreso/productos/', ReporteIngresoProductos, name="reporte_ingreso_productos"),
     #path('Reporte/ventas/$', reporteVentas),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

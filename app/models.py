@@ -86,7 +86,7 @@ class Operacion(models.Model):
     fecha = models.DateTimeField(auto_now_add=True, blank=True)
     monto = models.FloatField()
     descripcion = models.TextField(blank=True, null=True)
-    aperturacaja = models.ForeignKey(Aperturacaja, on_delete=models.CASCADE)  # Field name made lowercase.
+    aperturacaja = models.ForeignKey(Aperturacaja, on_delete=models.CASCADE, related_name='apertura_operacions')  # Field name made lowercase.
     detalletipooperacion = models.ForeignKey(Detalletipooperacion, on_delete=models.CASCADE)  # Field name made lowercase.
     venta = models.ForeignKey('Venta', blank=True, null=True, on_delete=models.CASCADE, related_name='venta_operacions')  # Field name made lowercase.
     lote = models.ForeignKey('Lote', blank=True, null=True, on_delete=models.CASCADE, related_name='lote_operacions')  # Field name made lowercase.
@@ -137,7 +137,7 @@ class Presentacion(models.Model):
         return str(self.nombre)
     
 class Producto_presentacions(models.Model):
-    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)  # Field name made lowercase.
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE, related_name='producto_presentaciones')  # Field name made lowercase.
     presentacion = models.ForeignKey(Presentacion, on_delete=models.CASCADE)  # Field name made lowercase.
     precio_compra = models.FloatField(default=0,blank=True)
     precio_venta = models.FloatField(default=0,blank=True)
@@ -201,7 +201,7 @@ class Venta(models.Model):
     fecha   = models.DateTimeField(auto_now_add=True, blank=True)
     monto   = models.FloatField()
     nrecibo = models.CharField(max_length=45, blank=True, null=True)
-    pedido  = models.ForeignKey(Pedido, on_delete=models.CASCADE)  # Field name made lowercase.
+    pedido  = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='pedido_ventas')  # Field name made lowercase.
     estado  = models.BooleanField(blank=True,default=True)
     #cliente = models.ForeignKey(Cliente, blank=True, null=True, on_delete=models.CASCADE)  # Field name made lowercase.
 

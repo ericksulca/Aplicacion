@@ -83,7 +83,7 @@ def nuevoLote(request):
         oOperacion.save()
         print("############ log POST function nuevo_Lote #############")
         #print(Datos)
-        jsonProductos= {'exito':1}
+        jsonProductos = {'exito':1}
         return HttpResponse(json.dumps(jsonProductos), content_type="application/json")
     else:
         form = ProductoForm()

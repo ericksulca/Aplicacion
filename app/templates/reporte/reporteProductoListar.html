@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block imports %}
+<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+
+{% endblock %}
+
+{% block title %}
+Reporte por Productos
+{% endblock %}
+
+{% block content %}
+
+{% load humanize %}
+{% load django_template_maths %}
+
+<div class="card " id="app">
+    <div class="card-header">
+		<h3 class="box-title">Reporte de Producto: {{ oProducto.nombre }}</h3>
+        <div class="card-header-right">
+            <ul class="list-unstyled card-option">
+                <li><i class="fa fa fa-wrench open-card-option"></i></li>
+                <li><i class="fa fa-window-maximize full-card"></i></li>
+                <li><i class="fa fa-minus minimize-card"></i></li>
+                <li><i class="fa fa-refresh reload-card"></i></li>
+                <li><i class="fa fa-trash close-card"></i></li>
+            </ul>
+        </div>
+    </div>
+    <div class="card-block table-border-style">
+        <div class="table-responsive">
+            <div class="white-box">
+                <div class="form-group">
+                    <h3 class="box-title">
+                    </h3>
+                    <table id="tCamiones"  class="table">
+                        <thead>
+                            <tr> 
+                                <th>#</th>
+                                <th>Fecha</th>
+                                <th>proveedor </th>
+                                <th>Presentación | Cantidad | Precio Unit. | Monto S/.</th>
+                            </tr>
+                        </thead>
+                        {% for oPedido_productopresentacion in oPedido_productopresentacions %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{oPedido.id}}|{{oPedido_productopresentacion.lote.fecha}}</td>
+                            <td>
+                                {{oPedido_productopresentacion.lote.proveedor.nombre}}
+                            </td>
+                            <td>
+                            <table class="table">
+                                {%for Pedido_productopresentacions in oPedido_productopresentacion.lote.lote_presentacions.all %}
+                                    <tr>
+                                        {% if Pedido_productopresentacions.producto_presentacions.producto.nombre == oProducto.nombre %}
+                                            <td class="col-4">
+                                                {{ Pedido_productopresentacions.producto_presentacions.presentacion.nombre }}
+                                            </td>
+                                            <td>
+                                                {{ Pedido_productopresentacions.cantidad }}
+                                            </td>
+                                            <td>
+                                                {{ Pedido_productopresentacions.precio_lote }}
+                                            </td>
+                                            <td>
+                                                S/. {{ Pedido_productopresentacions.cantidad|mul:Pedido_productopresentacions.precio_lote|floatformat:2|intcomma }}
+                                            </td>
+                                        {% endif %}
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                    <hr>
+                </div>
+                {% load humanize %}
+                <h3>Total Operaciones : S/. {{ total_operacion|floatformat:2|intcomma }}</h3>
+                <hr>
+            </div>
+	    </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer  %}
+
+<script type="text/javascript">
+    new Vue({
+        delimiters: ['[[', ']]'],
+        el: '#app',
+        computed: {
+            
+        },
+        created() {
+
+            console.log(this.oDatosSumOperaciones)
+        },
+        data:   {
+            oDatosSumOperaciones: '{{oDatosSumOperaciones}}',
+        },
+    });
+</script>
+{% endblock %}

@@ -124,46 +124,100 @@ def ListarVentas(request):
     
 def filterVentas(request):
     oVentas = Venta.objects.filter(estado = True).order_by('-id')
-    oVentas_return = oVentas
+    #oVentas = []
+    oVentas_query = False
 
-    producto = request.GET.get('producto_buscado')
-    dni= request.GET.get('cliente_buscado')
+    nombre_producto = request.GET.get('producto_buscado')
+    nombre_cliente= request.GET.get('cliente_buscado')
     fecha_inicio = request.GET.get('desde')
     fecha_fin = request.GET.get('hasta')
 
     print("### LOG: fun_Ventas")
-    print(type(producto))
-    print(producto)
+    print(type(nombre_producto))
+    print(nombre_producto)
 
-    print(type(dni))
-    print(dni)
+    print(type(nombre_cliente))
+    print(nombre_cliente)
 
     print(type(fecha_inicio))
     print(fecha_inicio)
 
     print(type(fecha_fin))
     print(fecha_fin)
-    if producto != '':
-        oProducto = Producto.objects.filter(id= producto)
+
+    fecha_hoy = date.today()
+    if nombre_producto != '' and nombre_producto !=None:
+        oProducto = Producto.objects.filter(nombre= nombre_producto)
         
         oProducto_presentacions = Producto_presentacions.objects.filter(estado=True,producto__in=[p.id for p in oProducto])
-        print("## Productos Presentaciones")
-        print(oProducto_presentacions)
-        print(oProducto_presentacions.count())
         
         oPedido_productopresentacions = Pedido_productopresentacions.objects.filter(estado=True,producto_presentacions__in = [p.id for p in oProducto_presentacions])
         
-        print("## pedidos Productos ")
-        print(oPedido_productopresentacions)
-        print(oPedido_productopresentacions.count())
         oPedidos = oPedido_productopresentacions
 
-        oVentas = oVentas.filter(estado=True,id__in=[p.pedido.id for p in oPedidos]).order_by('-id')
+        oVentas = Venta.objects.filter(estado=True,id__in=[p.pedido.id for p in oPedidos]).order_by('-id')
+        oVentas_query = True
 
-        print("## Ventas Producto ")
-        print(oVentas)
-        print(oVentas.count())
+    if nombre_cliente !='' and nombre_cliente !=None:
 
+        oCliente = get_object_or_404(Cliente,nombre=nombre_cliente)
+        oPedidos = Pedido.objects.filter(cliente=oCliente)
+        if oVentas_query == True:
+            arr_ventas = []
+            for oVenta in oVentas:
+                if oVenta.pedido.cliente == oCliente:
+                    print("## LOG: add item")
+                    arr_ventas.append(oVenta)
+                else:
+                    print("## LOG: no add item")
+            #oVentas = oVentas.filter(id=24)
+            oVentas = arr_ventas
+
+            #oVentas = oVentas.filter(pedido__in=[p.id for p in oPedidos]).order_by('-id')
+            print("## LOG: fun filter ventas Existentes")
+            print(oVentas)
+        else:
+            oVentas = Venta.objects.filter(pedido__in=[p.id for p in oPedidos]).order_by('-id')
+            oVentas_query = True
+            print("## LOG: fun filter ventas")
+
+    if fecha_inicio !='' and fecha_inicio != None:
+        print('##############')
+        fecha_inicio = datetime.strptime(fecha_inicio, "%m/%d/%Y").date()
+        
+        if oVentas_query == True:
+            print(oVentas)
+            print("## LOG: fun filter fechas Existentes | fecha inicio")
+            startdate = date.today()
+            oVentas = oVentas.filter(estado=True,fecha__range=[fecha_inicio,fecha_hoy]).order_by('-id')[:50]
+        else:
+            print("## LOG: fun filter fechas | fecha inicio")
+            oVentas = Venta.objects.filter(estado=True,fecha__gte=fecha_inicio).order_by('-id')[:50]
+            oVentas_query = True
+            print(oVentas)
+    
+    if fecha_fin !='' and fecha_fin != None:
+        print('##############')
+        fecha_fin = datetime.strptime(fecha_fin, "%m/%d/%Y")
+        
+        if oVentas_query == True:
+            print("## LOG: fun filter fechas Existentes | fecha inicio")
+            print(oVentas)
+            arr_ventas = []
+            for oVenta in oVentas:
+                if oVenta.fecha <= fecha_fin:
+                    print("## LOG: add item")
+                    arr_ventas.append(oVenta)
+                else:
+                    print("## LOG: no add item")
+            #oVentas = oVentas.filter(id=24)
+            oVentas = arr_ventas
+        else:
+            print("## LOG: fun filter fechas | fecha inicio")
+            oVentas = Venta.objects.filter(estado=True,fecha__lte=fecha_fin).order_by('-id')[:50]
+            oVentas_query = True
+
+    print(oVentas)
     paginator = Paginator(oVentas,5)
 
     page = request.GET.get('page')

@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% block imports %}
+
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/resources/demos/style.css">
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script>
+    $.datepicker.regional['es'] = {
+      closeText: 'Cerrar',
+      prevText: '< Ant',
+      nextText: 'Sig >',
+      currentText: 'Hoy',
+      monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+      monthNamesShort: ['Ene','Feb','Mar','Abr', 'May','Jun','Jul','Ago','Sep', 'Oct','Nov','Dic'],
+      dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+      dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],
+      dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],
+      weekHeader: 'Sm',
+      dateFormat: 'yy-mm-dd',
+      firstDay: 1,
+      isRTL: false,
+      showMonthAfterYear: false,
+      yearSuffix: ''
+    };
+
+    $( function() {
+      $.datepicker.setDefaults($.datepicker.regional['es']);
+      $( "#fechaReporte" ).datepicker();
+    } );
+</script>
+
+  
+  <script>
+  $( function() {
+    $( "#fechaReporte" ).datepicker();
+  } );
+  </script>
+ <script type="text/javascript">
+
+//evento click para boton editar
+
+$(document).on('Click', '.btn-editar', function(e){
+
+	e.preventDefault();
+	 var row=$(this).paren().parent()[0];
+	 console.log(row);
+});
+
+
+</script>
+
+<script>
+  var input = document.getElementById("myInput");
+
+  // Execute a function when the user releases a key on the keyboard
+  input.addEventListener("keyup", function(event) {
+  // Cancel the default action, if needed
+  event.preventDefault();
+  // Number 13 is the "Enter" key on the keyboard
+  if (event.keyCode === 13) {
+    // Trigger the button element with a click
+    document.getElementById("myBtn").click();
+  }
+  });
+</script>
+
+
+
+
+<style>
+ul.ui-autocomplete {
+  z-index: 1100;
+}
+#content{
+  position: absolute;
+  min-height: 50%;
+  width: 80%;
+  top: 20%;
+  left: 5%;
+}
+
+.selected{
+  cursor: pointer;
+}
+.selected:hover{
+  background-color: #0585C0;
+  color: white;
+}
+.seleccionada{
+  background-color: #0585C0;
+  color: white;
+}
+</style>
+
+
+{% endblock %}
+
+{% block title %}
+    Reporte por apertura de Caja
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+		<h3 class="box-title">Formulario de Reporte por apertura de Caja</h3>
+        <div class="card-header-right">
+            <ul class="list-unstyled card-option">
+                <li><i class="fa fa fa-wrench open-card-option"></i></li>
+                <li><i class="fa fa-window-maximize full-card"></i></li>
+                <li><i class="fa fa-minus minimize-card"></i></li>
+                <li><i class="fa fa-refresh reload-card"></i></li>
+                <li><i class="fa fa-trash close-card"></i></li>
+            </ul>
+        </div>
+    </div>
+    <div class="card-block table-border-style">
+        <div class="table-responsive">
+            <div class="white-box">
+                <form action="." method="post" enctype="multipart/form-data"> 
+				<ul>
+				{% csrf_token %}
+					<div class="form-group">
+					<label for="">Seleccione una Caja</label></br>
+                    <div id="date-picker-example" class="md-form md-outline input-with-post-icon datepicker" inline="true">
+                     
+                        <input type="text" class="form-inline mr-auto form-control" id="fechaReporte" placeholder="Seleccione una fecha..." name="fechaReporte" autocomplete="off">
+
+                    </div>
+                    <button class="btn btn-success" data-toggle="modal" data-target="#agrearPresentacion">Generar Reporte Caja</button>
+
+				</ul>
+				</form>
+			</div>
+	    </div>
+    </div>  
+</div>
+{% endblock %}

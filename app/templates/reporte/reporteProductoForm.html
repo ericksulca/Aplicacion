@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block imports %}
+
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/resources/demos/style.css">
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function(){
+      $( "#inpt-producto" ).focus();
+      $( "#inpt-producto" ).autocomplete({
+          source: function (request, response) {
+    
+              var datos = {nombreProducto: $("#inpt-producto").val()};
+              var sendData = JSON.stringify(datos);
+              $.ajax({
+                  type: "POST",
+                  dataType: "json",
+                  url: "/producto/buscar/",
+                  data: sendData,
+                  contentType: "application/json; charset=utf-8",
+                  async: false,
+                  cache: false,
+                  CrossDomain: true,
+    
+                  success: function (result) {
+                  var ListasProductos = result['productos'];
+                  response($.map(ListasProductos, function (item) {
+                      return {
+                          label: item.nombre,
+                          idproducto: item.id,
+                          };
+                      }));
+                  }
+              });
+          },
+          minLength: 1,
+         
+      });
+    });
+    
+    </script>
+
+
+
+<style>
+ul.ui-autocomplete {
+  z-index: 1100;
+}
+#content{
+  position: absolute;
+  min-height: 50%;
+  width: 80%;
+  top: 20%;
+  left: 5%;
+}
+
+.selected{
+  cursor: pointer;
+}
+.selected:hover{
+  background-color: #0585C0;
+  color: white;
+}
+.seleccionada{
+  background-color: #0585C0;
+  color: white;
+}
+</style>
+
+
+{% endblock %}
+
+{% block title %}
+    Reporte por Producto
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+		<h3 class="box-title">Formulario de Reporte por Producto</h3>
+        <div class="card-header-right">
+            <ul class="list-unstyled card-option">
+                <li><i class="fa fa fa-wrench open-card-option"></i></li>
+                <li><i class="fa fa-window-maximize full-card"></i></li>
+                <li><i class="fa fa-minus minimize-card"></i></li>
+                <li><i class="fa fa-refresh reload-card"></i></li>
+                <li><i class="fa fa-trash close-card"></i></li>
+            </ul>
+        </div>
+    </div>
+    <div class="card-block table-border-style">
+        <div class="table-responsive">
+            <div class="white-box">
+                <form action="." method="post" enctype="multipart/form-data"> 
+                    <ul>
+                    {% csrf_token %}
+                        <div class="form-group">
+                            <label for="">Seleccione un Producto</label></br>
+                            <input type="text" id="inpt-producto" placeholder="Producto..." name="producto_buscado" class="form-inline mr-auto form-control">
+                        </div>
+                        <button class="btn btn-success" data-toggle="modal" data-target="#agrearPresentacion">Generar Reporte Caja</button>
+                    </ul>
+				</form>
+			</div>
+	    </div>
+    </div>  
+</div>
+{% endblock %}
