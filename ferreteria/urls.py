@@ -85,7 +85,6 @@ urlpatterns = [
     path('Producto/eliminar/<int:pk>/', eliminar_producto, name='eliminar_producto'),
 
     ################## Catalogo #######################
-    #path('Presentacion/Listar/<int:producto_id>/', presentacion_detalle, name ='listar_presentacion'),
     #path('Presentacion/registrar/', registrarPresentacionProducto, name ='registrar_presentacion'),
     #path('Presentacion/eliminar/<int:presentacion_id>/<int:producto_id>/', eliminarPresentacionProducto, name ='eliminar_presentacion'),
     #path('Presentacion/getPresentaciones/', getPresentaciones, name ='get_presentacion'),
@@ -143,6 +142,7 @@ urlpatterns = [
     path('producto/json_listar/', get_Productos.as_view(), name='listar_productos'),
     path('producto/presentacion/listar/', get_PresentacionProducto.as_view()),
     path('producto/presentacion/cantidad/', CantidadPresentacionesProducto),
+    path('presentacion/listar/', get_Presentaciones.as_view(), name ='listar_presentacion'),
 
     path('detalletipooperacion/lista/',get_detalleTipoOperacion.as_view(),name ='listar_detalletipooperacio'),
 
@@ -166,9 +166,7 @@ urlpatterns = [
 
     #path('Reporte/almacen/$', reporteAlmacen),
     path('Reporte/aperturascaja/', ReporteAperturasCaja, name="reporte_aperturascaja"),
-    #path('Reporte/operaciones/', ReporteOperaciones, name="reporte_operaciones"),
     path('Reporte/venta/productos/', ReporteVentaProductos, name="reporte_venta_productos"),
     path('Reporte/ingreso/productos/', ReporteIngresoProductos, name="reporte_ingreso_productos"),
-    #path('Reporte/ventas/$', reporteVentas),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

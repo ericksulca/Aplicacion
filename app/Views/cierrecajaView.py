@@ -47,8 +47,9 @@ def registrarCierrecaja(request):
         form = CierrecajaForm()
         try:
             oAperturacaja = Aperturacaja.objects.latest('id')
+            oMontoCierre = 500
             if  oAperturacaja.activo==True:
-                return render(request, 'caja/cierre.html', {'form': form,'Aperturacaja': oAperturacaja,'cajas':oCajas})
+                return render(request, 'caja/cierre.html', {'form': form,'Aperturacaja': oAperturacaja,'cajas':oCajas,'oMontoCierre':oMontoCierre})
             else: 
                 return redirect('apertura_caja')
         except Exception as e:

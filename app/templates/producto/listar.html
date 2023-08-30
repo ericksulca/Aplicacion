@@ -1,19 +1,6 @@
 {% extends "base.html" %}
 {% block imports %}
 
-<script type="text/javascript">
-
-//evento click para boton editar
-
-$(document).on('Click', '.btn-editar', function(e){
-
- e.preventDefault();
-	var row=$(this).paren().parent()[0];
-	console.log(row);
-});
-
-
-</script>
 {% endblock %}
 
 {% block title %}
@@ -61,7 +48,6 @@ Clientes
 				    	<td>
 				    		<a href="/Producto/detalle/{{oProducto.id}}/"><button type="button" class="btn btn-info">Ver</button> </a>
 				    		<a href="/Producto/editar/{{oProducto.id}}/"><button type="button" class="btn btn-primary">Editar</button></a>
-				    		<a href="/Producto/eliminar/{{oProducto.id}}/"><button type="button" class="btn btn-danger">Eliminar</button></a>
 				    	</td>
 				    </tr>
 

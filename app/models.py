@@ -39,8 +39,10 @@ class Categoria(models.Model):
 class Cierrecaja(models.Model):
     fecha = models.DateTimeField(auto_now_add=True, blank=True)
     monto = models.FloatField()
-    estado = models.BooleanField(blank=True,default=True)
     aperturacaja = models.ForeignKey(Aperturacaja, on_delete=models.CASCADE, related_name='apertura_cierrecaja')  # Field name made lowercase.
+    validado = models.BooleanField(blank=True,default=True)
+    descripcion = models.TextField(blank=True, null=True)
+    estado = models.BooleanField(blank=True,default=True)
 
 class Cliente(models.Model):
     nombre = models.CharField(max_length=45)
@@ -118,8 +120,6 @@ class Producto(models.Model):
     codigo = models.CharField(max_length=45, blank=True, null=True)
     cantidad = models.FloatField(default=0,blank=True, null=True)
     imagen = ResizedImageField(size=[100, None],upload_to='productos/', default="/imagen/default.jpg", blank=True, null=True)#upload_to='%Y/%m/%d',
-    #ResizedImageField(size=[500, 300], upload_to=get_image_path, blank=True, null=True)
-
     url = models.CharField(max_length=100, blank=True, null=True)
     valor = models.FloatField(default=1,blank=True)
     precio = models.FloatField(default=1,blank=True)

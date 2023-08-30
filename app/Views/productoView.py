@@ -7,6 +7,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import get_object_or_404
 
 from rest_framework.generics import (ListAPIView)
 
@@ -37,11 +38,30 @@ def ListarProductos(request):
 def registrarProducto(request):
     if request.method == 'POST':
         Datos = request.POST
+        codigos_presentacions = request.POST.getlist('Presentacions')
+        print(Datos)
+        print(codigos_presentacions)
+        print(type(codigos_presentacions))
+
         form = ProductoForm(request.POST)
         if form.is_valid():
             form = form.save(commit=False)
             form.save()
             oProducto = form
+            print(Datos['Presentacions_favorito'])
+            for code_Presentacion in codigos_presentacions:
+                print("code_Presentacion")
+                print(code_Presentacion)
+                oPresentacion = get_object_or_404(Presentacion,codigo=code_Presentacion)
+                oProducto_presentacions = Producto_presentacions()
+                oProducto_presentacions.producto = oProducto
+                oProducto_presentacions.presentacion = oPresentacion
+                str_input = 'str'+str(code_Presentacion)
+                precio_presentacion = Datos[str_input]
+                oProducto_presentacions.precio_venta = float(precio_presentacion)
+                if Datos['Presentacions_favorito']==code_Presentacion:
+                    oProducto_presentacions.favorito = True
+                oProducto_presentacions.save()
             #oPresentacion = Presentacion.objects.get(id = int(Datos['cmbPresentacionPrincipal']))
             #oProducto.presentacions.add(oPresentacion)
             '''oProductopresentacions = Productopresentacions.objects.get(producto=oProducto, presentacion=oPresentacion)
@@ -167,7 +187,6 @@ def editarProducto(request,producto_id):
         #    return render(request, '/Cliente/error.html')
     else:
         form = ProductoForm(request.POST or None, instance=oProducto)
-        print(form)
         return render(request, 'producto/editar.html', {'form': form})
 
 

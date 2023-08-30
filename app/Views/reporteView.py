@@ -30,7 +30,7 @@ import json
 def ReporteAperturasCaja(request):
     if request.method == 'POST':
         Datos = request.POST
-        fecha_reporte = datetime.strptime(Datos['fechaReporte'], "%m/%d/%Y")
+        fecha_reporte = datetime.strptime(Datos['fechaReporte'], "%m/%d/%Y").date()
         
         oTipooperacionIngreso = Tipooperacion.objects.get(id=1)
         oDetalletipooperacionIngreso = Detalletipooperacion.objects.filter(tipooperacion=oTipooperacionIngreso)
@@ -54,8 +54,15 @@ def ReporteAperturasCaja(request):
         print(oOperacionesEgreso)
 
         oDatosSumOperaciones = {}
-        oDatosSumOperaciones['Ingreso'] = "{:.2f}".format(oOperacionesIngreso['monto__sum'])
-        oDatosSumOperaciones['Egreso'] = "{:.2f}".format(oOperacionesEgreso['monto__sum'])
+        if oOperacionesIngreso['monto__sum']:
+            oDatosSumOperaciones['Ingreso'] = "{:.2f}".format(oOperacionesIngreso['monto__sum'])
+        else:
+            oDatosSumOperaciones['Ingreso'] = 0
+
+        if oOperacionesEgreso['monto__sum']:
+            oDatosSumOperaciones['Egreso'] = "{:.2f}".format(oOperacionesEgreso['monto__sum'])
+        else:
+            oDatosSumOperaciones['Egreso'] = 0
 
             
         print(oAperturacajas)
@@ -94,7 +101,7 @@ def ReporteVentaProductos(request):
         
         print(total_operacion)
 
-        return render(request,'reporte/reporteProductoListar.html', {'oPedido_productopresentacions':oPedido_productopresentacions, 'oProducto': oProducto, 'total_operacion':total_operacion})
+        return render(request,'reporte/reporteProductoVentasListar.html', {'oPedido_productopresentacions':oPedido_productopresentacions, 'oProducto': oProducto, 'total_operacion':total_operacion})
 
 def ReporteIngresoProductos(request):
     if request.method == 'GET':
@@ -119,6 +126,6 @@ def ReporteIngresoProductos(request):
         
         print(total_operacion)
 
-        return render(request,'reporte/reporteProductoListar.html', {'oPedido_productopresentacions':oLote_productopresentacions, 'oProducto': oProducto, 'total_operacion':total_operacion})
+        return render(request,'reporte/reporteProductoLotesListar.html', {'oPedido_productopresentacions':oLote_productopresentacions, 'oProducto': oProducto, 'total_operacion':total_operacion})
 
 

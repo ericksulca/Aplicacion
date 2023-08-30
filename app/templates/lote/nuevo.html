@@ -53,7 +53,7 @@ Nuevo Lote
 <div id="app">
     <div class="card">
         <div class="card-header">
-            <h3 class="box-title">Nuevo Lote</h3>
+            <h3 class="box-title"></h3>
             <div class="card-header-right">
                 <ul class="list-unstyled card-option">
                     <li><i class="fa fa fa-wrench open-card-option"></i></li>
@@ -99,29 +99,47 @@ Nuevo Lote
                         <hr>
 
                         <div class="row">
-                            <div class="col-6">
-                                <label for="id_nombre">Producto:</label>
+                            <div class="col-12 col-sm-6">
                                 <div class="row">
-                                    <div class="col">
-                                        <input type="text" ref="inpProducto" v-model="nombreProductoAgregar"  class="form-control nombreProductoPedido-field " 
-                                        name="inpt-producto" id="inpt-producto" :disabled="producto_completado">
+                                    <label for="id_nombre">Producto:</label>
+                                    <div class="row">
+                                        <div class="col">
+                                            <input type="text" ref="inpProducto" v-model="nombreProductoAgregar"  class="form-control nombreProductoPedido-field " 
+                                            name="inpt-producto" id="inpt-producto" :disabled="producto_completado">
+                                        </div>
+                                        
+                                        <div class="col" v-show="producto_completado">
+                                            <button  type="button" class="btn btn-secondary" @click="changeProductoCompletado">
+                                                Editar
+                                            </button>
+                                        </div>
+                                        
+                                        <div class="col" v-show="!producto_completado">
+                                            <button type="button" class="btn btn-danger " @click="set_nombreProducto('',0)">
+                                                Borrar
+                                            </button>
+                                        </div>
                                     </div>
-                                    
-                                    <div class="col" v-show="producto_completado">
-                                        <button  type="button" class="btn btn-secondary" @click="changeProductoCompletado">
-                                            Editar
-                                        </button>
-                                    </div>
-                                    
-                                    <div class="col" v-show="!producto_completado">
-                                        <button type="button" class="btn btn-danger " @click="set_nombreProducto('',0)">
-                                            Borrar
-                                        </button>
+                                </div>
+                                
+                                <hr>
+
+                                <div class="row">
+                                    <h4>
+                                        Productos Sugeridos
+                                    </h4>
+                                    <div class="row" style="height: 75 px;">
+                                        <div class="col" v-for="(item, index) in arrProductos">
+                                            <button @click="set_nombreProducto(item.id,item.nombre,item.precio)" style="width: 100px;">
+                                                <img :src=[[item.imagen]] class="card-img-top " style="width: 80px;">
+                                                <p>[[item.nombre]]</p>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             
-                            <div class="col-6">
+                            <div class="col-12 col-sm-6">
                                 <div class="row">
                                     <div id="selector" class="col">
                                         <label for="id_nombre">Presentación:</label>
@@ -160,30 +178,13 @@ Nuevo Lote
                         <hr>
 
                         <div class="row">
-                            <div class="col-6">
-                                <div class="row">
-                                    <h4>
-                                        Productos Encontrados
-                                    </h4>
-                                </div>
-                                <div class="row" style="height: 75 px;">
-                                    <div class="col" v-for="(item, index) in arrProductos">
-                                            <td>
-                                                <button @click="set_nombreProducto(item.id,item.nombre,item.precio)" style="width: 100px;">
-                                                    <img :src=[[item.imagen]] class="card-img-top " style="width: 80px;">
-                                                    <p>[[item.nombre]]
-                                                </button>
-                                            </td>
-                                        </div>
-                                    </tr>
-                                </div>
-                            </div>
+                            
                         </div>
 
                         <hr>
 
                         <div class="row">
-                            <div class="col-6"> 
+                            <div class="col-12 col-sm-6"> 
                                 <div class="row">
                                     <tr>
                                         {% for oProductoTop in oProductosTop %}
@@ -234,7 +235,7 @@ Nuevo Lote
         </div>
     </div>
 
-    <div class="card">
+    <div class="card" v-show="items.length>0">
         <div class="card-header">
             <h3 class="box-title">Contenido:</h3>
             <div class="card-header-right">
@@ -368,7 +369,7 @@ Nuevo Lote
             lista_presentaciones: {},
             
             items: [
-                {id: '13', nombre_producto: 'Molde', presentacion_producto: 'Ca', cantidad_producto: 1, precio_producto: 129, fechaVenc_producto: ''}, {id: '13', nombre_producto: 'Molde', presentacion_producto: 'De(10)', cantidad_producto: 1, precio_producto: 23, fechaVenc_producto: ''}, {id: '13', nombre_producto: 'Molde', presentacion_producto: 'Un', cantidad_producto: 1, precio_producto: 2.4, fechaVenc_producto: ''}
+                //{id: '13', nombre_producto: 'Molde', presentacion_producto: 'Ca', cantidad_producto: 1, precio_producto: 129, fechaVenc_producto: ''}, {id: '13', nombre_producto: 'Molde', presentacion_producto: 'De(10)', cantidad_producto: 1, precio_producto: 23, fechaVenc_producto: ''}, {id: '13', nombre_producto: 'Molde', presentacion_producto: 'Un', cantidad_producto: 1, precio_producto: 2.4, fechaVenc_producto: ''}
             ],
             nroDocumento: '',
             selectedPresentacion: '',
@@ -391,6 +392,11 @@ Nuevo Lote
         watch: {
             nombreProductoAgregar: function(val){
                 this.buscar_producto()
+            },
+            monto_total: function(val){
+                if (this.bool_pagoTotal==true){
+                    this.monto_pago = this.monto_total
+                }
             },
              
             cantProductoAgregar: function(val){
@@ -447,10 +453,6 @@ Nuevo Lote
                 datos["almacen"] = this.almacen_selected
                 datos["proveedor"] = this.proveedor_selected
                 datos["nroDocumento"] = this.nroDocumento
-                
-                if (this.bool_pagoTotal=false){
-                    this.monto_pago = this.monto_total
-                }
                 datos["monto_pago"] = this.monto_pago
 
                 axios.post(".",datos,{headers: {'X-CSRFToken' : window.csrfToken}}).then((result)=> {
@@ -483,11 +485,28 @@ Nuevo Lote
             },
 
             agregarProductoPedido: function(){
-                if (this.nomProductComplete=!''&&this.cantProductoAgregar>0){
+                console.log(this.nomProductComplete)
+                if(this.nomProductComplete!=''){
+                    alert("Seleccionar un Producto")
+                }
+                if(this.cantProductoAgregar<=0){
+                    alert("Agregue una cantidad válida")
+                }
+                if(this.selectedPresentacion==''){
+                    alert("Seleccionar una Presentación")
+                }
+
+                if (this.nomProductComplete=!''&&this.cantProductoAgregar>0&&this.selectedPresentacion!=''){
                     objProducto = {
-                        id: this.idProductoAgregar, nombre_producto: this.nombreProductoAgregar, presentacion_producto:this.selectedPresentacion, cantidad_producto:this.cantProductoAgregar,precio_producto:this.precioProductoAgregar, fechaVenc_producto:''
+                        id: this.idProductoAgregar, 
+                        nombre_producto: this.nombreProductoAgregar,
+                        presentacion_producto:this.selectedPresentacion,
+                        cantidad_producto:this.cantProductoAgregar,
+                        precio_producto:this.precioProductoAgregar, 
+                        fechaVenc_producto:''
                     }
                     this.items.push(objProducto)
+                    this.selectedPresentacion = ''
                     this.nombreProductoAgregar = ''
                     this.cantProductoAgregar = 0
                     this.precioProductoAgregar = 0

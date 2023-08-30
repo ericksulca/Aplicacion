@@ -6,7 +6,7 @@ from app.models import *
 class CierrecajaForm(ModelForm):
     class Meta:
         model = Cierrecaja
-        fields = ('monto',)
+        fields = ('monto','descripcion','validado',)
         #widgets = {
         #    'password': forms.PasswordInput(),
         #}

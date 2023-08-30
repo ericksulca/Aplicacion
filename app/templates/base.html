@@ -2,7 +2,10 @@
 <html lang="es">
 
 <head>
-    <title>Material Able bootstrap admin template by Codedthemes</title>
+    <title>
+        {% block title%}
+        {%endblock %}
+    </title>
     <!-- HTML5 Shim and Respond.js IE10 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 10]>
@@ -100,7 +103,7 @@
             <nav class="navbar header-navbar pcoded-header">
                 <div class="navbar-wrapper">
                     <div class="navbar-logo">
-                        <a class="mobile-menu waves-effect waves-light" id="mobile-collapse" href="#!">
+                        <a class="mobile-menu waves-effect waves-light" id="mobile-collapse" href="#">
                             <i class="ti-menu"></i>
                         </a>
                         <div class="mobile-search waves-effect waves-light">
@@ -114,7 +117,7 @@
                                 </div>
                             </div>
                         </div>
-                        <a href="index.html">
+                        <a href="/">
                             <img class="img-fluid" src="/static/assets/images/logo.png" alt="Theme-Logo" />
                         </a>
                         <a class="mobile-options waves-effect waves-light">
@@ -127,33 +130,33 @@
                                 <div class="sidebar_toggle"><a href="javascript:void(0)"><i class="ti-menu"></i></a></div>
                             </li>
                             <li>
-                                <a href="#!" onclick="javascript:toggleFullScreen()" class="waves-effect waves-light">
+                                <a href="#" onclick="javascript:toggleFullScreen()" class="waves-effect waves-light">
                                     <i class="ti-fullscreen"></i>
                                 </a>
                             </li>
                         </ul>
                         <ul class="nav-right">
                             <li class="user-profile header-notification">
-                                <a href="#!" class="waves-effect waves-light">
+                                <a href="#" class="waves-effect waves-light">
                                     <img src="/static/assets/images/user/logo_user.png" class="img-radius" alt="User-Profile-Image">
                                     <span>{{ user.get_username}}</span>
                                     <i class="ti-angle-down"></i>
                                 </a>
                                 <ul class="show-notification profile-notification">
                                     <li class="waves-effect waves-light">
-                                        <a href="#!">
-                                            <i class="ti-settings"></i> Settings
+                                        <a href="#">
+                                            <i class="ti-settings"></i> Opciones
                                         </a>
                                     </li>
                                     <li class="waves-effect waves-light">
-                                        <a href="user-profile.html">
-                                            <i class="ti-user"></i> Profile
+                                        <a href="#">
+                                            <i class="ti-user"></i> Perfil de Usuario
                                         </a>
                                     </li>
                                     
                                     <li class="waves-effect waves-light">
                                         <a href="{% url 'Logout' %}">
-                                            <i class="ti-layout-sidebar-left"></i> Logout
+                                            <i class="ti-layout-sidebar-left"></i> Salir
                                         </a>
                                     </li>
                                 </ul>
@@ -178,9 +181,9 @@
                                 <div class="main-menu-content">
                                     <ul>
                                         <li class="more-details">
-                                            <a href="user-profile.html"><i class="ti-user"></i>View Profile</a>
-                                            <a href="#!"><i class="ti-settings"></i>Settings</a>
-                                            <a href="{% url 'Logout' %}"><i class="ti-layout-sidebar-left"></i>Logout</a>
+                                            <a href="#"><i class="ti-user"></i>Perfil de Usuario</a>
+                                            <a href="#"><i class="ti-settings"></i>Opciones</a>
+                                            <a href="{% url 'Logout' %}"><i class="ti-layout-sidebar-left"></i>Salir</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -215,7 +218,7 @@
                                 </li>
                                 
                                 <li>
-                                    <a href="blank.html" class="waves-effect"><i class="fa fa-columns fa-fw" aria-hidden="true"></i><span class="hide-menu">Ventas</span></a>
+                                    <a href="#" class="waves-effect"><i class="fa fa-columns fa-fw" aria-hidden="true"></i><span class="hide-menu">Ventas</span></a>
                                     <ul class="pcoded-item pcoded-left-item">
                                       <li><a class="waves-effect waves-dark" href="/venta/nuevo/">Nueva Venta</a></li>
                                       <li><a class="waves-effect waves-dark" href="/venta/listar/">Listar Ventas</a></li>
@@ -223,7 +226,7 @@
                                 </li>
 
                                 <li>
-                                    <a href="basic-table.html" class="waves-effect"><i class="fa fa-table fa-fw" aria-hidden="true"></i><span class="hide-menu">Almacén</span></a>
+                                    <a href="#" class="waves-effect"><i class="fa fa-table fa-fw" aria-hidden="true"></i><span class="hide-menu">Almacén</span></a>
                                      <ul class="pcoded-item pcoded-left-item">
                                         <li><a class="waves-effect waves-dark" href="/Producto/nuevo/">Nuevo Producto</a></li>
                                         <li><a class="waves-effect waves-dark" href="/Producto/listar/">Listar Productos</a></li>
@@ -261,9 +264,9 @@
                                 <li>
                                     <a href="#" class="waves-effect"><i class="fa fa-info-circle fa-fw" aria-hidden="true"></i><span class="hide-menu">Información y Reportes</span></a>
                                     <ul class="pcoded-item pcoded-left-item">
-                                      <li><a class="waves-effect waves-dark" href="/Reporte/almacen/">Reporte de Almacén</a></li>
-                                      <li><a class="waves-effect waves-dark" href="/Reporte/caja/">Reporte de Caja</a></li>
-                                      <li><a class="waves-effect waves-dark" href="/Reporte/ventas/">Reporte de Ventas</a></li>
+                                      <li><a class="waves-effect waves-dark" href="{% url 'reporte_aperturascaja' %}">Reporte aperturas de Caja</a></li>
+                                      <li><a class="waves-effect waves-dark" href="{% url 'reporte_venta_productos' %}">Reporte Venta de Productos</a></li>
+                                      <li><a class="waves-effect waves-dark" href="{% url 'reporte_ingreso_productos' %}">Reporte Ingreso de Productos</a></li>
                                     </ul>
                                 </li>
                             </ul>
@@ -291,7 +294,7 @@
                                                 <a href="index.html"> <i class="fa fa-home"></i> </a>
                                             </li>
                                             <li class="breadcrumb-item">
-                                                <a href="#!">
+                                                <a href="#">
                                                     {{request.resolver_match.url_name}}
                                                 </a>
                                             </li>

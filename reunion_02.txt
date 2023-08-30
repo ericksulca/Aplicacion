@@ -1,0 +1,8 @@
+cambios ticket
+
+#head table cantidad to cant
+#head table presentación to Unid.
+#body table presentación 'nombre'->'codigo'
+#error Total Ticket
+
+Revisar margin top print 

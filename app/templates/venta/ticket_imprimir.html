@@ -45,9 +45,9 @@
                 <td>
                     <table>
                         <thead>
-                            <th>Cant </th>
+                            <th>Cant. </th>
                             <th>Descripción</th>
-                            <th>Unidad</th>
+                            <th>Unid.</th>
                             <th>P.U.</th>
                             <th>Total</th>
                         </thead>
@@ -61,13 +61,13 @@
                                     {{oPedidoPresentacion.producto_presentacions.producto.nombre }}
                                 </td>
                                 <td>
-                                    {{oPedidoPresentacion.producto_presentacions.presentacion.nombre }}
+                                    {{oPedidoPresentacion.producto_presentacions.presentacion.codigo }}
                                 </td>
                                 <td>
-                                    S/. {{oPedidoPresentacion.precio_pedido|floatformat:2|intcomma }}
+                                    {{oPedidoPresentacion.precio_pedido|floatformat:1|intcomma }}
                                 </td>
                                 <td>
-                                    S/. {{oPedidoPresentacion.precio_pedido|mul:oPedidoPresentacion.cantidad|floatformat:2|intcomma }}
+                                    {{oPedidoPresentacion.precio_pedido|mul:oPedidoPresentacion.cantidad|floatformat:1|intcomma }}
                                 </td>
                             </tr>    
                             {% endfor %}

@@ -61,7 +61,12 @@ def nuevoLote(request):
             oProducto_presentacions = Producto_presentacions.objects.get(producto=oProducto,presentacion=oPresentacion)
             oLote_productopresentacions.producto_presentacions = oProducto_presentacions
             oLote_productopresentacions.lote = oLote
-            oLote_productopresentacions.fecha_caducidad = item['fechaVenc_producto']
+            print('fechaVenc_producto')
+            print(item['fechaVenc_producto'])
+            if item['fechaVenc_producto']:
+                oLote_productopresentacions.fecha_caducidad = item['fechaVenc_producto']
+            else:
+                print("No Fecha producto")
             oLote_productopresentacions.save()
 
         oLote.monto = total_precio_lote
@@ -85,12 +90,18 @@ def nuevoLote(request):
         #print(Datos)
         jsonProductos = {'exito':1}
         return HttpResponse(json.dumps(jsonProductos), content_type="application/json")
-    else:
-        form = ProductoForm()
-        #oPrecios = Precio.objects.filter(estado=True)
-        oAlmacens = Almacen.objects.filter(estado=True)
-        oProveedors = Proveedor.objects.filter(estado=True)
-        oProductosTop = Producto.objects.filter(estado=True).order_by('-valor')[:9]
-    return render(request, 'lote/nuevo.html', {'form': form,'oAlmacens':oAlmacens, 'oProveedors':oProveedors, 'oProductosTop': oProductosTop})
+    if request.method == 'GET':
+        oAperturacaja = Aperturacaja.objects.latest('id')
+        if  oAperturacaja.activo==True:
+            form = ProductoForm()
+            #oPrecios = Precio.objects.filter(estado=True)
+            oAlmacens = Almacen.objects.filter(estado=True)
+            oProveedors = Proveedor.objects.filter(estado=True)
+            oProductosTop = Producto.objects.filter(estado=True).order_by('-valor')[:9]
+            
+            return render(request, 'lote/nuevo.html', {'form': form,'oAlmacens':oAlmacens, 'oProveedors':oProveedors, 'oProductosTop': oProductosTop})
+        else:
+            return redirect('apertura_caja')
+        
 
 

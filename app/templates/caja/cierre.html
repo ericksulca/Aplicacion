@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block imports %}
+<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
 {% endblock %}
 
 {% block title %}
@@ -27,30 +28,28 @@ Registrar Cierre de Caja
 				<ul>
 				{% load widget_tweaks %}
 				{% csrf_token %}
-					<div class="form-group">
-					<!-- <label for="">Seleccione una Caja</label></br>
-				    <select class="form-control" id="cmbCaja" name="cmbCaja" required="">
-				    	<option value=""> </option>
-                        {% for caja in cajas %}
-                            <option value="{{caja.id}}">
-                            {{caja.nombre}}
-                            </option>
-                        {% endfor %}
-                        </select><br>
-					<label for="">Apertura de caja</label></br> -->
-					<label for="">Fecha de la apertura de Caja</label></br>
-					<input type="text" name="fechaApertura" id="fechaApertura" required class="form-control" value="{{Aperturacaja.fecha}}" readonly="readonly" >
-					<input type="text" name="idApertura" id="idApertura" required class="form-control" value="{{Aperturacaja.id}}" style="visibility: hidden" readonly="readonly" >
-				    {% for field in form %}
-							{{ field.errors }}
-							{{ field.label_tag }}</br>
-							{{ field|add_class:"form-control" }}
-				    {% endfor %}
-				    <br>
-
-					<button class="btn btn-success" data-toggle="modal" data-target="#agrearPresentacion">Cerrar Caja</button>
-
-
+					<div class="form-group" id="app">
+						<label for="">Fecha de la apertura de Caja</label><br>
+						<input type="text" name="fechaApertura" id="fechaApertura" required="" class="form-control" value="28 de agosto de 2023 a las 20:34" readonly="readonly">
+						<input type="text" name="idApertura" id="idApertura" required="" class="form-control" value="5" style="visibility: hidden" readonly="readonly">
+						
+								
+						<label for="id_monto">Monto:</label><br>
+						<input type="number" name="monto" step="any" class="form-control" required="" id="id_monto" :disabled="bool_validado" value="{{oMontoCierre}}">
+				
+						<div v-show="!bool_validado" >
+							<label for="id_descripcion">Descripcion:</label><br>
+							<textarea name="descripcion" cols="40" rows="10" class="form-control" id="id_descripcion"></textarea>
+						</div>
+				
+						
+						<label for="id_validado">Validado:</label>
+						<input type="checkbox" name="validado" class="form-control fill" id="id_validado" checked="" v-model="bool_validado">
+						
+						<hr>
+	
+						<button class="btn btn-success" data-toggle="modal" data-target="#agrearPresentacion">Cerrar Caja</button>
+					</div>
 				</ul>
 				</form>
  
@@ -58,4 +57,32 @@ Registrar Cierre de Caja
 	    </div>
     </div>  
 </div>  
+{% endblock %}
+
+{% block footer  %}
+
+<script type="text/javascript">
+    new Vue({
+        delimiters: ['[[', ']]'],
+        el: '#app',
+        computed: {
+            
+        },
+        created() {
+        },
+        data:   {
+			bool_validado:true,
+		},
+		watch:{
+			bool_validado: function(val){
+				if(this.bool_validado == false){
+
+				}
+			},
+		},
+		methods: {
+
+		},
+	});
+</script>
 {% endblock %}

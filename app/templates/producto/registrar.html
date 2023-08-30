@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block imports %}
-    <script type="text/javascript" src="/static/js/producto.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 {% endblock %}
 
 {% block title %}
@@ -8,7 +9,7 @@ Registrar Nuevo Producto
 {% endblock %}
 
 {% block content %}
-<div class="card">
+<div class="card" id="app">
     <div class="card-header">
 		<h3 class="box-title">Formulario de nuevo Producto</h3>
         <div class="card-header-right">
@@ -26,36 +27,74 @@ Registrar Nuevo Producto
             <div class="white-box">
                 <h3 class="box-title">Formulario de registro de Producto</h3>
                 <form action="." method="post" enctype="multipart/form-data"> 
-				<ul>
-				{% load widget_tweaks %}
-				{% csrf_token %}
+					{% load widget_tweaks %}
+					{% csrf_token %}
 					<div class="form-group">
-				    {% for field in form %}
-							{{ field.errors }}
-							{{ field.label_tag }}</br>
-							{{ field|add_class:"form-control" }}
-				    {% endfor %}
-				    </br>
-                    
-					<!-- <a href='#' onclick='AgregarUnidad();'><button type="button" class="btn btn-success">Agregar Contenido</button></a> -->
-				    </div>
-				    <div class="form-group OtrasUnidades" id="OtrasUnidades">
-				    	
-				    </div>
+							<ul>
+								{% for field in form %}
+									{{ field.errors }}
+									{{ field.label_tag }}</br>
+									{{ field|add_class:"form-control" }}
+								{% endfor %}
+								<hr>
+								<select multiple="multiple"  v-model="presentacionesSeleccionadas" class="form-control" name="Presentacions" id="Presentacions"  size="10">
+									<option  v-for="option in lista_presentaciones" :key="option.codigo" :value="option.codigo">
+									  [[option.nombre]] 
+									</option>
+								</select>
+								<hr>
+							</ul>
 
-					<button class="btn btn-success" data-toggle="modal" data-target="#agrearPresentacion">Agregar Contenido</button>
+							<ul>
+								<button  class="btn btn-primary" v-show="!bool_presentacionesSeleccionadas" @click="generar_ingreso_precios">Generar Precios</button>
+							</ul>
+							<ul>
+								<div v-show="bool_presentacionesSeleccionadas">
+									<h4>Precio para presentaciones seleccionadas</h4>
+									<div class="row">
+										<div class="col-2">
+											<p>Presentación</p>
+										</div>
+										<div class="col-4">
+											<p>Precio</p>
+										</div>
+										<div class="col-4">
+											<p>Favorito</p>
+										</div>
+									</div>
+									
+									<div v-for="(n,i) in presentacionesSeleccionadas"  v-bind:key="n">
+										<div class="row">
+											<div class="col-2">
+												<p>Precio S/. [[ presentacionesSeleccionadas[i] ]]</p>
+											</div>
+											<div class="col-4">
+												<input type="number" class="form-control" ref= "inputs" :id="'str' + n" :name="'str' + n"  required="required" />
+											</div>
+										</div>
+									</div>
 
+									<div class="row">
+										<div class="col-2">
+											<p>Elija una presentacion Predeterminada</p>
+										</div>
+										<div class="col-4">
+											<select   v-model="presentacionFavorito" class="form-control" name="Presentacions_favorito" id="Presentacions_favorito" >
+												<option  v-for="option in presentacionesSeleccionadas" :key="option" :value="option">
+												  [[option]] 
+												</option>
+											</select>
+										</div>
+									</div>
+									<button class="btn btn-success" data-toggle="modal" data-target="#agrearPresentacion">Agregar Contenido</button>
+								</div>
+							</ul>
+							
+							<!-- <a href='#' onclick='AgregarUnidad();'><button type="button" class="btn btn-success">Agregar Contenido</button></a> -->
 
-				</ul>
-				</form>
-				
-				          
-				          </form>
+						</form>
 
-
-				        </div>
-
-				      </div>
+					</div>
 			    </div>  
             </div>
         </div>
@@ -63,3 +102,56 @@ Registrar Nuevo Producto
 </div>
 {% endblock %}
 
+{% block footer  %}
+
+<script type="text/javascript">
+    new Vue({
+        delimiters: ['[[', ']]'],
+        el: '#app',
+        computed: {
+            
+        },
+        created() {
+			this.buscar_presentaciones()
+        },
+        data:   {
+			bool_presentacionesSeleccionadas:false,
+			precios: [],
+			lista_presentaciones: [],
+			presentacionesSeleccionadas: [],
+			lista_favoritos: [],
+			presentacionFavorito:'',
+		},
+		watch: {
+			presentacionesSeleccionadas: function(val){
+				console.log(this.presentacionesSeleccionadas)
+				console.log(this.bool_presentacionesSeleccionadas)
+			},
+			lista_favoritos: function(val){
+				console.log(this.lista_favoritos)
+				const element = this.lista_favoritos
+				//for ofavorito in this.lista_favoritos:
+				for (let index = 0; index < element.length+1; index++) {
+					console.log(element[index])
+				}
+			},
+		},
+        methods: {
+			async buscar_presentaciones(){
+                const pk = this.idProductoAgregar
+				axios.get("/presentacion/listar")
+					.then((response) => {
+						const data = response.data;
+						this.lista_presentaciones = data
+					})
+					.catch(function(error){
+				});    
+            },
+
+			generar_ingreso_precios: function(){
+				this.bool_presentacionesSeleccionadas = true
+			},
+		},
+	});
+</script>
+{% endblock %}

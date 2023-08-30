@@ -92,22 +92,22 @@ Información de Operación
                                                 <th>Fecha Caducidad</th>
                                             </thead>
                                             <tbody>
-                                                {% for oProductoPresentacion in oOperacion.lote.lote_presentacions.all %}
+                                                {% for oLote_productopresentacions in oOperacion.lote.lote_presentacions.all %}
                                                 <tr>
                                                     <td>
-                                                        {{oProductoPresentacion.producto_presentacions.producto.nombre }}
+                                                        {{oLote_productopresentacions.producto_presentacions.producto.nombre }}
                                                     </td>
                                                     <td>
-                                                        {{oProductoPresentacion.producto_presentacions.presentacion.nombre }}
+                                                        {{oLote_productopresentacions.producto_presentacions.presentacion.nombre }}
                                                     </td>
                                                     <td>
-                                                        {{oProductoPresentacion.cantidad }}
+                                                        {{oLote_productopresentacions.cantidad }}
                                                     </td>
                                                     <td>
-                                                        S/. {{oProductoPresentacion.precio_pedido }}
+                                                        S/. {{oLote_productopresentacions.producto_presentacions.precio_compra }}
                                                     </td>
                                                     <td>
-                                                        {{oProductoPresentacion.fecha_caducidad }} 
+                                                        {{ oLote_productopresentacions.fecha_caducidad }} 
                                                     </td>
                                                 </tr>    
                                                     <br>

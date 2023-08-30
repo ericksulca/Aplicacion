@@ -30,25 +30,48 @@ def detalleVenta(request,id_venta):
     jsonProductos= {'exito':1, 'oVenta': oVenta, 'oNegocio': oNegocio}
     return HttpResponse(json.dumps(jsonProductos), content_type="application/json")
 
+def operacion_almacen(tipo_op,id_producto,cantidad):
+    if tipo_op==1:
+        oProducto = Producto.objects.get(id=id_producto)
+        oProducto_presentacions = Producto_presentacions.objects.filter(producto=oProducto)
+        
+        oLote_productopresentacions = Lote_productopresentacions.objects.filter( producto_presentacions__in=[p.id for p in oProducto_presentacions]).order_by('id')
+
+        bool_descontado = False
+        for oLote_productopresentacion in oLote_productopresentacions:
+            if bool_descontado == False and oLote_productopresentacion.cnt_cantidad>0:
+                cant_almacen_lote = oLote_productopresentacion.cnt_cantidad * oLote_productopresentacion.producto_presentacions.valor
+
+                residuo_op = cant_almacen_lote - cantidad
+                oLoteAlmacen = Lote_productopresentacions.objects.get(id=oLote_productopresentacion.id)
+                if residuo_op >= 0:
+                    oLoteAlmacen.cnt_cantidad = (residuo_op/oLote_productopresentacion.producto_presentacions.valor)
+                    bool_descontado = True
+                else:
+                    oLoteAlmacen.cnt_cantidad = 0
+                    cantidad = residuo_op * -1
+                oLoteAlmacen.save()
+        oProducto.valor += 1
+        oProducto.save()
+        return True
+
 def nuevoVenta(request):
     if request.method == 'POST':
         data = json.loads(request.body.decode('utf-8'))
         print(data)
         oPedido = Pedido()
-        #oPedido.usuario = request.user
         if data['oCliente']!={}:
-            oPedido.cliente = data['oCliente']
+            oCliente = Cliente.objects.get(id= data['oCliente']['id'])
+            oPedido.cliente = oCliente
         oPedido.save()
-
-        #Producto_presentacions
 
         total_precio_pedido = 0
 
         for item in data['productos']:
             oPedido_productopresentacions = Pedido_productopresentacions()
             oPedido_productopresentacions.precio_pedido = float(item['precio_producto'])
-            oPedido_productopresentacions.cantidad = int(item['cantidad_producto'])
-            total_precio_pedido += float(item['precio_producto'])
+            oPedido_productopresentacions.cantidad = float(item['cantidad_producto'])
+            total_precio_pedido += float(item['precio_producto'])*float(item['cantidad_producto'])
             oPresentacion = Presentacion.objects.get(codigo=item['presentacion_producto'])
             oProducto = Producto.objects.get(id= item['id'],nombre = item['nombre_producto'] )
             oProducto_presentacions = Producto_presentacions.objects.get(producto=oProducto,presentacion=oPresentacion)
@@ -56,14 +79,20 @@ def nuevoVenta(request):
             oPedido_productopresentacions.pedido = oPedido
             oPedido_productopresentacions.save()
 
+            #descuento de productos en Almacén
+            cant_descontar = oProducto_presentacions.valor * float(item['cantidad_producto'])
+
+            operacion_almacen(1,oProducto_presentacions.producto.id,cant_descontar)
+
         #oLote.monto = total_precio_lote
+        print(total_precio_pedido)
         oVenta= Venta()
         oVenta.monto = total_precio_pedido
         oVenta.pedido = oPedido
         oVenta.save()
 
         oOperacion = Operacion()
-        oOperacion.monto = data['pago_cliente'] 
+        oOperacion.monto = float(data['pago_cliente']) 
         oOperacion.descripcion = 'Venta de Productos'
         oAperturacaja = Aperturacaja.objects.latest('id')
         if  oAperturacaja.activo==True:
@@ -85,8 +114,13 @@ def nuevoVenta(request):
         return HttpResponse(json.dumps(jsonProductos), content_type="application/json")
         #return redirect ('venta_listar')
     if request.method == 'GET':
-        oProductosTop = Producto.objects.filter(estado=True).order_by('-valor')[:9]
-        return render(request, 'venta/nuevo.html', {'oProductosTop': oProductosTop})
+        oAperturacaja = Aperturacaja.objects.latest('id')
+        if  oAperturacaja.activo==True:
+            oProductosTop = Producto.objects.filter(estado=True).order_by('-valor')[:9]
+            return render(request, 'venta/nuevo.html', {'oProductosTop': oProductosTop})
+        else:
+            return redirect('apertura_caja')
+        
 
 def ImprimirVenta(request, venta_id):
     oVenta = get_object_or_404(Venta, id=venta_id)
@@ -153,9 +187,16 @@ def filterVentas(request):
         
         oPedido_productopresentacions = Pedido_productopresentacions.objects.filter(estado=True,producto_presentacions__in = [p.id for p in oProducto_presentacions])
         
-        oPedidos = oPedido_productopresentacions
+        print("##LOG: oPedido_productopresentacions")
+        print(oPedido_productopresentacions)
+        oPedidos = []
+        for oPedido_productopresentacion in oPedido_productopresentacions:
+            oPedidos.append(oPedido_productopresentacion.pedido)
+        
+        print("##LOG: oPedidos")
+        print(oPedidos)
 
-        oVentas = Venta.objects.filter(estado=True,id__in=[p.pedido.id for p in oPedidos]).order_by('-id')
+        oVentas = Venta.objects.filter(estado=True,pedido__in=[p.id for p in oPedidos]).order_by('-id')
         oVentas_query = True
 
     if nombre_cliente !='' and nombre_cliente !=None:
@@ -189,7 +230,7 @@ def filterVentas(request):
             print(oVentas)
             print("## LOG: fun filter fechas Existentes | fecha inicio")
             startdate = date.today()
-            oVentas = oVentas.filter(estado=True,fecha__range=[fecha_inicio,fecha_hoy]).order_by('-id')[:50]
+            oVentas = oVentas.filter(estado=True,fecha__lte=fecha_inicio).order_by('-id')[:50]
         else:
             print("## LOG: fun filter fechas | fecha inicio")
             oVentas = Venta.objects.filter(estado=True,fecha__gte=fecha_inicio).order_by('-id')[:50]

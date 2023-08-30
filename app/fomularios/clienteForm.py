@@ -6,7 +6,7 @@ from app.models import *
 class ClienteForm(ModelForm):
     class Meta:
         model = Cliente
-        fields = ('nombre','direccion','longitud','latitud','numerodocumento')
+        fields = ('nombre','direccion','imagen','telefono','numerodocumento')
         #widgets = {
         #    'password': forms.PasswordInput(),
         #}
