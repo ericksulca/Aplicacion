@@ -23,8 +23,16 @@ def listarOperacions(request):
     if request.method == 'POST':
         return render(request, 'caja/operacion_listar.html')
     if request.method == 'GET':
-        oOperacions = Operacion.objects.filter(estado = True).order_by('-id')
-        return render(request, 'caja/operacion_listar.html', {"oOperacions": oOperacions})
+        try:
+            oAperturacaja = Aperturacaja.objects.latest('id')
+            if  oAperturacaja.activo==True:
+                #oTipooperacion = Tipooperacion.objects.filter(estado=1)
+                oOperacions = Operacion.objects.filter(estado = True, aperturacaja=oAperturacaja).order_by('-id')
+                return render(request, 'caja/operacion_listar.html', {"oOperacions": oOperacions})
+            if  oAperturacaja.activo==False:
+                return redirect('apertura_caja')
+        except Exception as e:
+            return redirect('Home')
 
 def registrarOperacion(request):
     if request.method == 'POST':
@@ -52,11 +60,10 @@ def registrarOperacion(request):
             if  oAperturacaja.activo==True:
                 oTipooperacion = Tipooperacion.objects.filter(estado=1)
                 return render(request, 'caja/operacion.html', {'oTipooperacion':oTipooperacion})
-                return render(request, 'caja/aperturaRegistrada.html', {'Aperturacaja': oAperturacaja})
             if  oAperturacaja.activo==False:
                 return redirect('apertura_caja')
         except Exception as e:
-            return render(request, 'caja/operacion2.html', {})
+            return redirect('Home')
 
 from app.serializers import detalleTipoOperacionSerializer
 class get_detalleTipoOperacion(ListAPIView):

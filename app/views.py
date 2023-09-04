@@ -44,6 +44,7 @@ def Logout(request):
 
 @login_required
 def Home(request):
+    
     return render(request, "inicio/index.html", {'redirect_to': next})
 
 def Prueba(request):

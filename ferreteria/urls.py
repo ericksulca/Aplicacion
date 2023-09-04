@@ -61,9 +61,11 @@ urlpatterns = [
 
     ################## Venta #######################
 
-    path('venta/nuevo/', nuevoVenta,name="venta_nuevo"),
-    path('venta/listar/', ListarVentas, name="venta_listar"),
-    path('venta/imprimir/<int:venta_id>/', ImprimirVenta, name="venta_imprimir"),
+    path('Venta/nuevo/', nuevoVenta,name="venta_nuevo"),
+    path('Venta/listar/', ListarVentas, name="venta_listar"),
+    path('Venta/imprimir/<int:venta_id>/', ImprimirVenta, name="venta_imprimir"),
+    path('Venta/detalle/<int:venta_id>/', detalle_Venta, name ='venta_detalle'),
+
     #path('Venta/nuevo/', registrarPedido, name='registrar_venta'),
     # path('venta/listar/<int:<producto_buscado>\d+)/<int:<dni>\d+)/<int:<fecha_ini>[0-9]{2}-?[0-9]{2}-?[0-9]{4})/<int:<fecha_f>[0-9]{2}-?[0-9]{2}-?[0-9]{4})/', Fentas),
     # path('venta/listar/<int:<producto_buscado>\d+)/<int:<dni>\d+)/', Fentas),
@@ -72,7 +74,7 @@ urlpatterns = [
     # path('venta/listar/<int:<dni>\d+)/$', Fentas),
     # path('venta/listar/<int:<fecha_ini>[0-9]{2}-?[0-9]{2}-?[0-9]{4})/<int:<fecha_f>[0-9]{2}-?[0-9]{2}-?[0-9]{4})/$', Fentas),
     # path('venta/listar/<int:<fecha_f>[0-9]{2}-?[0-9]{2}-?[0-9]{4})/$', Fentas),
-    path('venta/filtrar/', filterVentas, name = "filtra_ventas"),
+    path('Venta/filtrar/', filterVentas, name = "filtra_ventas"),
     #path('venta/listar/<int:<producto>\d+)$', FiltrarVentas.as_view, name="filtra_ventas"),
     #path('Producto/detalle/<int:<producto_id>\d+)/$', detalleProducto),
     #path('Producto/editar/<int:<producto_id>\d+)/$', editarProducto),

@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, HttpResponseRedirect
 from ferreteria import settings
 from django.contrib.auth.decorators import login_required
+from django.db.models import Sum
 # Create your views here.
 from app.models import *
 from django.views.decorators.csrf import csrf_exempt
@@ -45,13 +46,43 @@ def registrarCierrecaja(request):
     else:
         oCajas = Caja.objects.filter(estado=True)
         form = CierrecajaForm()
-        try:
-            oAperturacaja = Aperturacaja.objects.latest('id')
-            oMontoCierre = 500
-            if  oAperturacaja.activo==True:
-                return render(request, 'caja/cierre.html', {'form': form,'Aperturacaja': oAperturacaja,'cajas':oCajas,'oMontoCierre':oMontoCierre})
-            else: 
-                return redirect('apertura_caja')
-        except Exception as e:
+        #try:
+        oTipooperacionIngreso = Tipooperacion.objects.get(id=1)
+        oDetalletipooperacionIngreso = Detalletipooperacion.objects.filter(tipooperacion=oTipooperacionIngreso)
+        
+        oTipooperacionEgreso = Tipooperacion.objects.get(id=2)
+        oDetalletipooperacionEgreso = Detalletipooperacion.objects.filter(tipooperacion=oTipooperacionEgreso)
+    
+        oAperturacaja = Aperturacaja.objects.latest('id')
+        oOperacionesIngreso = Operacion.objects.filter(aperturacaja=oAperturacaja, detalletipooperacion__in=[q.id for q in oDetalletipooperacionIngreso] ).aggregate(Sum('monto'))
+        print("################# Ingreso ##################")
+        print(oOperacionesIngreso)
+        print(oOperacionesIngreso['monto__sum'])
+        print(type(oOperacionesIngreso))
+
+
+        oOperacionesEgreso = Operacion.objects.filter(aperturacaja=oAperturacaja, detalletipooperacion__in=[q.id for q in oDetalletipooperacionEgreso] ).aggregate(Sum('monto'))
+        print("################# Egreso ##################")
+        print(oOperacionesEgreso)
+        oDatosSumOperaciones = {}
+        if oOperacionesIngreso['monto__sum']:
+            oDatosSumOperaciones['Ingreso'] = "{:.2f}".format(oOperacionesIngreso['monto__sum'])
+        else:
+            oDatosSumOperaciones['Ingreso'] = 0
+
+        if oOperacionesEgreso['monto__sum']:
+            oDatosSumOperaciones['Egreso'] = "{:.2f}".format(oOperacionesEgreso['monto__sum'])
+        else:
+            oDatosSumOperaciones['Egreso'] = 0
+        
+        oMontoCierre = float(oDatosSumOperaciones['Ingreso']) - float(oDatosSumOperaciones['Egreso']) + oAperturacaja.monto
+        print("## LOG: MontoCierre:")
+        print(oMontoCierre)
+
+        if  oAperturacaja.activo==True:
+            return render(request, 'caja/cierre.html', {'form': form,'oAperturacaja': oAperturacaja,'cajas':oCajas,'oMontoCierre':oMontoCierre})
+        else: 
             return redirect('apertura_caja')
-            #return render(request, 'caja/cierreNoRegistrado.html', {'cajas':oCajas})
+        #except Exception as e:
+        #    return redirect('apertura_caja')
+        #    #return render(request, 'caja/cierreNoRegistrado.html', {'cajas':oCajas})

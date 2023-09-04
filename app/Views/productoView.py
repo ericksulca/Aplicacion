@@ -59,6 +59,9 @@ def registrarProducto(request):
                 str_input = 'str'+str(code_Presentacion)
                 precio_presentacion = Datos[str_input]
                 oProducto_presentacions.precio_venta = float(precio_presentacion)
+                val_input = 'val'+str(code_Presentacion)
+                valor_presentacion = Datos[val_input]
+                oProducto_presentacions.valor = float(valor_presentacion)
                 if Datos['Presentacions_favorito']==code_Presentacion:
                     oProducto_presentacions.favorito = True
                 oProducto_presentacions.save()

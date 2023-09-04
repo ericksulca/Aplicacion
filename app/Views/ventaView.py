@@ -30,6 +30,13 @@ def detalleVenta(request,id_venta):
     jsonProductos= {'exito':1, 'oVenta': oVenta, 'oNegocio': oNegocio}
     return HttpResponse(json.dumps(jsonProductos), content_type="application/json")
 
+def detalle_Venta(request,venta_id):
+    oVenta = get_object_or_404(Venta,id=venta_id,estado=True)
+    oPedido_productopresentacions = Pedido_productopresentacions.objects.filter(pedido=oVenta.pedido)
+    print("### LOG: fun detalle_venta_id")
+    return render(request, 'venta/detalle.html', {'oVenta':oVenta, 'oPedido_productopresentacions':oPedido_productopresentacions})
+
+
 def operacion_almacen(tipo_op,id_producto,cantidad):
     if tipo_op==1:
         oProducto = Producto.objects.get(id=id_producto)

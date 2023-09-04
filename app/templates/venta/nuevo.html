@@ -430,9 +430,9 @@ Nueva Venta
             ventaCompletada:function(val){
                 if (this.ventaCompletada == true){
                     console.log("### LOG: fun_ventacompletada")
-                    this.url_documentoVenta = '/venta/imprimir/'+this.oDocumentoImprimir['idVenta']
+                    this.url_documentoVenta = '/Venta/imprimir/'+this.oDocumentoImprimir['idVenta']
                     window.open (this.url_documentoVenta,"documentoImprimir","menubar=0,resizable=1,width=620,height=670");
-                    window.location.replace("/venta/listar")
+                    window.location.replace("/Venta/listar")
 
                 }
             },
