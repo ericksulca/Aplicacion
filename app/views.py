@@ -44,7 +44,11 @@ def Logout(request):
 
 @login_required
 def Home(request):
-    
+    print("## LOG: Data User.Request")
+    oGroup = request.user.groups.all()
+    if len(oGroup)>0:
+        if oGroup[0].name=='Cajeros':
+            return render(request,"Cajero/index.html")
     return render(request, "inicio/index.html", {'redirect_to': next})
 
 def Prueba(request):
